@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    default: "mock"
+    active: "mock"
+dungeon:
+  mock:
+    roundlength: 1 # 60
+    numberOfPlayers: 5
+
