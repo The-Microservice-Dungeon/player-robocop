@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.player.commands.CommandExecutor;
 import thkoeln.dungeon.gameconnector.PlayerCallback;
+import thkoeln.dungeon.player.player.domain.Player;
+import thkoeln.dungeon.player.player.domain.PlayerRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,14 +24,25 @@ import java.util.UUID;
 public class PlayerService implements PlayerCallback {
     Logger logger = LoggerFactory.getLogger(PlayerService.class);
 
-    @Autowired
     private CommandExecutor commandExecutor;
+    private PlayerRepository playerRepository;
+
+    @Autowired
+    public PlayerService( CommandExecutor commandExecutor, PlayerRepository playerRepository  ) {
+        this.commandExecutor = commandExecutor;
+        this.playerRepository = playerRepository;
+    }
 
     @Override
     public void playRound( Integer roundNumber ) {
         logger.info( "Starting round " + roundNumber );
+        Iterable<Player> players = playerRepository.findAll();
+        for ( Player player : players ) {
+            player.playRound();
+        }
         UUID transactionId = commandExecutor.executeCommand( null );
         logger.info( "transactionId " + transactionId );
+        logger.info( "Ending round " + roundNumber );
     }
 
     @Override

@@ -3,7 +3,8 @@ spring:
     default: "mock"
     active: "mock"
 dungeon:
-  mock:
-    roundlength: 1 # 60
-    numberOfPlayers: 5
+  player:
+    mock:
+      roundlength: 1 # 60
+      numberOfPlayers: 5
 

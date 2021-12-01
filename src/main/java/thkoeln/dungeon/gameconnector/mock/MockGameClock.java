@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Profile( "mock" )
 public class MockGameClock implements ApplicationRunner {
-    @Value("${dungeon.mock.roundlength}")
+    @Value("${dungeon.player.mock.roundlength}")
     private int roundLength;
 
     @Autowired

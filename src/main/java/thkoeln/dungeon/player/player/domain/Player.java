@@ -16,6 +16,9 @@ import java.util.UUID;
 public class Player {
     @Id
     private final UUID id = UUID.randomUUID();
-
     private String name;
+
+    public void playRound() {
+
+    }
 }
