@@ -1,10 +1,12 @@
 package thkoeln.dungeon.player.player;
 
-import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import thkoeln.dungeon.player.commands.CommandExecutor;
+import thkoeln.dungeon.gameconnector.PlayerCallback;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.UUID;
 
 /**
@@ -16,9 +18,26 @@ import java.util.UUID;
  * - each time an answer is received (with transaction id), the robots and the map are updated.
  */
 @Service
-public class PlayerService {
+public class PlayerService implements PlayerCallback {
+    Logger logger = LoggerFactory.getLogger(PlayerService.class);
 
-    public void playRound() {
+    @Autowired
+    private CommandExecutor commandExecutor;
+
+    @Override
+    public void playRound( Integer roundNumber ) {
+        logger.info( "Starting round " + roundNumber );
+        UUID transactionId = commandExecutor.executeCommand( null );
+        logger.info( "transactionId " + transactionId );
+    }
+
+    @Override
+    public void receiveCommandAnswer(UUID transactionId, String payload) {
+
+    }
+
+    @Override
+    public void learnAboutMoveByEnemyRobot() {
 
     }
 }
