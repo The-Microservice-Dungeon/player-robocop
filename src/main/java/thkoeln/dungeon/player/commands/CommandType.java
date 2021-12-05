@@ -1,5 +1,6 @@
 package thkoeln.dungeon.player.commands;
 
 public enum CommandType {
-    blocking, trading, movement, battle, mining, scouting, spawn;
+    move;
+    /* block, fight, mine, regenerate, use-item-fighting, use-item-movement, use-item-repair */
 }
