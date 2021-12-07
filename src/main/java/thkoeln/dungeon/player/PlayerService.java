@@ -4,7 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import thkoeln.dungeon.gameconnector.PlayerCallback;
+import thkoeln.dungeon.command.CommandExecutor;
+import thkoeln.dungeon.PlayerServiceCallback;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 
@@ -19,8 +20,8 @@ import java.util.UUID;
  * - each time an answer is received (with transaction id), the robots and the map are updated.
  */
 @Service
-public class PlayerService implements PlayerCallback {
-    Logger logger = LoggerFactory.getLogger(PlayerService.class);
+public class PlayerService implements PlayerServiceCallback {
+    private Logger logger = LoggerFactory.getLogger(PlayerService.class);
 
     private CommandExecutor commandExecutor;
     private PlayerRepository playerRepository;

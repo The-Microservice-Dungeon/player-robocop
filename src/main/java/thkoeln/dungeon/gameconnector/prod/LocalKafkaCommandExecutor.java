@@ -1,4 +1,4 @@
-package thkoeln.dungeon.gameconnector.mock;
+package thkoeln.dungeon.gameconnector.prod;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -8,8 +8,8 @@ import thkoeln.dungeon.command.Command;
 import java.util.UUID;
 
 @Component
-@Profile( "mock" )
-public class MockCommandExecutor implements CommandExecutor {
+@Profile( "localKafka" )
+public class LocalKafkaCommandExecutor implements CommandExecutor {
 
     @Override
     public UUID executeCommand( Command command ) {

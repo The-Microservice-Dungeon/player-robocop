@@ -1,0 +1,18 @@
+package thkoeln.dungeon.command;
+
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+import thkoeln.dungeon.command.Command;
+
+import java.util.UUID;
+
+@Component
+@Profile( "prod" )
+public class CommandExecutorService implements thkoeln.dungeon.command.CommandExecutor {
+
+    @Override
+    public UUID executeCommand( Command command ) {
+        return UUID.randomUUID();
+    }
+
+}

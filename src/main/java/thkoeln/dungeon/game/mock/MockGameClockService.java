@@ -1,25 +1,23 @@
-package thkoeln.dungeon.gameconnector.mock;
+package thkoeln.dungeon.game.mock;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-
-
-import java.util.concurrent.TimeUnit;
+import thkoeln.dungeon.PlayerServiceCallback;
+import thkoeln.dungeon.player.PlayerService;
 
 @Component
 @Profile( "mock" )
-public class MockGameClock implements ApplicationRunner {
+public class MockGameClockService {
     @Value("${dungeon.player.mock.roundlength}")
     private int roundLength;
 
     @Autowired
     private PlayerService playerService;
 
+    /*
     public void run(ApplicationArguments args) throws Exception {
         Integer roundNumber = 0;
         while( true ) {
@@ -28,6 +26,9 @@ public class MockGameClock implements ApplicationRunner {
             roundNumber++;
         }
     }
+*/
+    public void gameStarted( PlayerServiceCallback playerServiceCallback ) {
 
+    }
 
 }

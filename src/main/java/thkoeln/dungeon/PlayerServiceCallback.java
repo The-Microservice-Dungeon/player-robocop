@@ -1,8 +1,8 @@
-package thkoeln.dungeon.gameconnector;
+package thkoeln.dungeon;
 
 import java.util.UUID;
 
-public interface PlayerCallback {
+public interface PlayerServiceCallback {
 
     public void playRound( Integer roundNumber );
 
