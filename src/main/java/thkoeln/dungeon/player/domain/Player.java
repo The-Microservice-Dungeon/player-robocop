@@ -20,6 +20,7 @@ public class Player {
     private String email;
     private UUID bearerToken;
 
+
     public void playRound() {
 
     }

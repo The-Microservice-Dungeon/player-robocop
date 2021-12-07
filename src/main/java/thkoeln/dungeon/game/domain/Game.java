@@ -1,4 +1,4 @@
-package thkoeln.dungeon.game;
+package thkoeln.dungeon.game.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

@@ -1,8 +1,10 @@
 spring:
   profiles:
     default: "mock"  # others are: prod
-    active: "prod"
+    active: "mock"
 dungeon:
+  services:
+    game: ${GAME_SERVICE}
   player:
     numberOfPlayers: 5
     mock:
