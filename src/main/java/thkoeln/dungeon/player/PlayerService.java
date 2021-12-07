@@ -1,15 +1,13 @@
-package thkoeln.dungeon.player.player;
+package thkoeln.dungeon.player;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import thkoeln.dungeon.player.commands.CommandExecutor;
 import thkoeln.dungeon.gameconnector.PlayerCallback;
-import thkoeln.dungeon.player.player.domain.Player;
-import thkoeln.dungeon.player.player.domain.PlayerRepository;
+import thkoeln.dungeon.player.domain.Player;
+import thkoeln.dungeon.player.domain.PlayerRepository;
 
-import java.util.List;
 import java.util.UUID;
 
 /**

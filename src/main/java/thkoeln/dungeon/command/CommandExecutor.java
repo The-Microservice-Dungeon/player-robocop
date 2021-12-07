@@ -1,6 +1,4 @@
-package thkoeln.dungeon.player.commands;
-
-import thkoeln.dungeon.player.commands.Command;
+package thkoeln.dungeon.command;
 
 import java.util.UUID;
 

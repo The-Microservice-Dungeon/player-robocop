@@ -1,4 +1,4 @@
-package thkoeln.dungeon.player.player.domain;
+package thkoeln.dungeon.player.domain;
 
 import org.springframework.data.repository.CrudRepository;
 

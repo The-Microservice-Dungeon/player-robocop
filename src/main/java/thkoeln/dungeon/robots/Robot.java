@@ -1,4 +1,4 @@
-package thkoeln.dungeon.player.planets;
+package thkoeln.dungeon.robots;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,9 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Planet {
+public class Robot {
     @Id
     private final UUID id = UUID.randomUUID();
+
+
 }

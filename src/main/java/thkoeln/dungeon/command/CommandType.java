@@ -1,4 +1,4 @@
-package thkoeln.dungeon.player.commands;
+package thkoeln.dungeon.command;
 
 public enum CommandType {
     move;

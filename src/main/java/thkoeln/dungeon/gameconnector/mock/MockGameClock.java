@@ -7,10 +7,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import thkoeln.dungeon.gameconnector.PlayerCallback;
-import thkoeln.dungeon.player.player.PlayerService;
 
-import javax.persistence.criteria.CriteriaBuilder;
+
 import java.util.concurrent.TimeUnit;
 
 @Component

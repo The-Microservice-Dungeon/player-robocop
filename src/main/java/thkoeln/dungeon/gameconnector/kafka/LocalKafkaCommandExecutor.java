@@ -1,9 +1,9 @@
-package thkoeln.dungeon.gameconnector.localkafka;
+package thkoeln.dungeon.gameconnector.kafka;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import thkoeln.dungeon.player.commands.CommandExecutor;
-import thkoeln.dungeon.player.commands.Command;
+import thkoeln.dungeon.command.CommandExecutor;
+import thkoeln.dungeon.command.Command;
 
 import java.util.UUID;
 

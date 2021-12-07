@@ -1,4 +1,4 @@
-package thkoeln.dungeon.player.planets;
+package thkoeln.dungeon.planet;
 
 import org.springframework.data.repository.CrudRepository;
 

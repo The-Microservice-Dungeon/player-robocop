@@ -1,9 +1,9 @@
-package thkoeln.dungeon.player.commands;
+package thkoeln.dungeon.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import thkoeln.dungeon.player.robots.Robot;
+import thkoeln.dungeon.robots.Robot;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

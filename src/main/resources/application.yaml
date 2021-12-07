@@ -1,10 +1,10 @@
 spring:
   profiles:
-    default: "mock"
+    default: "mock"  # others are:
     active: "mock"
 dungeon:
   player:
+    numberOfPlayers: 5
     mock:
       roundlength: 1 # 60
-      numberOfPlayers: 5
 

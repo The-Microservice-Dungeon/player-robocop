@@ -1,4 +1,4 @@
-package thkoeln.dungeon.player.player.domain;
+package thkoeln.dungeon.player.domain;
 
 
 import org.slf4j.Logger;
@@ -6,22 +6,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile( "mock" )
-public class MockPlayerCreator implements ApplicationListener<ContextRefreshedEvent> {
+public class PlayerCreator implements ApplicationListener<ContextRefreshedEvent> {
 
     private PlayerRepository playerRepository;
-    Logger logger = LoggerFactory.getLogger(MockPlayerCreator.class);
+    Logger logger = LoggerFactory.getLogger(PlayerCreator.class);
 
-    @Value("${dungeon.mock.numberOfPlayers}")
+    @Value("${dungeon.player.numberOfPlayers}")
     private int numberOfPlayers;
 
     @Autowired
-    public MockPlayerCreator( PlayerRepository playerRepository ) {
+    public PlayerCreator(PlayerRepository playerRepository ) {
         this.playerRepository = playerRepository;
     }
 
