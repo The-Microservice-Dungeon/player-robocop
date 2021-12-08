@@ -12,10 +12,13 @@ import java.util.UUID;
 
 @Component
 @Profile( "mock" )
-public class GameServiceMockAdaptor implements GameExternalAdaptor {
+public class GameSynchronousMockAdaptor implements GameSynchronousAdaptor {
 
-    private Logger logger = LoggerFactory.getLogger( GameServiceMockAdaptor.class );
+    private Logger logger = LoggerFactory.getLogger( GameSynchronousMockAdaptor.class );
 
+    /**
+     * @return just a randomly created Game object in fitting state
+     */
     @Override
     public Game fetchCurrentGameState() {
         Game game = new Game();
