@@ -10,7 +10,6 @@ on:
       - '**/.gitignore'
     # this defines the branches you can push to, in order to execute the workflow
     branches:
-      - 'pipeline'
       - 'main'
 # a workflow consists of multiple jobs
 jobs:
