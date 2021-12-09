@@ -15,7 +15,7 @@ public class PlayerCreator implements ApplicationListener<ContextRefreshedEvent>
     private PlayerRepository playerRepository;
     Logger logger = LoggerFactory.getLogger(PlayerCreator.class);
 
-    @Value("${dungeon.player.numberOfPlayers}")
+    @Value("${dungeon.numberOfPlayers}")
     private int numberOfPlayers;
 
     @Autowired

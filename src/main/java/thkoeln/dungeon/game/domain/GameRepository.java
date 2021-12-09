@@ -6,5 +6,5 @@ import thkoeln.dungeon.game.domain.Game;
 import java.util.UUID;
 
 public interface GameRepository extends CrudRepository<Game, UUID> {
-
+    public Iterable<Game> findAllByStatusEquals( GameStatus gameStatus );
 }

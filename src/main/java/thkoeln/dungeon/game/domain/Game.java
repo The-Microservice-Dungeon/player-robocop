@@ -11,13 +11,22 @@ import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
-@Setter
 @Getter
 @NoArgsConstructor
-@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Game {
     @Id
-    private UUID id;
+    private UUID id = UUID.randomUUID();
+    @Setter
+    private UUID gameId;
+    @Setter
     private GameStatus status;
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "gameId=" + gameId +
+                ", status=" + status +
+                '}';
+    }
 }

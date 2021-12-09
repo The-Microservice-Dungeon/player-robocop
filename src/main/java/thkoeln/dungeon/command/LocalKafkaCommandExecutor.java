@@ -1,4 +1,4 @@
-package thkoeln.dungeon.gameconnector.prod;
+package thkoeln.dungeon.command;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

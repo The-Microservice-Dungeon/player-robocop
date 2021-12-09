@@ -3,10 +3,14 @@ spring:
     default: "mock"  # others are: prod
     active: "mock"
 dungeon:
+  numberOfPlayers: 5
   services:
     game: ${GAME_SERVICE}
-  player:
-    numberOfPlayers: 5
-    mock:
-      roundlength: 1 # 60
+  mock:
+    game:
+      gameId: "20165011-013d-4a11-a5a9-c64d22ea76ca"
+      initialDelayUntilStart: 5 # in seconds; 0 means it starts in state "GAME_RUNNING"
+      roundLength: 10 # in seconds
+
+
 

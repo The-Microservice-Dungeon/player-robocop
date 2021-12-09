@@ -1,4 +1,4 @@
-package thkoeln.dungeon.game.application;
+package thkoeln.dungeon.game.adapter;
 
 
 import org.slf4j.Logger;
@@ -13,15 +13,15 @@ import thkoeln.dungeon.game.domain.Game;
 
 @Component
 @Profile( "prod" )
-public class GameSynchronousRESTAdaptor implements GameSynchronousAdaptor {
+public class GameServiceSynchronousRESTAdapter implements GameServiceSynchronousAdapter {
 
     private RestTemplate restTemplate;
-    private Logger logger = LoggerFactory.getLogger( GameSynchronousRESTAdaptor.class );
+    private Logger logger = LoggerFactory.getLogger( GameServiceSynchronousRESTAdapter.class );
     @Value("${GAME_SERVICE}")
     private String gameServiceUrlString;
 
     @Autowired
-    public GameSynchronousRESTAdaptor(RestTemplateBuilder builder ) {
+    public GameServiceSynchronousRESTAdapter(RestTemplateBuilder builder ) {
         this.restTemplate = builder.build();
     }
 

@@ -4,6 +4,6 @@ public enum GameStatus {
     NONE,
     CREATED,
     IN_PREPARATION,
-    RUNNING,
-    FINISHED
+    GAME_RUNNING,
+    GAME_FINISHED
 }
