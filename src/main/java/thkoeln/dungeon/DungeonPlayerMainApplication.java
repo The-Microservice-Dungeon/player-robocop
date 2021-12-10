@@ -2,13 +2,12 @@ package thkoeln.dungeon;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-public class MainApplication {
+public class DungeonPlayerMainApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MainApplication.class, args);
+        SpringApplication.run(DungeonPlayerMainApplication.class, args);
     }
 
 }

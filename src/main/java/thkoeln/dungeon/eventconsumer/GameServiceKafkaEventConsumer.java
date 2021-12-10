@@ -12,13 +12,9 @@ public class GameServiceKafkaEventConsumer {
         // todo
     }
 
-
-
     public void consumeGameEndedEvent() {
         // todo
     }
-
-
 
     public void consumeNewRoundStartedEvent() {
         // todo

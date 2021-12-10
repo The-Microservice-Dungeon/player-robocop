@@ -13,9 +13,9 @@ import java.util.UUID;
 
 @Component
 @Profile( "mock" )
-public class GameServiceSynchronousMockAdapter implements GameServiceSynchronousAdapter {
+public class GameSynchronousMockAdapter implements GameSynchronousAdapter {
 
-    private Logger logger = LoggerFactory.getLogger( GameServiceSynchronousMockAdapter.class );
+    private Logger logger = LoggerFactory.getLogger( GameSynchronousMockAdapter.class );
 
     @Value( "${dungeon.mock.game.initialDelayUntilStart}" )
     private int initialDelayUntilStart;

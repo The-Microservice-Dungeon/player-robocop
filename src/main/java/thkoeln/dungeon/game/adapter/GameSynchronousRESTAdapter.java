@@ -13,15 +13,15 @@ import thkoeln.dungeon.game.domain.Game;
 
 @Component
 @Profile( "prod" )
-public class GameServiceSynchronousRESTAdapter implements GameServiceSynchronousAdapter {
+public class GameSynchronousRESTAdapter implements GameSynchronousAdapter {
 
     private RestTemplate restTemplate;
-    private Logger logger = LoggerFactory.getLogger( GameServiceSynchronousRESTAdapter.class );
+    private Logger logger = LoggerFactory.getLogger( GameSynchronousRESTAdapter.class );
     @Value("${GAME_SERVICE}")
     private String gameServiceUrlString;
 
     @Autowired
-    public GameServiceSynchronousRESTAdapter(RestTemplateBuilder builder ) {
+    public GameSynchronousRESTAdapter(RestTemplateBuilder builder ) {
         this.restTemplate = builder.build();
     }
 

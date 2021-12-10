@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-import thkoeln.dungeon.StartupService;
 import thkoeln.dungeon.game.application.GameApplicationService;
 
 import java.util.UUID;

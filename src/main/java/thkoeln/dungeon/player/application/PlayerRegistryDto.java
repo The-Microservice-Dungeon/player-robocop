@@ -1,4 +1,4 @@
-package thkoeln.dungeon.player;
+package thkoeln.dungeon.player.application;
 
 
 import lombok.AllArgsConstructor;
