@@ -1,7 +1,7 @@
 package thkoeln.dungeon.game.domain;
 
 import org.springframework.data.repository.CrudRepository;
-import thkoeln.dungeon.game.domain.Game;
+import thkoeln.dungeon.restadapter.GameStatus;
 
 import java.util.List;
 import java.util.UUID;

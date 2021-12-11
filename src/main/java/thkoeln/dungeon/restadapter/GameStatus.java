@@ -1,7 +1,6 @@
-package thkoeln.dungeon.game.domain;
+package thkoeln.dungeon.restadapter;
 
 public enum GameStatus {
-    NONE,
     CREATED,
     IN_PREPARATION,
     GAME_RUNNING,

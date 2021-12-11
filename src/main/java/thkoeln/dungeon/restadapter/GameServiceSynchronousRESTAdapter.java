@@ -1,4 +1,4 @@
-package thkoeln.dungeon.player.adapter;
+package thkoeln.dungeon.restadapter;
 
 
 import org.slf4j.Logger;
@@ -9,26 +9,33 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import thkoeln.dungeon.player.application.PlayerRegistryDto;
+import thkoeln.dungeon.game.domain.Game;
 
 @Component
 @Profile( "prod" )
-public class PlayerSynchronousRESTAdapter implements PlayerSynchronousAdapter {
+public class GameServiceSynchronousRESTAdapter implements GameServiceSynchronousAdapter {
 
     private RestTemplate restTemplate;
-    private Logger logger = LoggerFactory.getLogger( PlayerSynchronousRESTAdapter.class );
-    @Value("${GAME_SERVICE}" + "/players" )
-    private String gameServicePlayersEndpoint;
+    private Logger logger = LoggerFactory.getLogger( GameServiceSynchronousRESTAdapter.class );
+    @Value("${GAME_SERVICE}")
+    private String gameServiceUrlString;
 
     @Autowired
-    public PlayerSynchronousRESTAdapter(RestTemplateBuilder builder ) {
+    public GameServiceSynchronousRESTAdapter(RestTemplateBuilder builder ) {
         this.restTemplate = builder.build();
+    }
+
+    @Override
+    public GameDto fetchCurrentGameState() {
+        GameDto gameDto = restTemplate.getForObject( gameServiceUrlString + "/games", GameDto.class );
+        logger.info( "Got game via REST: " + String.valueOf( gameDto ) );
+        return gameDto;
     }
 
     @Override
     public PlayerRegistryDto registerPlayer( PlayerRegistryDto playerRegistryDto ) {
         PlayerRegistryDto returnedPlayerRegistryDto = null;
-                //restTemplate.put( gameServicePlayersEndpoint );
+        //restTemplate.put( gameServicePlayersEndpoint );
         logger.info( "Registered player via REST, got bearer token: " + returnedPlayerRegistryDto.getBearerToken() );
         return returnedPlayerRegistryDto;
     }

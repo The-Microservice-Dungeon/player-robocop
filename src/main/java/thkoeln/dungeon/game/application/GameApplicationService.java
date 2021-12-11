@@ -1,14 +1,16 @@
 package thkoeln.dungeon.game.application;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.DungeonPlayerException;
-import thkoeln.dungeon.game.adapter.GameSynchronousAdapter;
+import thkoeln.dungeon.restadapter.GameDto;
+import thkoeln.dungeon.restadapter.GameServiceSynchronousAdapter;
 import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.game.domain.GameRepository;
-import thkoeln.dungeon.game.domain.GameStatus;
+import thkoeln.dungeon.restadapter.GameStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,13 +18,14 @@ import java.util.UUID;
 @Service
 public class GameApplicationService {
     private GameRepository gameRepository;
-    private GameSynchronousAdapter gameExternalAdaptor;
+    private GameServiceSynchronousAdapter gameServiceSynchronousAdapter;
     private Logger logger = LoggerFactory.getLogger( GameApplicationService.class );
+    ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
-    public GameApplicationService(GameRepository gameRepository, GameSynchronousAdapter gameExternalAdaptor ) {
+    public GameApplicationService(GameRepository gameRepository, GameServiceSynchronousAdapter gameExternalAdaptor ) {
         this.gameRepository = gameRepository;
-        this.gameExternalAdaptor = gameExternalAdaptor;
+        this.gameServiceSynchronousAdapter = gameServiceSynchronousAdapter;
     }
 
 
@@ -45,7 +48,8 @@ public class GameApplicationService {
      * Makes sure that our own game state is consistent with what GameService says
      */
     public void synchronizeGameState() {
-        Game game = gameExternalAdaptor.fetchCurrentGameState();
+        GameDto gameDto = gameServiceSynchronousAdapter.fetchCurrentGameState();
+        Game game = modelMapper.map( gameDto, Game.class );
         gameRepository.save( game );
         logger.info( "Game " + game + " saved." );
     }

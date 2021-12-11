@@ -65,7 +65,6 @@ public class PlayerApplicationService {
             logger.warn( "Cannot register players - no active game!" );
             return;
         }
-
         for( int iPlayer = 0; iPlayer<numberOfPlayers; iPlayer++ ) {
             Player player = new Player();
             playerRepository.save( player );

@@ -1,6 +1,7 @@
-package thkoeln.dungeon.player.application;
+package thkoeln.dungeon.restadapter;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PlayerRegistryDto {
     private String name;
     private String email;
