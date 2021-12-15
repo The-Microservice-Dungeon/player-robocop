@@ -62,7 +62,5 @@ public class GameServiceMockEventConsumer implements ApplicationListener<Context
         scheduler.schedule(new Runnable() {
             public void run() { gameClockHandle.cancel(true); }
         }, 60 * 60, SECONDS);
-
-        logger.info( "GameServiceMockEventConsumer finished");
     }
 }

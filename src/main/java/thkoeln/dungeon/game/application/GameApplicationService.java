@@ -23,7 +23,8 @@ public class GameApplicationService {
     ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
-    public GameApplicationService(GameRepository gameRepository, GameServiceSynchronousAdapter gameExternalAdaptor ) {
+    public GameApplicationService(GameRepository gameRepository,
+                                  GameServiceSynchronousAdapter gameServiceSynchronousAdapter ) {
         this.gameRepository = gameRepository;
         this.gameServiceSynchronousAdapter = gameServiceSynchronousAdapter;
     }

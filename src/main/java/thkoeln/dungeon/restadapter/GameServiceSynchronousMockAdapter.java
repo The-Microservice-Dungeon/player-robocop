@@ -34,9 +34,15 @@ public class GameServiceSynchronousMockAdapter implements GameServiceSynchronous
         return gameDto;
     }
 
+    /**
+     * Return the same object, enriched by a random beared token
+     * @param playerRegistryDto
+     * @return
+     */
     @Override
-    public PlayerRegistryDto registerPlayer(PlayerRegistryDto playerRegistryDto) {
-        return null;
+    public PlayerRegistryDto registerPlayer( PlayerRegistryDto playerRegistryDto ) {
+        playerRegistryDto.setBearerToken( UUID.randomUUID() );
+        return playerRegistryDto;
     }
 
 

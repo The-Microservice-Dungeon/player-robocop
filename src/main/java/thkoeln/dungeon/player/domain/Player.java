@@ -43,6 +43,6 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player '" + name + "' and email '" + email + "'";
+        return "Player '" + name + "' (" + email + "), bearerToken: " + bearerToken;
     }
 }
