@@ -2,7 +2,7 @@ package thkoeln.dungeon.eventconsumer;
 
 import lombok.Getter;
 import lombok.Setter;
-import thkoeln.dungeon.restadapter.GameStatus;
+import thkoeln.dungeon.game.domain.GameStatus;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

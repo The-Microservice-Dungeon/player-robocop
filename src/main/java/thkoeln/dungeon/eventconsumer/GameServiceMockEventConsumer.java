@@ -48,13 +48,15 @@ public class GameServiceMockEventConsumer implements ApplicationListener<Context
         // before startup of this player - so in that case, there is no such event.
         if ( initialDelayUntilStart > 0 ) {
             TimeUnit.SECONDS.sleep( initialDelayUntilStart );
-            gameApplicationService.gameStarted( gameId );
+            gameApplicationService.processGameStartedEvent( gameId );
         }
 
         // ... and now the "newRound" event emulated in regular intervals
         final Runnable gameClock = new Runnable() {
+            private Integer roundNumber = 0;
             public void run() {
-                gameApplicationService.newRound( gameId );
+                gameApplicationService.newRound( gameId, roundNumber );
+                roundNumber++;
             }
         };
         final ScheduledFuture<?> gameClockHandle =

@@ -10,8 +10,10 @@ import thkoeln.dungeon.restadapter.GameDto;
 import thkoeln.dungeon.restadapter.GameServiceSynchronousAdapter;
 import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.game.domain.GameRepository;
-import thkoeln.dungeon.restadapter.GameStatus;
+import thkoeln.dungeon.game.domain.GameStatus;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,7 +33,7 @@ public class GameApplicationService {
 
 
     public Game retrieveActiveGame() {
-        List<Game> games = gameRepository.findAllByStatusBetween( GameStatus.CREATED, GameStatus.GAME_RUNNING );
+        List<Game> games = gameRepository.findAllByGameStatusBetween( GameStatus.CREATED, GameStatus.GAME_RUNNING );
         if ( games.size() > 1 ) {
             throw new DungeonPlayerException( "More than one game - consider resetting player!" );
         }
@@ -49,19 +51,34 @@ public class GameApplicationService {
      * Makes sure that our own game state is consistent with what GameService says
      */
     public void synchronizeGameState() {
-        GameDto gameDto = gameServiceSynchronousAdapter.fetchCurrentGameState();
-        Game game = modelMapper.map( gameDto, Game.class );
-        gameRepository.save( game );
-        logger.info( "Game " + game + " saved." );
+        GameDto[] gameDtos = gameServiceSynchronousAdapter.fetchCurrentGameState();
+
+        // We take a very simple approach here. We, as a Player, don't manage any game
+        // state - we just assume that GameService does a proper job. So we just store
+        // the incoming games.
+        Iterator<GameDto> iterator = Arrays.stream(gameDtos).iterator();
+        while ( iterator.hasNext() ) {
+            GameDto gameDto = iterator.next();
+            Game game = modelMapper.map(gameDto, Game.class);
+            gameRepository.save(game);
+        }
+        logger.info( "Retrieved new game state" );
     }
 
     /**
      * To be called by event consumer listening to GameService event
      * @param gameId
      */
-    public void gameStarted( UUID gameId ) {
-        logger.info( "Processing 'game started' event");
-        Iterable<Game> foundGames = gameRepository.findAllByStatusEquals( GameStatus.CREATED );
+    public void processGameStartedEvent( UUID gameId ) {
+        logger.info( "Processing external event that the game has started");
+        List<Game> foundGames = gameRepository.findAllByGameStatusEquals( GameStatus.CREATED );
+
+    }
+
+    /**
+     * Makes sure that there is only one "active" game in order to be in a consistent state
+     */
+    private void cleanupGames( Game activeGame ) {
 
     }
 
@@ -78,8 +95,8 @@ public class GameApplicationService {
      * To be called by event consumer listening to GameService event
      * @param gameId
      */
-    public void newRound( UUID gameId ) {
-        logger.info( "Processing 'new round' event");
+    public void newRound( UUID gameId, Integer roundNumber ) {
+        logger.info( "Processing 'new round' event for round no. " + roundNumber );
         // todo
     }
 }

@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import thkoeln.dungeon.game.domain.Game;
+import thkoeln.dungeon.game.domain.GameStatus;
 
 import java.util.UUID;
 
@@ -26,12 +26,14 @@ public class GameServiceSynchronousMockAdapter implements GameServiceSynchronous
      * @return just a randomly created Game object in fitting state
      */
     @Override
-    public GameDto fetchCurrentGameState() {
+    public GameDto[] fetchCurrentGameState() {
         GameDto gameDto = new GameDto();
         gameDto.setGameId( gameId );
         GameStatus initialState = initialDelayUntilStart > 0 ? GameStatus.CREATED : GameStatus.GAME_RUNNING;
-        gameDto.setStatus( initialState );
-        return gameDto;
+        gameDto.setGameStatus( initialState );
+        GameDto[] retval = new GameDto[1];
+        retval[0] = gameDto;
+        return retval;
     }
 
     /**

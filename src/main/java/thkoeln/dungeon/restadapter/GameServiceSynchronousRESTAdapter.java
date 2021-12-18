@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.game.domain.Game;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 @Component
 @Profile( "prod" )
 public class GameServiceSynchronousRESTAdapter implements GameServiceSynchronousAdapter {
@@ -26,11 +29,14 @@ public class GameServiceSynchronousRESTAdapter implements GameServiceSynchronous
     }
 
     @Override
-    public GameDto fetchCurrentGameState() {
-        GameDto gameDto = restTemplate.getForObject( gameServiceUrlString + "/games", GameDto.class );
-        logger.info( "Got game via REST: " + String.valueOf( gameDto ) );
-        return gameDto;
+    public GameDto[] fetchCurrentGameState() {
+        GameDto[] gameDtos = restTemplate.getForObject( gameServiceUrlString + "/games", GameDto[].class );
+        logger.info( "Got " + gameDtos.length + " game(s) via REST ...");
+        Iterator<GameDto> iterator = Arrays.stream(gameDtos).iterator();
+        while ( iterator.hasNext() ) { logger.info( "... " + iterator.next() ); }
+        return gameDtos;
     }
+
 
     @Override
     public PlayerRegistryDto registerPlayer( PlayerRegistryDto playerRegistryDto ) {

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import thkoeln.dungeon.game.domain.GameStatus;
 
 import java.util.UUID;
 
@@ -15,5 +16,6 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GameDto {
     private UUID gameId;
-    private GameStatus status;
+    private GameStatus gameStatus;
+    private Integer currentRoundCount;
 }
