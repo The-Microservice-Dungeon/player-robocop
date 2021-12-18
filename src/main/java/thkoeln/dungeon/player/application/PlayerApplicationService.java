@@ -11,7 +11,7 @@ import thkoeln.dungeon.game.application.GameApplicationService;
 import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
-import thkoeln.dungeon.restadapter.GameServiceSynchronousAdapter;
+import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.PlayerRegistryDto;
 
 import java.util.*;
@@ -32,7 +32,7 @@ public class PlayerApplicationService {
     private CommandExecutor commandExecutor;
     private PlayerRepository playerRepository;
     private GameApplicationService gameApplicationService;
-    private GameServiceSynchronousAdapter gameServiceSynchronousAdapter;
+    private GameServiceRESTAdapter gameServiceRESTAdapter;
 
     @Value("${dungeon.numberOfPlayers}")
     private int numberOfPlayers;
@@ -42,11 +42,11 @@ public class PlayerApplicationService {
             CommandExecutor commandExecutor,
             PlayerRepository playerRepository,
             GameApplicationService gameApplicationService,
-            GameServiceSynchronousAdapter gameServiceSynchronousAdapter ) {
+            GameServiceRESTAdapter gameServiceRESTAdapter ) {
         this.commandExecutor = commandExecutor;
         this.playerRepository = playerRepository;
         this.gameApplicationService = gameApplicationService;
-        this.gameServiceSynchronousAdapter = gameServiceSynchronousAdapter;
+        this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
 
@@ -78,7 +78,7 @@ public class PlayerApplicationService {
             playerRepository.save( player );
             logger.info( "Created player no. " + (iPlayer+1) + ": " + player );
             PlayerRegistryDto playerDto = modelMapper.map( player, PlayerRegistryDto.class );
-            PlayerRegistryDto registeredPlayerDto = gameServiceSynchronousAdapter.registerPlayer( playerDto );
+            PlayerRegistryDto registeredPlayerDto = gameServiceRESTAdapter.registerPlayer( playerDto );
             Player registeredPlayer = modelMapper.map( registeredPlayerDto, Player.class );
             playerRepository.save( registeredPlayer );
             logger.info( "Registration done for player no. " + (iPlayer+1) + ": " + registeredPlayer );

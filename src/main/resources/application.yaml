@@ -1,6 +1,6 @@
 spring:
   profiles:
-    default: "mock"  # others are: prod
+    default: "prod"  # others are: prod
     active: "prod"
 dungeon:
   numberOfPlayers: 5

@@ -1,36 +1,41 @@
 package thkoeln.dungeon.game;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.ExpectedCount;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
+import thkoeln.dungeon.DungeonPlayerConfiguration;
 import thkoeln.dungeon.game.application.GameApplicationService;
+import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.game.domain.GameRepository;
 import thkoeln.dungeon.restadapter.GameDto;
-import thkoeln.dungeon.restadapter.GameServiceSynchronousAdapter;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static thkoeln.dungeon.game.domain.GameStatus.*;
 
-//@RestClientTest(GameApplicationService.class)
-@RunWith(MockitoJUnitRunner.class)
-@SpringBootTest
-//@ContextConfiguration( classes = DungeonPlayerMainApplication.class )
-@ExtendWith(MockitoExtension.class) @MockitoSettings(strictness = Strictness.LENIENT)
+@RunWith(SpringRunner.class)
+@SpringBootTest( classes = DungeonPlayerConfiguration.class )
+//@ContextConfiguration( classes = DungeonPlayerConfiguration.class )
 public class GameInitializationTest {
     private static final UUID GAME_ID_CREATED = UUID.randomUUID();
     private GameDto gameDtoCreated = new GameDto( GAME_ID_CREATED, CREATED, 0 );
@@ -51,42 +56,49 @@ public class GameInitializationTest {
     private GameDto gameDtoOrphaned = new GameDto( GAME_ID_ORPHANED, GAME_FINISHED, GAME_ROW_COUNT_ORPHANED );
 
     @Value("${GAME_SERVICE}")
-    private String gameServiceUrlString;
-    private String gameServiceGamesEndpoint;
+    private String gameServiceURIString;
+    private URI gameServiceGamesURI;
 
-    @Mock
+    @Autowired
     private RestTemplate restTemplate;
+    private MockRestServiceServer mockServer;
+    private ObjectMapper mapper = new ObjectMapper();
+
     @Autowired
-    @Spy
     private GameRepository gameRepository;
+
     @Autowired
-    @Spy
-    private GameServiceSynchronousAdapter gameServiceSynchronousAdapter;
+    private GameApplicationService gameApplicationService;
 
-    @InjectMocks
-    private GameApplicationService gameApplicationService =
-            new GameApplicationService( gameRepository, gameServiceSynchronousAdapter );
 
-    @BeforeEach
-    public void setUp() {
+    @Before
+    public void setUp() throws Exception {
         gameRepository.deleteAll();
-        gameServiceGamesEndpoint = gameServiceUrlString + "/games";
+        gameServiceGamesURI = new URI( gameServiceURIString + "/games" );
+        mockServer = MockRestServiceServer.createServer(restTemplate);
     }
 
-    private void mockCallToGameService_initialCall() {
+    private void mockCallToGameService_initialCall() throws Exception {
         GameDto[] allRemoteGames = new GameDto[3];
         allRemoteGames[0] = gameDtoCreated;
         allRemoteGames[1] = gameDtoRunning;
         allRemoteGames[2] = gameDtoFinished;
-        when(restTemplate.getForObject( gameServiceGamesEndpoint, GameDto[].class ))
-                .thenReturn( allRemoteGames );
+
+        mockServer.expect( ExpectedCount.once(),
+                requestTo( gameServiceGamesURI ))
+                .andExpect( method( GET ))
+                .andRespond( withStatus( HttpStatus.OK )
+                                .contentType( MediaType.APPLICATION_JSON )
+                                .body( mapper.writeValueAsString(allRemoteGames) ) );
     }
 
     @Test
-    public void properlySynchronizedGameState_afterFirstCall () {
+    public void properlySynchronizedGameState_afterFirstCall() throws Exception {
         mockCallToGameService_initialCall();
         gameApplicationService.synchronizeGameState();
-        assertTrue( true );
+        mockServer.verify();
+        List<Game> games = gameRepository.findAll();
+        assertEquals( 3, games.size() );
     }
 
 }

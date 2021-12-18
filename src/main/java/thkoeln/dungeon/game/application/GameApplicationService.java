@@ -4,10 +4,10 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import thkoeln.dungeon.DungeonPlayerException;
 import thkoeln.dungeon.restadapter.GameDto;
-import thkoeln.dungeon.restadapter.GameServiceSynchronousAdapter;
+import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.game.domain.GameRepository;
 import thkoeln.dungeon.game.domain.GameStatus;
@@ -17,18 +17,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-@Service
+@Component
 public class GameApplicationService {
     private GameRepository gameRepository;
-    private GameServiceSynchronousAdapter gameServiceSynchronousAdapter;
+    private GameServiceRESTAdapter gameServiceRESTAdapter;
     private Logger logger = LoggerFactory.getLogger( GameApplicationService.class );
     ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     public GameApplicationService(GameRepository gameRepository,
-                                  GameServiceSynchronousAdapter gameServiceSynchronousAdapter ) {
+                                  GameServiceRESTAdapter gameServiceRESTAdapter ) {
         this.gameRepository = gameRepository;
-        this.gameServiceSynchronousAdapter = gameServiceSynchronousAdapter;
+        this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
 
@@ -51,7 +51,7 @@ public class GameApplicationService {
      * Makes sure that our own game state is consistent with what GameService says
      */
     public void synchronizeGameState() {
-        GameDto[] gameDtos = gameServiceSynchronousAdapter.fetchCurrentGameState();
+        GameDto[] gameDtos = gameServiceRESTAdapter.fetchCurrentGameState();
 
         // We take a very simple approach here. We, as a Player, don't manage any game
         // state - we just assume that GameService does a proper job. So we just store
