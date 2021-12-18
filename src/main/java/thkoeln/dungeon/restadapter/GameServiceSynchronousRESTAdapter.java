@@ -24,8 +24,8 @@ public class GameServiceSynchronousRESTAdapter implements GameServiceSynchronous
     private String gameServiceUrlString;
 
     @Autowired
-    public GameServiceSynchronousRESTAdapter(RestTemplateBuilder builder ) {
-        this.restTemplate = builder.build();
+    public GameServiceSynchronousRESTAdapter( RestTemplate restTemplate ) {
+        this.restTemplate = restTemplate;
     }
 
     @Override
