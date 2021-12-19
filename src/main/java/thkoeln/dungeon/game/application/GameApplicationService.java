@@ -4,20 +4,16 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import thkoeln.dungeon.DungeonPlayerException;
-import thkoeln.dungeon.restadapter.GameDto;
-import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
+import org.springframework.stereotype.Service;
 import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.game.domain.GameRepository;
 import thkoeln.dungeon.game.domain.GameStatus;
+import thkoeln.dungeon.restadapter.GameDto;
+import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-@Component
+@Service
 public class GameApplicationService {
     private GameRepository gameRepository;
     private GameServiceRESTAdapter gameServiceRESTAdapter;
@@ -32,38 +28,55 @@ public class GameApplicationService {
     }
 
 
-    public Game retrieveActiveGame() {
-        List<Game> games = gameRepository.findAllByGameStatusBetween( GameStatus.CREATED, GameStatus.GAME_RUNNING );
-        if ( games.size() > 1 ) {
-            throw new DungeonPlayerException( "More than one game - consider resetting player!" );
-        }
-        else if (games.size() == 0 ) {
-            logger.warn( "No active game!" );
-            return null;
-        }
-        else {
-            return games.get( 0 );
-        }
+    public List<Game> retrieveActiveGames() {
+        return gameRepository.findAllByGameStatusEquals( GameStatus.GAME_RUNNING );
     }
 
 
     /**
-     * Makes sure that our own game state is consistent with what GameService says
+     * Makes sure that our own game state is consistent with what GameService says.
+     * We take a very simple approach here. We, as a Player, don't manage any game
+     * state - we just assume that GameService does a proper job. So we just store
+     * the incoming games. Only in the case that a game should suddenly "disappear",
+     * we keep it and mark it as ORPHANED - there may be local references to it.
      */
     public void synchronizeGameState() {
         GameDto[] gameDtos = gameServiceRESTAdapter.fetchCurrentGameState();
 
-        // We take a very simple approach here. We, as a Player, don't manage any game
-        // state - we just assume that GameService does a proper job. So we just store
-        // the incoming games.
-        Iterator<GameDto> iterator = Arrays.stream(gameDtos).iterator();
-        while ( iterator.hasNext() ) {
-            GameDto gameDto = iterator.next();
-            Game game = modelMapper.map(gameDto, Game.class);
-            gameRepository.save(game);
+        // We need to treat the new games (those we haven't stored yet) and those we
+        // already have in a different way. Therefore let's split the list.
+        List<GameDto> unknownGameDtos = new ArrayList<>();
+        List<GameDto> knownGameDtos = new ArrayList<>();
+        for ( GameDto gameDto: Arrays.asList( gameDtos ) ) {
+            if ( gameRepository.existsById( gameDto.getGameId() ) ) knownGameDtos.add( gameDto );
+            else unknownGameDtos.add( gameDto );
         }
-        logger.info( "Retrieved new game state" );
+
+        List<Game> storedGames = gameRepository.findAll();
+        for ( Game game: storedGames ) {
+            Optional<GameDto> foundDtoOptional = knownGameDtos.stream()
+                    .filter( dto -> game.getGameId().equals( dto.getGameId() )).findAny();
+            if ( foundDtoOptional.isPresent() ) {
+                Game updatedGame = modelMapper.map( foundDtoOptional.get(), Game.class );
+                gameRepository.save( updatedGame );
+                logger.info( "Updated game " + updatedGame );
+            }
+            else {
+                game.setGameStatus( GameStatus.ORPHANED );
+                gameRepository.save( game );
+                logger.warn( "Marked game " + game + " as ORPHANED!" );
+            }
+        }
+        for ( GameDto gameDto: unknownGameDtos ) {
+            Game game = modelMapper.map( gameDto, Game.class );
+            gameRepository.save( game );
+            logger.info( "Received game " + game + " for the first time");
+        }
+        logger.info( "Retrieval of new game state finished" );
     }
+
+
+
 
     /**
      * To be called by event consumer listening to GameService event

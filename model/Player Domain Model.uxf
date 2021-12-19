@@ -5,7 +5,7 @@
     <id>UMLClass</id>
     <coordinates>
       <x>310</x>
-      <y>140</y>
+      <y>130</y>
       <w>220</w>
       <h>70</h>
     </coordinates>
@@ -17,8 +17,8 @@ commandType: CommandType</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>300</x>
-      <y>310</y>
+      <x>340</x>
+      <y>300</y>
       <w>150</w>
       <h>30</h>
     </coordinates>
@@ -28,8 +28,8 @@ commandType: CommandType</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>360</x>
-      <y>200</y>
+      <x>400</x>
+      <y>190</y>
       <w>50</w>
       <h>130</h>
     </coordinates>
@@ -41,22 +41,23 @@ m2=0..1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>650</x>
-      <y>140</y>
-      <w>160</w>
-      <h>70</h>
+      <x>620</x>
+      <y>340</y>
+      <w>200</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>Game
 --
-id: UUID
-status: GameStatus</panel_attributes>
+gameId: UUID
+gameStatus: GameStatus
+currentRoundCount: Int</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>640</x>
-      <y>330</y>
+      <x>630</x>
+      <y>80</y>
       <w>200</w>
       <h>100</h>
     </coordinates>
@@ -72,24 +73,13 @@ email: String</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>710</x>
-      <y>200</y>
-      <w>30</w>
-      <h>50</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;30.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>710</x>
-      <y>220</y>
-      <w>40</w>
-      <h>130</h>
+      <y>170</y>
+      <w>50</w>
+      <h>190</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
-m1=1
-m2=*</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+m1=*
+m2=1..*</panel_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>

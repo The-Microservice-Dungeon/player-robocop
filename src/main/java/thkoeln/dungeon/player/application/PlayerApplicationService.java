@@ -49,9 +49,9 @@ public class PlayerApplicationService {
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
-
+/*
     public List<Player> retrieveActivePlayers() {
-        Game activeGame = gameApplicationService.retrieveActiveGame();
+        Game activeGame = gameApplicationService.retrieveActiveGames();
         if ( activeGame == null ) {
             logger.warn( "Cannot retrieve players - no active game!" );
             return new ArrayList<Player>();
@@ -60,15 +60,17 @@ public class PlayerApplicationService {
         return activePlayers;
     }
 
-
+*/
     public void registerPlayers() {
         logger.info( "Registering players ..." );
+
+        /*
         List<Player> activPlayers = retrieveActivePlayers();
         if ( activPlayers.size() > 0 ) {
             logger.warn( "There are already active players - no need to redo the registration." );
             return;
         }
-        Game activeGame = gameApplicationService.retrieveActiveGame();
+        Game activeGame = gameApplicationService.retrieveActiveGames();
         if ( activeGame == null ) {
             logger.warn( "Cannot register players - no active game!" );
             return;
@@ -83,6 +85,8 @@ public class PlayerApplicationService {
             playerRepository.save( registeredPlayer );
             logger.info( "Registration done for player no. " + (iPlayer+1) + ": " + registeredPlayer );
         }
+
+         */
     }
 
 
@@ -96,7 +100,6 @@ public class PlayerApplicationService {
         logger.info( "transactionId " + transactionId );
         logger.info( "Ending round " + roundNumber );
     }
-
 
 
 

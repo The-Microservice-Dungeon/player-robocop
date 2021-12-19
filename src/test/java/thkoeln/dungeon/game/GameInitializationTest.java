@@ -21,7 +21,6 @@ import thkoeln.dungeon.game.domain.GameRepository;
 import thkoeln.dungeon.restadapter.GameDto;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,23 +36,22 @@ import static thkoeln.dungeon.game.domain.GameStatus.*;
 @SpringBootTest( classes = DungeonPlayerConfiguration.class )
 //@ContextConfiguration( classes = DungeonPlayerConfiguration.class )
 public class GameInitializationTest {
-    private static final UUID GAME_ID_CREATED = UUID.randomUUID();
-    private GameDto gameDtoCreated = new GameDto( GAME_ID_CREATED, CREATED, 0 );
+    private static final UUID GAME_ID_0 = UUID.randomUUID();
+    private GameDto gameDto0 = new GameDto(GAME_ID_0, CREATED, 0 );
 
-    private static final UUID GAME_ID_IN_PREPARATION = UUID.randomUUID();
-    private GameDto gameDtoInPreparation = new GameDto( GAME_ID_IN_PREPARATION, IN_PREPARATION, 0 );
+    private static final UUID GAME_ID_1 = UUID.randomUUID();
+    private static final Integer GAME_ROW_COUNT_1 = 42;
+    private GameDto gameDto1 = new GameDto(GAME_ID_1, GAME_RUNNING, GAME_ROW_COUNT_1);
 
-    private static final UUID GAME_ID_RUNNING = UUID.randomUUID();
-    private static final Integer GAME_ROW_COUNT_RUNNING = 42;
-    private GameDto gameDtoRunning = new GameDto( GAME_ID_RUNNING, GAME_RUNNING, GAME_ROW_COUNT_RUNNING );
+    private static final UUID GAME_ID_2 = UUID.randomUUID();
+    private static final Integer GAME_ROW_COUNT_2 = 200;
+    private GameDto gameDto2 = new GameDto(GAME_ID_2, GAME_FINISHED, GAME_ROW_COUNT_2);
 
-    private static final UUID GAME_ID_FINISHED = UUID.randomUUID();
-    private static final Integer GAME_ROW_COUNT_FINISHED = 200;
-    private GameDto gameDtoFinished = new GameDto( GAME_ID_FINISHED, GAME_FINISHED, GAME_ROW_COUNT_FINISHED );
+    private static final UUID GAME_ID_3 = UUID.randomUUID();
+    private static final Integer GAME_ROW_COUNT_3 = 0;
+    private GameDto gameDto3 = new GameDto(GAME_ID_3, CREATED, GAME_ROW_COUNT_3);
 
-    private static final UUID GAME_ID_ORPHANED = UUID.randomUUID();
-    private static final Integer GAME_ROW_COUNT_ORPHANED = 250;
-    private GameDto gameDtoOrphaned = new GameDto( GAME_ID_ORPHANED, GAME_FINISHED, GAME_ROW_COUNT_ORPHANED );
+    private GameDto[] allRemoteGames;
 
     @Value("${GAME_SERVICE}")
     private String gameServiceURIString;
@@ -76,29 +74,80 @@ public class GameInitializationTest {
         gameRepository.deleteAll();
         gameServiceGamesURI = new URI( gameServiceURIString + "/games" );
         mockServer = MockRestServiceServer.createServer(restTemplate);
+
+        allRemoteGames = new GameDto[3];
+        allRemoteGames[0] = gameDto0;
+        allRemoteGames[1] = gameDto1;
+        allRemoteGames[2] = gameDto2;
     }
 
-    private void mockCallToGameService_initialCall() throws Exception {
-        GameDto[] allRemoteGames = new GameDto[3];
-        allRemoteGames[0] = gameDtoCreated;
-        allRemoteGames[1] = gameDtoRunning;
-        allRemoteGames[2] = gameDtoFinished;
-
-        mockServer.expect( ExpectedCount.once(),
-                requestTo( gameServiceGamesURI ))
-                .andExpect( method( GET ))
-                .andRespond( withStatus( HttpStatus.OK )
-                                .contentType( MediaType.APPLICATION_JSON )
-                                .body( mapper.writeValueAsString(allRemoteGames) ) );
-    }
 
     @Test
     public void properlySynchronizedGameState_afterFirstCall() throws Exception {
+        // given
         mockCallToGameService_initialCall();
+
+        // when
         gameApplicationService.synchronizeGameState();
+
+        // then
         mockServer.verify();
         List<Game> games = gameRepository.findAll();
         assertEquals( 3, games.size() );
+        games = gameApplicationService.retrieveActiveGames();
+        assertEquals( 1, games.size() );
+        assertEquals( gameDto1.getGameId(), games.get( 0 ).getGameId() );
     }
+
+
+    @Test
+    public void properlySynchronizedGameState_afterSecondCall() throws Exception {
+        // given
+        mockCallToGameService_initialCall();
+        gameApplicationService.synchronizeGameState();
+        mockCallToGameService_secondCall();
+
+        // when
+        gameApplicationService.synchronizeGameState();
+
+        // then
+        mockServer.verify();
+        List<Game> games = gameRepository.findAll();
+        assertEquals( 4, games.size() );
+        games = gameApplicationService.retrieveActiveGames();
+        assertEquals( 1, games.size() );
+        assertEquals(gameDto0.getGameId(), games.get( 0 ).getGameId() );
+        Game game = gameRepository.findById(GAME_ID_1).get();
+        assertEquals( GAME_FINISHED, game.getGameStatus() );
+        game = gameRepository.findById(GAME_ID_2).get();
+        assertEquals( ORPHANED, game.getGameStatus() );
+        game = gameRepository.findById(GAME_ID_3).get();
+        assertEquals( CREATED, game.getGameStatus() );
+    }
+
+
+    private void mockCallToGameService_initialCall() throws Exception {
+        mockServer.expect( ExpectedCount.once(),
+                        requestTo( gameServiceGamesURI ))
+                .andExpect( method( GET ))
+                .andRespond( withStatus( HttpStatus.OK )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .body( mapper.writeValueAsString(allRemoteGames) ) );
+    }
+
+    private void mockCallToGameService_secondCall() throws Exception {
+        allRemoteGames[0].setGameStatus( GAME_RUNNING );
+        allRemoteGames[1].setGameStatus( GAME_FINISHED );
+        allRemoteGames[2] = gameDto3;
+
+        mockServer = MockRestServiceServer.createServer(restTemplate);
+        mockServer.expect( ExpectedCount.once(),
+                        requestTo( gameServiceGamesURI ))
+                .andExpect( method( GET ))
+                .andRespond( withStatus( HttpStatus.OK )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .body( mapper.writeValueAsString(allRemoteGames) ) );
+    }
+
 
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import thkoeln.dungeon.DungeonPlayerException;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ public class GameServiceRESTAdapter {
 
     public GameDto[] fetchCurrentGameState() {
         GameDto[] gameDtos = restTemplate.getForObject( gameServiceUrlString + "/games", GameDto[].class );
+        if ( gameDtos == null ) throw new RestAdapterException( "Received a null GameDto array - wtf ...?" );
         logger.info( "Got " + gameDtos.length + " game(s) via REST ...");
         Iterator<GameDto> iterator = Arrays.stream(gameDtos).iterator();
         while ( iterator.hasNext() ) { logger.info( "... " + iterator.next() ); }
