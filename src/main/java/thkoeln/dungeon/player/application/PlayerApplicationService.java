@@ -12,7 +12,9 @@ import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
+import thkoeln.dungeon.restadapter.PlayerAlreadyRegisteredException;
 import thkoeln.dungeon.restadapter.PlayerRegistryDto;
+import thkoeln.dungeon.restadapter.UnexpectedRestAdapterException;
 
 import java.util.*;
 
@@ -49,44 +51,38 @@ public class PlayerApplicationService {
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
-/*
-    public List<Player> retrieveActivePlayers() {
-        Game activeGame = gameApplicationService.retrieveActiveGames();
-        if ( activeGame == null ) {
-            logger.warn( "Cannot retrieve players - no active game!" );
-            return new ArrayList<Player>();
+
+    public void createAndRegisterPlayers() {
+        List<Player> players = playerRepository.findAll();
+        if (players.size() == 0) {
+            for (int iPlayer = 0; iPlayer < numberOfPlayers; iPlayer++) {
+                Player player = new Player();
+                playerRepository.save(player);
+                logger.info("Created new player: " + player);
+                players.add(player);
+            }
         }
-        List<Player> activePlayers = playerRepository.findAllByGameIs( activeGame );
-        return activePlayers;
+        // If a player has no bearer token, then a registration call to the GameService is required.
+        for (Player player : players) {
+            if (player.getBearerToken() == null) registerPlayer( player );
+        }
     }
 
-*/
-    public void registerPlayers() {
-        logger.info( "Registering players ..." );
 
-        /*
-        List<Player> activPlayers = retrieveActivePlayers();
-        if ( activPlayers.size() > 0 ) {
-            logger.warn( "There are already active players - no need to redo the registration." );
-            return;
+    public void registerPlayer( Player player ) {
+        if (player.getBearerToken() == null) {
+            try {
+                PlayerRegistryDto playerDto = modelMapper.map(player, PlayerRegistryDto.class);
+                PlayerRegistryDto registeredPlayerDto = gameServiceRESTAdapter.registerPlayer(playerDto);
+                Player registeredPlayer = modelMapper.map(registeredPlayerDto, Player.class);
+                playerRepository.save(registeredPlayer);
+                logger.info( "Player " + player + " successfully registered." );
+            }
+            catch ( PlayerAlreadyRegisteredException e ) {
+                // TODO - unclear what to do in this cases
+                logger.error( "Name collision while registering player!" );
+            }
         }
-        Game activeGame = gameApplicationService.retrieveActiveGames();
-        if ( activeGame == null ) {
-            logger.warn( "Cannot register players - no active game!" );
-            return;
-        }
-        for( int iPlayer = 0; iPlayer<numberOfPlayers; iPlayer++ ) {
-            Player player = new Player();
-            playerRepository.save( player );
-            logger.info( "Created player no. " + (iPlayer+1) + ": " + player );
-            PlayerRegistryDto playerDto = modelMapper.map( player, PlayerRegistryDto.class );
-            PlayerRegistryDto registeredPlayerDto = gameServiceRESTAdapter.registerPlayer( playerDto );
-            Player registeredPlayer = modelMapper.map( registeredPlayerDto, Player.class );
-            playerRepository.save( registeredPlayer );
-            logger.info( "Registration done for player no. " + (iPlayer+1) + ": " + registeredPlayer );
-        }
-
-         */
     }
 
 

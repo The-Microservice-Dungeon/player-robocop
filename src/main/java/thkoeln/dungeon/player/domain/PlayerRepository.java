@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface PlayerRepository extends CrudRepository<Player, UUID> {
     List<Player> findAllByGameIs( Game game );
+    List<Player> findAll();
 }

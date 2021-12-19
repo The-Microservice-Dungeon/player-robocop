@@ -73,7 +73,6 @@ public class GameInitializationTest {
     public void setUp() throws Exception {
         gameRepository.deleteAll();
         gameServiceGamesURI = new URI( gameServiceURIString + "/games" );
-        mockServer = MockRestServiceServer.createServer(restTemplate);
 
         allRemoteGames = new GameDto[3];
         allRemoteGames[0] = gameDto0;
@@ -83,8 +82,16 @@ public class GameInitializationTest {
 
 
     @Test
+    public void noExceptionWhenConnectionMissing() {
+        gameApplicationService.synchronizeGameState();
+        assert( true );
+    }
+
+
+    @Test
     public void properlySynchronizedGameState_afterFirstCall() throws Exception {
         // given
+        mockServer = MockRestServiceServer.createServer(restTemplate);
         mockCallToGameService_initialCall();
 
         // when
@@ -103,6 +110,7 @@ public class GameInitializationTest {
     @Test
     public void properlySynchronizedGameState_afterSecondCall() throws Exception {
         // given
+        mockServer = MockRestServiceServer.createServer(restTemplate);
         mockCallToGameService_initialCall();
         gameApplicationService.synchronizeGameState();
         mockCallToGameService_secondCall();
@@ -127,7 +135,7 @@ public class GameInitializationTest {
 
 
     private void mockCallToGameService_initialCall() throws Exception {
-        mockServer.expect( ExpectedCount.once(),
+        mockServer.expect( ExpectedCount.manyTimes(),
                         requestTo( gameServiceGamesURI ))
                 .andExpect( method( GET ))
                 .andRespond( withStatus( HttpStatus.OK )
@@ -141,7 +149,7 @@ public class GameInitializationTest {
         allRemoteGames[2] = gameDto3;
 
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        mockServer.expect( ExpectedCount.once(),
+        mockServer.expect( ExpectedCount.manyTimes(),
                         requestTo( gameServiceGamesURI ))
                 .andExpect( method( GET ))
                 .andRespond( withStatus( HttpStatus.OK )
