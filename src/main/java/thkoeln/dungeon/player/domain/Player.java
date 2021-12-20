@@ -7,6 +7,7 @@ import thkoeln.dungeon.game.domain.Game;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.util.UUID;
 
@@ -19,9 +20,6 @@ public class Player {
     private String name;
     private String email;
     private UUID bearerToken;
-
-    @ManyToOne
-    private Game game;
 
     public Player() {
         assignRandomName();

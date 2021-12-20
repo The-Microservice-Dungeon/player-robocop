@@ -18,4 +18,12 @@ public class PlayerRegistryDto {
     private String name;
     private String email;
     private UUID bearerToken;
+
+    public PlayerRegistryDto clone() {
+        PlayerRegistryDto myClone = new PlayerRegistryDto();
+        myClone.setBearerToken( this.bearerToken );
+        myClone.setName( this.name );
+        myClone.setEmail( this.email );
+        return myClone;
+    }
 }

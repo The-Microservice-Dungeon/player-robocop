@@ -52,7 +52,7 @@ public class PlayerApplicationService {
     }
 
 
-    public void createAndRegisterPlayers() {
+    public void createPlayers() {
         List<Player> players = playerRepository.findAll();
         if (players.size() == 0) {
             for (int iPlayer = 0; iPlayer < numberOfPlayers; iPlayer++) {
@@ -62,28 +62,32 @@ public class PlayerApplicationService {
                 players.add(player);
             }
         }
-        // If a player has no bearer token, then a registration call to the GameService is required.
-        for (Player player : players) {
-            if (player.getBearerToken() == null) registerPlayer( player );
-        }
     }
 
-
-    public void registerPlayer( Player player ) {
-        if (player.getBearerToken() == null) {
+    public void registerPlayers() {
+        List<Player> players = playerRepository.findAll();
+        for (Player player : players) {
+            if ( player.getBearerToken() != null ) break;
             try {
                 PlayerRegistryDto playerDto = modelMapper.map(player, PlayerRegistryDto.class);
                 PlayerRegistryDto registeredPlayerDto = gameServiceRESTAdapter.registerPlayer(playerDto);
-                Player registeredPlayer = modelMapper.map(registeredPlayerDto, Player.class);
-                playerRepository.save(registeredPlayer);
-                logger.info( "Player " + player + " successfully registered." );
+                if ( registeredPlayerDto != null ) {
+                    if ( registeredPlayerDto.getBearerToken() == null ) logger.error("Received no bearer token for " + player + "!");
+                    else player.setBearerToken( registeredPlayerDto.getBearerToken() );
+                    playerRepository.save( player );
+                    logger.info("Player " + player + " successfully registered.");
+                }
+                else {
+                    logger.warn("Player " + player + " could not be registered due to connection problems - try again later.");
+                }
             }
             catch ( PlayerAlreadyRegisteredException e ) {
                 // TODO - unclear what to do in this cases
-                logger.error( "Name collision while registering player!" );
+                logger.error( "Name collision while registering player " + player );
             }
         }
     }
+
 
 
     public void playRound( Integer roundNumber ) {

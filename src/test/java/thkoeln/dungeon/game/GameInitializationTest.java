@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -34,7 +33,6 @@ import static thkoeln.dungeon.game.domain.GameStatus.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest( classes = DungeonPlayerConfiguration.class )
-//@ContextConfiguration( classes = DungeonPlayerConfiguration.class )
 public class GameInitializationTest {
     private static final UUID GAME_ID_0 = UUID.randomUUID();
     private GameDto gameDto0 = new GameDto(GAME_ID_0, CREATED, 0 );
@@ -55,7 +53,7 @@ public class GameInitializationTest {
 
     @Value("${GAME_SERVICE}")
     private String gameServiceURIString;
-    private URI gameServiceGamesURI;
+    private URI gamesEndpointURI;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -72,7 +70,7 @@ public class GameInitializationTest {
     @Before
     public void setUp() throws Exception {
         gameRepository.deleteAll();
-        gameServiceGamesURI = new URI( gameServiceURIString + "/games" );
+        gamesEndpointURI = new URI( gameServiceURIString + "/games" );
 
         allRemoteGames = new GameDto[3];
         allRemoteGames[0] = gameDto0;
@@ -92,7 +90,7 @@ public class GameInitializationTest {
     public void properlySynchronizedGameState_afterFirstCall() throws Exception {
         // given
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        mockCallToGameService_initialCall();
+        mockCallToGamesEndpoint_1();
 
         // when
         gameApplicationService.synchronizeGameState();
@@ -111,9 +109,9 @@ public class GameInitializationTest {
     public void properlySynchronizedGameState_afterSecondCall() throws Exception {
         // given
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        mockCallToGameService_initialCall();
+        mockCallToGamesEndpoint_1();
         gameApplicationService.synchronizeGameState();
-        mockCallToGameService_secondCall();
+        mockCallToGamesEndpoint_2();
 
         // when
         gameApplicationService.synchronizeGameState();
@@ -134,23 +132,23 @@ public class GameInitializationTest {
     }
 
 
-    private void mockCallToGameService_initialCall() throws Exception {
+    private void mockCallToGamesEndpoint_1() throws Exception {
         mockServer.expect( ExpectedCount.manyTimes(),
-                        requestTo( gameServiceGamesURI ))
+                        requestTo(gamesEndpointURI))
                 .andExpect( method( GET ))
                 .andRespond( withStatus( HttpStatus.OK )
                         .contentType( MediaType.APPLICATION_JSON )
                         .body( mapper.writeValueAsString(allRemoteGames) ) );
     }
 
-    private void mockCallToGameService_secondCall() throws Exception {
+    private void mockCallToGamesEndpoint_2() throws Exception {
         allRemoteGames[0].setGameStatus( GAME_RUNNING );
         allRemoteGames[1].setGameStatus( GAME_FINISHED );
         allRemoteGames[2] = gameDto3;
 
         mockServer = MockRestServiceServer.createServer(restTemplate);
         mockServer.expect( ExpectedCount.manyTimes(),
-                        requestTo( gameServiceGamesURI ))
+                        requestTo(gamesEndpointURI))
                 .andExpect( method( GET ))
                 .andRespond( withStatus( HttpStatus.OK )
                         .contentType( MediaType.APPLICATION_JSON )
