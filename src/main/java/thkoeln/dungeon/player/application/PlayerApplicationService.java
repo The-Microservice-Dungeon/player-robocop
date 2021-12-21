@@ -7,16 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.CommandExecutor;
-import thkoeln.dungeon.game.application.GameApplicationService;
-import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.PlayerAlreadyRegisteredException;
 import thkoeln.dungeon.restadapter.PlayerRegistryDto;
-import thkoeln.dungeon.restadapter.UnexpectedRestAdapterException;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This game class encapsulates the game tactics for a simple autonomous controlling of a robot
@@ -33,7 +31,6 @@ public class PlayerApplicationService {
 
     private CommandExecutor commandExecutor;
     private PlayerRepository playerRepository;
-    private GameApplicationService gameApplicationService;
     private GameServiceRESTAdapter gameServiceRESTAdapter;
 
     @Value("${dungeon.numberOfPlayers}")
@@ -43,11 +40,9 @@ public class PlayerApplicationService {
     public PlayerApplicationService(
             CommandExecutor commandExecutor,
             PlayerRepository playerRepository,
-            GameApplicationService gameApplicationService,
             GameServiceRESTAdapter gameServiceRESTAdapter ) {
         this.commandExecutor = commandExecutor;
         this.playerRepository = playerRepository;
-        this.gameApplicationService = gameApplicationService;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 

@@ -3,12 +3,9 @@ package thkoeln.dungeon.player.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import thkoeln.dungeon.game.domain.Game;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 @Entity

@@ -1,4 +1,4 @@
-package thkoeln.dungeon.robots;
+package thkoeln.dungeon.robot.domain;
 
 import lombok.Getter;
 import lombok.Setter;

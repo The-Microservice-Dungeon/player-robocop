@@ -1,4 +1,4 @@
-package thkoeln.dungeon.robots;
+package thkoeln.dungeon.robot.domain;
 
 import org.springframework.data.repository.CrudRepository;
 

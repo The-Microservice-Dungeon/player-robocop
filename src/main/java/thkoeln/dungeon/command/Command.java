@@ -3,7 +3,7 @@ package thkoeln.dungeon.command;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import thkoeln.dungeon.robots.Robot;
+import thkoeln.dungeon.robot.domain.Robot;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
