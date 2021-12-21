@@ -1,4 +1,4 @@
-package thkoeln.dungeon.game;
+package thkoeln.dungeon.game.application;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
