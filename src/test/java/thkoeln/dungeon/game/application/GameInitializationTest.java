@@ -15,7 +15,6 @@ import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.DungeonPlayerConfiguration;
-import thkoeln.dungeon.game.application.GameApplicationService;
 import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.game.domain.GameRepository;
 import thkoeln.dungeon.restadapter.GameDto;
@@ -123,11 +122,11 @@ public class GameInitializationTest {
         games = gameApplicationService.retrieveActiveGames();
         assertEquals( 1, games.size() );
         assertEquals(gameDto0.getGameId(), games.get( 0 ).getGameId() );
-        Game game = gameRepository.findById(GAME_ID_1).get();
+        Game game = gameRepository.findByGameId(GAME_ID_1).get( 0 );
         assertEquals( GAME_FINISHED, game.getGameStatus() );
-        game = gameRepository.findById(GAME_ID_2).get();
+        game = gameRepository.findByGameId(GAME_ID_2).get( 0 );
         assertEquals( ORPHANED, game.getGameStatus() );
-        game = gameRepository.findById(GAME_ID_3).get();
+        game = gameRepository.findByGameId(GAME_ID_3).get( 0 );
         assertEquals( CREATED, game.getGameStatus() );
     }
 

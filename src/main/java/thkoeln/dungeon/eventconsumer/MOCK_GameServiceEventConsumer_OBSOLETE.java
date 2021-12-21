@@ -21,11 +21,11 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Component
 @Profile( "mock" )
-public class GameServiceMockEventConsumer implements ApplicationListener<ContextRefreshedEvent> {
+public class MOCK_GameServiceEventConsumer_OBSOLETE implements ApplicationListener<ContextRefreshedEvent> {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private GameApplicationService gameApplicationService;
-    private Logger logger = LoggerFactory.getLogger( GameServiceMockEventConsumer.class );
+    private Logger logger = LoggerFactory.getLogger( MOCK_GameServiceEventConsumer_OBSOLETE.class );
 
     @Value( "${dungeon.mock.game.initialDelayUntilStart}" )
     private int initialDelayUntilStart;
@@ -35,7 +35,7 @@ public class GameServiceMockEventConsumer implements ApplicationListener<Context
     private UUID gameId;
 
     @Autowired
-    public GameServiceMockEventConsumer( GameApplicationService gameApplicationService ) {
+    public MOCK_GameServiceEventConsumer_OBSOLETE(GameApplicationService gameApplicationService ) {
         this.gameApplicationService = gameApplicationService;
     }
 
@@ -48,7 +48,7 @@ public class GameServiceMockEventConsumer implements ApplicationListener<Context
         // before startup of this player - so in that case, there is no such event.
         if ( initialDelayUntilStart > 0 ) {
             TimeUnit.SECONDS.sleep( initialDelayUntilStart );
-            gameApplicationService.processGameStartedEvent( gameId );
+            gameApplicationService.gameExternallyStarted( gameId );
         }
 
         // ... and now the "newRound" event emulated in regular intervals

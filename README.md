@@ -1,8 +1,8 @@
 # Generic Player
 
 This repo contains a generic Dungeon player. It can be used  
-1. for **integration testing** the interaction between Player, Game, Robot, Map, Trading, and GameLog service, or 
-2. as a **starting point** to build an own player.
+1. ... for **integration testing** the interaction between Player, Game, Robot, Map, Trading, and GameLog service, or 
+2. ... as a **starting point** to build an own player.
 
 In order to fulfill goal (1), this service can instantiate **more than one player**. If some Dungeon team uses this
 to build their own player, of course they should instantiate **only one player**. 
@@ -17,6 +17,7 @@ The service maintains two Spring profiles, in order to serve the above goals:
    If used locally, all dungeon services need to be locally running using the Docker Compose script (fixme - link), 
    plus a local Kafka.
 
+(FIXME - mock & prod are outdated)
 
 # Architecture
 
@@ -33,9 +34,6 @@ Connection to the Apache Kafka is abstracted through the `eventconnector` packag
 through the `restadapter` package. (For internal package dependency see above - not depicted here for more clarity.)
 
 ![Architecture Overview](model/Adapter-Dependencies.png)
-
-## Domain Model
-
 
 
 

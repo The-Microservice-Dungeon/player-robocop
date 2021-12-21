@@ -18,6 +18,7 @@ public class Player {
     private String email;
     private UUID bearerToken;
 
+
     public Player() {
         assignRandomName();
     }
@@ -31,6 +32,9 @@ public class Player {
         setEmail( randomNickname + "@microservicedungeon.com" );
     }
 
+    public boolean hasBeenRegistered() {
+        return ( bearerToken != null );
+    }
 
     public void playRound() {
         // todo

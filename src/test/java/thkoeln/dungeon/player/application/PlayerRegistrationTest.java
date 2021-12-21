@@ -10,21 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.match.ContentRequestMatchers;
 import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.DungeonPlayerConfiguration;
 import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.game.domain.GameRepository;
-import thkoeln.dungeon.game.domain.GameStatus;
-import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
-import thkoeln.dungeon.restadapter.GameDto;
 import thkoeln.dungeon.restadapter.PlayerRegistryDto;
 
 import java.net.URI;
@@ -32,10 +27,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static thkoeln.dungeon.game.domain.GameStatus.*;
 

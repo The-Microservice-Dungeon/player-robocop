@@ -14,7 +14,7 @@ public class GameEvent {
     @Id
     private UUID id = UUID.randomUUID();
     @Setter
-    private UUID gameId;
+    private UUID eventId;
     @Setter
     private GameStatus gameStatus;
 }

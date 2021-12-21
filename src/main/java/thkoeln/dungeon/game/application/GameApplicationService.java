@@ -47,7 +47,7 @@ public class GameApplicationService {
         // already have in a different way. Therefore let's split the list.
         List<GameDto> unknownGameDtos = new ArrayList<>();
         List<GameDto> knownGameDtos = new ArrayList<>();
-        for ( GameDto gameDto: Arrays.asList( gameDtos ) ) {
+        for ( GameDto gameDto: gameDtos ) {
             if ( gameRepository.existsById( gameDto.getGameId() ) ) knownGameDtos.add( gameDto );
             else unknownGameDtos.add( gameDto );
         }
@@ -77,15 +77,28 @@ public class GameApplicationService {
 
 
 
+    /**
+     * To be called by event consumer listening to GameService event
+     * @param eventId ID of the new game
+     */
+    public void gameExternallyCreated ( UUID eventId ) {
+        logger.info( "Processing external event that the game has been created");
+        List<Game> foundGames = gameRepository.findAllByGameStatusEquals( GameStatus.CREATED );
+
+        // todo make sure that all players register!
+
+
+    }
+
+
 
     /**
      * To be called by event consumer listening to GameService event
-     * @param gameId
+     * @param eventId
      */
-    public void processGameStartedEvent( UUID gameId ) {
-        logger.info( "Processing external event that the game has started");
-        List<Game> foundGames = gameRepository.findAllByGameStatusEquals( GameStatus.CREATED );
-
+    public void gameExternallyStarted ( UUID eventId ) {
+        logger.info( "Processing external event that the game with id " + eventId + " has started");
+        List<Game> foundGames = gameRepository.findAllByGameStatusEquals( GameStatus.GAME_RUNNING );
     }
 
     /**

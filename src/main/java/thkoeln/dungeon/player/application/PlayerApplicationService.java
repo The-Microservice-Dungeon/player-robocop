@@ -59,6 +59,7 @@ public class PlayerApplicationService {
         }
     }
 
+
     public void registerPlayers() {
         List<Player> players = playerRepository.findAll();
         for (Player player : players) {

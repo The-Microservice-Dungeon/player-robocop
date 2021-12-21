@@ -19,6 +19,11 @@ import java.util.UUID;
 @ToString
 public class Game {
     @Id
+    private UUID id = UUID.randomUUID();
+
+    // this is the EXTERNAL id that we receive from GameService. We could use this also as our own id, but then
+    // we'll run into problems in case GameService messes up their ids (e.g. start the same game twice, etc.) So,
+    // we better keep these two apart.
     private UUID gameId;
     private GameStatus gameStatus;
     private Integer currentRoundCount;
@@ -28,11 +33,11 @@ public class Game {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
-        return gameId.equals(game.gameId);
+        return id.equals(game.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameId);
+        return Objects.hash(id);
     }
 }
