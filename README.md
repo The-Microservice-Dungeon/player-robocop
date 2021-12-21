@@ -14,8 +14,8 @@ The service maintains two Spring profiles, in order to serve the above goals:
    calls are fully mocked with random data.
 2. **prod** - assumes a running Kafka and an available endpoint for the Game service (either as local Docker 
    containers, or in production environment; the URLs and ports are controlled via environment variables).
-   If used locally, all dungeon services need to be locally running using the Docker Compose script (fixme - link), 
-   plus a local Kafka.
+   If used locally, all dungeon services need to be locally running using the [Python script](https://github.com/The-Microservice-Dungeon/local-dev-environment), 
+   plus a local Kafka (either [manually](https://kafka.apache.org/quickstart), or with this [Compose script](https://github.com/The-Microservice-Dungeon/devops/tree/kafka)).
 
 
 # Architecture
