@@ -2,6 +2,7 @@ package thkoeln.dungeon.player.domain;
 
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import thkoeln.dungeon.game.domain.Game;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Setter
 @Getter
 @ToString
+@NoArgsConstructor
 public class GameParticipation {
     @Id
     private final UUID id = UUID.randomUUID();
@@ -24,5 +26,10 @@ public class GameParticipation {
     private Game game;
     @ManyToOne
     private Player player;
+
+    public GameParticipation( Player player, Game game ) {
+        this.game = game;
+        this.player = player;
+    }
 
 }

@@ -61,7 +61,7 @@ currentRoundCount: Int</panel_attributes>
       <x>333</x>
       <y>99</y>
       <w>180</w>
-      <h>90</h>
+      <h>108</h>
     </coordinates>
     <panel_attributes>Player
 bg=#ff0000
@@ -113,7 +113,7 @@ m2=*</panel_attributes>
 bg=#ff0000
 --
 id: UUID
-bankAccount: Integer</panel_attributes>
+money: Integer</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

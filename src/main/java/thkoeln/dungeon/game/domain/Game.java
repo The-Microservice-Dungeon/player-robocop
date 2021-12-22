@@ -1,13 +1,14 @@
 package thkoeln.dungeon.game.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import thkoeln.dungeon.game.application.GameApplicationService;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -27,6 +28,27 @@ public class Game {
     private UUID gameId;
     private GameStatus gameStatus;
     private Integer currentRoundCount;
+
+    @Transient
+    private Logger logger = LoggerFactory.getLogger( Game.class );
+
+    public void resetToNewlyCreated() {
+        setGameStatus( GameStatus.CREATED );
+        setCurrentRoundCount( 0 );
+        logger.warn( "Reset game " + this + " to CREATED!" );
+    }
+
+    public void makeOrphan() {
+        setGameStatus( GameStatus.ORPHANED );
+        logger.warn( "Marked game " + this + " as ORPHANED!" );
+    }
+
+    public static Game newlyCreatedGame( UUID gameId ) {
+        Game game = new Game();
+        game.setGameId( gameId );
+        game.resetToNewlyCreated();
+        return game;
+    }
 
     @Override
     public boolean equals(Object o) {

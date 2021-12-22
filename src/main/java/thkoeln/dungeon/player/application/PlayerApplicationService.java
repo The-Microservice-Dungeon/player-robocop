@@ -7,11 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.CommandExecutor;
+import thkoeln.dungeon.game.domain.Game;
+import thkoeln.dungeon.player.domain.GameParticipation;
+import thkoeln.dungeon.player.domain.GameParticipationRepository;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
-import thkoeln.dungeon.restadapter.PlayerAlreadyRegisteredException;
+import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
+import thkoeln.dungeon.restadapter.exceptions.RESTRequestDeniedException;
 import thkoeln.dungeon.restadapter.PlayerRegistryDto;
+import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +36,7 @@ public class PlayerApplicationService {
 
     private CommandExecutor commandExecutor;
     private PlayerRepository playerRepository;
+    private GameParticipationRepository gameParticipationRepository;
     private GameServiceRESTAdapter gameServiceRESTAdapter;
 
     @Value("${dungeon.numberOfPlayers}")
@@ -40,9 +46,11 @@ public class PlayerApplicationService {
     public PlayerApplicationService(
             CommandExecutor commandExecutor,
             PlayerRepository playerRepository,
+            GameParticipationRepository gameParticipationRepository,
             GameServiceRESTAdapter gameServiceRESTAdapter ) {
         this.commandExecutor = commandExecutor;
         this.playerRepository = playerRepository;
+        this.gameParticipationRepository = gameParticipationRepository;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
@@ -60,29 +68,78 @@ public class PlayerApplicationService {
     }
 
 
-    public void registerPlayers() {
+    /**
+     * Obtain the bearer token for all players defined in this service
+     */
+    public void obtainBearerTokensForPlayers() {
         List<Player> players = playerRepository.findAll();
-        for (Player player : players) {
-            if ( player.getBearerToken() != null ) break;
-            try {
-                PlayerRegistryDto playerDto = modelMapper.map(player, PlayerRegistryDto.class);
-                PlayerRegistryDto registeredPlayerDto = gameServiceRESTAdapter.registerPlayer(playerDto);
-                if ( registeredPlayerDto != null ) {
-                    if ( registeredPlayerDto.getBearerToken() == null ) logger.error("Received no bearer token for " + player + "!");
-                    else player.setBearerToken( registeredPlayerDto.getBearerToken() );
-                    playerRepository.save( player );
-                    logger.info("Player " + player + " successfully registered.");
-                }
-                else {
-                    logger.warn("Player " + player + " could not be registered due to connection problems - try again later.");
-                }
+        for (Player player : players) obtainBearerTokenForOnePlayer( player );
+    }
+
+
+    /**
+     * Obtain the bearer token for one specific player
+     * @param player
+     * @return true if successful
+     */
+    private void obtainBearerTokenForOnePlayer( Player player ) {
+        if ( player.getBearerToken() != null ) return;
+        try {
+            PlayerRegistryDto playerDto = modelMapper.map(player, PlayerRegistryDto.class);
+            PlayerRegistryDto registeredPlayerDto = gameServiceRESTAdapter.getBearerTokenForPlayer(playerDto);
+            if ( registeredPlayerDto != null ) {
+                if ( registeredPlayerDto.getBearerToken() == null ) logger.error( "Received no bearer token for " + player + "!");
+                else player.setBearerToken( registeredPlayerDto.getBearerToken() );
+                playerRepository.save( player );
+                logger.info("Bearer token received for " + player );
             }
-            catch ( PlayerAlreadyRegisteredException e ) {
-                // TODO - unclear what to do in this cases
-                logger.error( "Name collision while registering player " + player );
+            else {
+                logger.error( "PlayerRegistryDto returned by REST service is null for player " + player );
             }
         }
+        catch ( RESTRequestDeniedException e ) {
+            // TODO - unclear what to do in this cases
+            logger.error( "Name collision while getting bearer token for player " + player );
+        }
+        catch ( RESTConnectionFailureException | UnexpectedRESTException e ) {
+            logger.error( "No connection or no valid response from GameService - no bearer token for player " + player );
+        }
     }
+
+
+    /**
+     * Once we received the event that a game has been created, this method can be called to register the players
+     * for the game.
+     * @param game
+     */
+    public void registerPlayersForGame( Game game ) {
+        List<Player> players = playerRepository.findAll();
+        for (Player player : players) {
+            try {
+                if ( player.getBearerToken() == null ) obtainBearerTokenForOnePlayer( player );
+                if ( player.getBearerToken() == null ) {
+                    logger.error( "No bearer token for " + player + " also after another attempt - cannot register for game!" );
+                    break;
+                }
+                boolean success = gameServiceRESTAdapter.registerPlayerForGame( game.getGameId(), player.getId() );
+                if ( success ) {
+                    GameParticipation gameParticipation = new GameParticipation( player, game );
+                    gameParticipationRepository.save( gameParticipation );
+                    logger.info( "Player " + player + " successfully registered for game " + game );
+                }
+            }
+            catch ( RESTConnectionFailureException | RESTRequestDeniedException e ) {
+                // shouldn't happen - cannot do more than logging and retrying later
+                logger.error("Could not be get bearer token for player " + player +
+                        " due to connection problems - try again later.");
+            }
+        }
+
+    }
+
+
+
+
 
 
 

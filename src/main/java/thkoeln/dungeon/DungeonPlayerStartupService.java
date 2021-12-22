@@ -32,6 +32,6 @@ public class DungeonPlayerStartupService implements ApplicationListener<ContextR
     public void onApplicationEvent(ContextRefreshedEvent event) {
         gameApplicationService.synchronizeGameState();
         playerApplicationService.createPlayers();
-        playerApplicationService.registerPlayers();
+        playerApplicationService.obtainBearerTokensForPlayers();
     }
 }

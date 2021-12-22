@@ -34,7 +34,7 @@ import static thkoeln.dungeon.game.domain.GameStatus.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest( classes = DungeonPlayerConfiguration.class )
-public class PlayerRegistrationTest {
+public class PlayerBearerTokenTest {
     @Value("${GAME_SERVICE}")
     private String gameServiceURIString;
     private URI playersEndpointURI;
@@ -106,7 +106,7 @@ public class PlayerRegistrationTest {
         for ( Player player: allPlayers ) mockCallToPlayersEndpoint( player );
 
         // when
-        playerApplicationService.registerPlayers();
+        playerApplicationService.obtainBearerTokensForPlayers();
 
         // then
         mockServer.verify();
@@ -131,8 +131,8 @@ public class PlayerRegistrationTest {
         for ( Player player: allPlayers ) mockCallToPlayersEndpoint( player );
 
         // when
-        playerApplicationService.registerPlayers();
-        playerApplicationService.registerPlayers();
+        playerApplicationService.obtainBearerTokensForPlayers();
+        playerApplicationService.obtainBearerTokensForPlayers();
 
         // then
         mockServer.verify();

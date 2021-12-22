@@ -3,9 +3,12 @@ package thkoeln.dungeon.player.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import thkoeln.dungeon.game.domain.Game;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -18,6 +21,8 @@ public class Player {
     private String email;
     private UUID bearerToken;
 
+    @OneToMany ( cascade = CascadeType.REMOVE, fetch = FetchType.EAGER )
+    private final List<GameParticipation> gameParticipations = new ArrayList<>();
 
     public Player() {
         assignRandomName();
@@ -35,6 +40,20 @@ public class Player {
     public boolean hasBeenRegistered() {
         return ( bearerToken != null );
     }
+
+    public boolean participatesInGame( Game game ) {
+        return ( findParticipationFor( game ) != null );
+    }
+
+
+
+    private GameParticipation findParticipationFor( Game game ) {
+        Optional<GameParticipation> found = gameParticipations.stream()
+                        .filter( gp -> gp.getGame().equals( game ) ).findFirst();
+        return found.isPresent() ? found.get() : null;
+    }
+
+
 
     public void playRound() {
         // todo

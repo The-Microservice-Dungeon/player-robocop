@@ -19,8 +19,8 @@ public class GameServiceEventConsumer {
 
     public void consumeGameCreatedEvent() {
         // todo read + handle actual event
-        UUID eventId = UUID.randomUUID();
-        gameApplicationService.gameExternallyCreated( eventId );
+        UUID gameId = UUID.randomUUID();
+        gameApplicationService.gameExternallyCreated( gameId );
     }
 
     public void consumeGameStartedEvent() {

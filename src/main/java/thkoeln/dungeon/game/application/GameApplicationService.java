@@ -6,10 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.game.domain.Game;
+import thkoeln.dungeon.game.domain.GameException;
 import thkoeln.dungeon.game.domain.GameRepository;
 import thkoeln.dungeon.game.domain.GameStatus;
+import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.restadapter.GameDto;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
+import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
+import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 
 import java.util.*;
 
@@ -17,14 +21,18 @@ import java.util.*;
 public class GameApplicationService {
     private GameRepository gameRepository;
     private GameServiceRESTAdapter gameServiceRESTAdapter;
+    private PlayerApplicationService playerApplicationService;
+
     private Logger logger = LoggerFactory.getLogger( GameApplicationService.class );
     ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     public GameApplicationService(GameRepository gameRepository,
-                                  GameServiceRESTAdapter gameServiceRESTAdapter ) {
+                                  GameServiceRESTAdapter gameServiceRESTAdapter,
+                                  PlayerApplicationService playerApplicationService ) {
         this.gameRepository = gameRepository;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
+        this.playerApplicationService = playerApplicationService;
     }
 
 
@@ -41,7 +49,14 @@ public class GameApplicationService {
      * we keep it and mark it as ORPHANED - there may be local references to it.
      */
     public void synchronizeGameState() {
-        GameDto[] gameDtos = gameServiceRESTAdapter.fetchCurrentGameState();
+        GameDto[] gameDtos = new GameDto[0];
+        try {
+            gameDtos = gameServiceRESTAdapter.fetchCurrentGameState();
+        }
+        catch ( UnexpectedRESTException | RESTConnectionFailureException e ) {
+            logger.warn( "Problems with GameService while synchronizing game state - need to try again later.\n" +
+                    e.getStackTrace() );
+        }
 
         // We need to treat the new games (those we haven't stored yet) and those we
         // already have in a different way. Therefore let's split the list.
@@ -62,9 +77,8 @@ public class GameApplicationService {
                 logger.info( "Updated game " + updatedGame );
             }
             else {
-                game.setGameStatus( GameStatus.ORPHANED );
+                game.makeOrphan();
                 gameRepository.save( game );
-                logger.warn( "Marked game " + game + " as ORPHANED!" );
             }
         }
         for ( GameDto gameDto: unknownGameDtos ) {
@@ -79,15 +93,38 @@ public class GameApplicationService {
 
     /**
      * To be called by event consumer listening to GameService event
-     * @param eventId ID of the new game
+     * @param gameId ID of the new game
      */
-    public void gameExternallyCreated ( UUID eventId ) {
+    public void gameExternallyCreated ( UUID gameId ) {
         logger.info( "Processing external event that the game has been created");
-        List<Game> foundGames = gameRepository.findAllByGameStatusEquals( GameStatus.CREATED );
+        List<Game> fittingGames = gameRepository.findByGameId( gameId );
+        Game game = null;
+        if ( fittingGames.size() == 0 ) {
+            game = Game.newlyCreatedGame( gameId );
+            gameRepository.save( game );
+        }
+        else {
+            if ( fittingGames.size() > 1 ) game = mergeGamesIntoOne( fittingGames );
+            game.resetToNewlyCreated();
+            gameRepository.save( game );
+        }
 
         // todo make sure that all players register!
+        playerApplicationService.registerPlayersForGame( game );
+    }
 
 
+    /**
+     * Repair the situation that there are seemingly several games sharing the same gameId. This should not
+     * happen. Do this by "merging" the games.
+     * @param fittingGames
+     */
+    public Game mergeGamesIntoOne( List<Game> fittingGames ) {
+        if ( fittingGames == null ) throw new GameException( "List of games to be merged must not be null!" );
+        if ( fittingGames.size() <= 1 ) throw new GameException( "List of games to be merged must contain at least 2 entries!" );
+
+        // todo - needs to be properly implemented
+        return fittingGames.get( 0 );
     }
 
 
@@ -101,12 +138,7 @@ public class GameApplicationService {
         List<Game> foundGames = gameRepository.findAllByGameStatusEquals( GameStatus.GAME_RUNNING );
     }
 
-    /**
-     * Makes sure that there is only one "active" game in order to be in a consistent state
-     */
-    private void cleanupGames( Game activeGame ) {
 
-    }
 
     /**
      * To be called by event consumer listening to GameService event
