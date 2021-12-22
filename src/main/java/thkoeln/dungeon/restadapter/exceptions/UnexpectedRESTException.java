@@ -9,7 +9,7 @@ import thkoeln.dungeon.DungeonPlayerRuntimeException;
  * in some error state; we have to deal with this and try again later.
  */
 public class UnexpectedRESTException extends DungeonPlayerException {
-    public UnexpectedRESTException(String message ) {
+    public UnexpectedRESTException( String message ) {
         super( message );
     }
 }

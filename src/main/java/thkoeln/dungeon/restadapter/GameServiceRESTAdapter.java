@@ -11,8 +11,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
@@ -42,15 +40,16 @@ public class GameServiceRESTAdapter {
     public GameDto[] fetchCurrentGameState()
             throws UnexpectedRESTException, RESTConnectionFailureException {
         GameDto[] gameDtos = new GameDto[0];
+        String urlString = gameServiceUrlString + "/games";
         try {
-            gameDtos = restTemplate.getForObject( gameServiceUrlString + "/games", GameDto[].class );
+            gameDtos = restTemplate.getForObject( urlString, GameDto[].class );
             if ( gameDtos == null ) throw new UnexpectedRESTException( "Received a null GameDto array - wtf ...?" );
             logger.info( "Got " + gameDtos.length + " game(s) via REST ...");
             Iterator<GameDto> iterator = Arrays.stream(gameDtos).iterator();
             while ( iterator.hasNext() ) { logger.info( "... " + iterator.next() ); }
         }
         catch ( RestClientException e ) {
-            throw new RESTConnectionFailureException( "/games", e.getMessage() );
+            throw new RESTConnectionFailureException( urlString, e.getMessage() );
         }
         return gameDtos;
     }
@@ -60,6 +59,7 @@ public class GameServiceRESTAdapter {
     public PlayerRegistryDto getBearerTokenForPlayer( PlayerRegistryDto playerRegistryDto )
             throws UnexpectedRESTException, RESTConnectionFailureException, RESTRequestDeniedException {
         PlayerRegistryDto returnedPlayerRegistryDto = null;
+        String urlString = gameServiceUrlString + "/players";
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(playerRegistryDto);
@@ -67,7 +67,7 @@ public class GameServiceRESTAdapter {
             headers.setContentType( MediaType.APPLICATION_JSON );
             HttpEntity<String> request = new HttpEntity<String>( json, headers );
             returnedPlayerRegistryDto =
-                     restTemplate.postForObject(gameServiceUrlString + "/players", request, PlayerRegistryDto.class);
+                     restTemplate.postForObject( urlString, request, PlayerRegistryDto.class);
         }
         catch ( JsonProcessingException e ) {
             throw new UnexpectedRESTException(
@@ -77,6 +77,9 @@ public class GameServiceRESTAdapter {
             if (e.getStatusCode().equals(HttpStatus.NOT_ACCEPTABLE)) {
                 // this is a business logic problem - so let the application service handle this
                 throw new RESTRequestDeniedException("Player " + playerRegistryDto + " already registered");
+            }
+            else {
+                throw new RESTConnectionFailureException( urlString, "Status code " + e.getStatusCode() );
             }
         }
         catch ( RestClientException e ) {
@@ -115,10 +118,12 @@ public class GameServiceRESTAdapter {
                         " and game with id " + gameId + " the player registration went wrong; original error msg: "
                         + e.getMessage() );
             }
+            else {
+                throw new RESTConnectionFailureException( urlString, "Status code " + e.getStatusCode() );
+            }
         }
         catch ( RestClientException e ) {
             throw new RESTConnectionFailureException( urlString, e.getMessage() );
         }
-        return true;
     }
 }
