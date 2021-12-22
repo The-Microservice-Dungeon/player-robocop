@@ -21,12 +21,13 @@ public class Player {
     private String email;
     private UUID bearerToken;
 
-    @OneToMany ( cascade = CascadeType.REMOVE, fetch = FetchType.EAGER )
+    @OneToMany ( cascade = { CascadeType.MERGE, CascadeType.REMOVE }, fetch = FetchType.EAGER )
     private final List<GameParticipation> gameParticipations = new ArrayList<>();
 
     public Player() {
         assignRandomName();
     }
+
 
     /**
      * Choose a random and unique name and email for the player
@@ -37,14 +38,20 @@ public class Player {
         setEmail( randomNickname + "@microservicedungeon.com" );
     }
 
-    public boolean hasBeenRegistered() {
+    public boolean isReadyToPlay() {
         return ( bearerToken != null );
     }
 
-    public boolean participatesInGame( Game game ) {
-        return ( findParticipationFor( game ) != null );
+
+    public void participateInGame( Game game ) {
+        GameParticipation gameParticipation = new GameParticipation( game );
+        gameParticipations.add( gameParticipation );
     }
 
+
+    public boolean isParticipantInGame( Game game ) {
+        return ( findParticipationFor( game ) != null );
+    }
 
 
     private GameParticipation findParticipationFor( Game game ) {

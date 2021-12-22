@@ -24,12 +24,9 @@ public class GameParticipation {
 
     @ManyToOne
     private Game game;
-    @ManyToOne
-    private Player player;
 
-    public GameParticipation( Player player, Game game ) {
+    public GameParticipation( Game game ) {
         this.game = game;
-        this.player = player;
     }
 
 }

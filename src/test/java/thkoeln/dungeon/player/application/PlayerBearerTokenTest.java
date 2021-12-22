@@ -90,7 +90,7 @@ public class PlayerBearerTokenTest {
         for ( Player player: allPlayers ) {
             assertNotNull( player.getEmail(), "player email" );
             assertNotNull( player.getName(), "player name"  );
-            assertNull( player.getBearerToken(), "player bearer token"  );
+            assertFalse( player.isReadyToPlay(), "should not be ready to play" );
         }
     }
 
@@ -115,7 +115,7 @@ public class PlayerBearerTokenTest {
         for ( Player player: allPlayers ) {
             assertNotNull( player.getEmail(), "player email" );
             assertNotNull( player.getName(), "player name"  );
-            assertNotNull( player.getBearerToken(), "player bearer token" );
+            assert( player.isReadyToPlay() );
         }
     }
 
@@ -141,7 +141,7 @@ public class PlayerBearerTokenTest {
         for ( Player player: allPlayers ) {
             assertNotNull( player.getEmail(), "player email" );
             assertNotNull( player.getName(), "player name"  );
-            assertNotNull( player.getBearerToken(), "player bearer token" );
+            assert( player.isReadyToPlay() );
         }
     }
 

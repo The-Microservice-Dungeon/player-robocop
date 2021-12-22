@@ -82,7 +82,7 @@ public class PlayerApplicationService {
      * @param player
      * @return true if successful
      */
-    private void obtainBearerTokenForOnePlayer( Player player ) {
+    protected void obtainBearerTokenForOnePlayer( Player player ) {
         if ( player.getBearerToken() != null ) return;
         try {
             PlayerRegistryDto playerDto = modelMapper.map(player, PlayerRegistryDto.class);
@@ -114,30 +114,37 @@ public class PlayerApplicationService {
      */
     public void registerPlayersForGame( Game game ) {
         List<Player> players = playerRepository.findAll();
-        for (Player player : players) {
-            try {
-                if ( player.getBearerToken() == null ) obtainBearerTokenForOnePlayer( player );
-                if ( player.getBearerToken() == null ) {
-                    logger.error( "No bearer token for " + player + " also after another attempt - cannot register for game!" );
-                    break;
-                }
-                boolean success = gameServiceRESTAdapter.registerPlayerForGame( game.getGameId(), player.getId() );
-                if ( success ) {
-                    GameParticipation gameParticipation = new GameParticipation( player, game );
-                    gameParticipationRepository.save( gameParticipation );
-                    logger.info( "Player " + player + " successfully registered for game " + game );
-                }
-            }
-            catch ( RESTConnectionFailureException | RESTRequestDeniedException e ) {
-                // shouldn't happen - cannot do more than logging and retrying later
-                logger.error("Could not be get bearer token for player " + player +
-                        " due to connection problems - try again later.");
-            }
-        }
-
+        for (Player player : players) registerOnePlayerForGame( player, game );
     }
 
 
+
+    /**
+     * Register one specific player for a game
+     * @param player
+     * @param game
+     */
+    public void registerOnePlayerForGame( Player player, Game game ) {
+        try {
+            if (player.getBearerToken() == null) {
+                obtainBearerTokenForOnePlayer( player );
+            }
+            if (player.getBearerToken() == null) {
+                logger.error("No bearer token for " + player + " also after another attempt - cannot register for game!");
+                return;
+            }
+            boolean success = gameServiceRESTAdapter.registerPlayerForGame(game.getGameId(), player.getBearerToken());
+            if (success) {
+                player.participateInGame(game);
+                playerRepository.save(player);
+                logger.info("Player " + player + " successfully registered for game " + game);
+            }
+        } catch (RESTConnectionFailureException | RESTRequestDeniedException e) {
+            // shouldn't happen - cannot do more than logging and retrying later
+            logger.error("Could not be get bearer token for player " + player +
+                    " due to connection problems - try again later.");
+        }
+    }
 
 
 

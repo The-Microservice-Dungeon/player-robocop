@@ -15,13 +15,15 @@ import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class GameApplicationService {
     private GameRepository gameRepository;
     private GameServiceRESTAdapter gameServiceRESTAdapter;
-    private PlayerApplicationService playerApplicationService;
 
     private Logger logger = LoggerFactory.getLogger( GameApplicationService.class );
     ModelMapper modelMapper = new ModelMapper();
@@ -32,7 +34,6 @@ public class GameApplicationService {
                                   PlayerApplicationService playerApplicationService ) {
         this.gameRepository = gameRepository;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
-        this.playerApplicationService = playerApplicationService;
     }
 
 
@@ -63,7 +64,7 @@ public class GameApplicationService {
         List<GameDto> unknownGameDtos = new ArrayList<>();
         List<GameDto> knownGameDtos = new ArrayList<>();
         for ( GameDto gameDto: gameDtos ) {
-            if ( gameRepository.existsById( gameDto.getGameId() ) ) knownGameDtos.add( gameDto );
+            if ( gameRepository.existsByGameId( gameDto.getGameId() ) ) knownGameDtos.add( gameDto );
             else unknownGameDtos.add( gameDto );
         }
 
@@ -72,9 +73,9 @@ public class GameApplicationService {
             Optional<GameDto> foundDtoOptional = knownGameDtos.stream()
                     .filter( dto -> game.getGameId().equals( dto.getGameId() )).findAny();
             if ( foundDtoOptional.isPresent() ) {
-                Game updatedGame = modelMapper.map( foundDtoOptional.get(), Game.class );
-                gameRepository.save( updatedGame );
-                logger.info( "Updated game " + updatedGame );
+                modelMapper.map( foundDtoOptional.get(), game );
+                gameRepository.save( game );
+                logger.info( "Updated game " + game );
             }
             else {
                 game.makeOrphan();
@@ -108,9 +109,6 @@ public class GameApplicationService {
             game.resetToNewlyCreated();
             gameRepository.save( game );
         }
-
-        // todo make sure that all players register!
-        playerApplicationService.registerPlayersForGame( game );
     }
 
 

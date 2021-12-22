@@ -28,9 +28,9 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static thkoeln.dungeon.game.domain.GameStatus.GAME_RUNNING;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest( classes = DungeonPlayerConfiguration.class )
@@ -39,6 +39,8 @@ public class PlayerGameRegistrationTest {
     private String gameServiceURIString;
     private URI playersEndpointURI;
     private ModelMapper modelMapper = new ModelMapper();
+    private Game game;
+    private Player player, playerWithoutToken;
 
     @Autowired
     private Environment env;
@@ -63,91 +65,37 @@ public class PlayerGameRegistrationTest {
         playerRepository.deleteAll();
         gameRepository.deleteAll();
         playersEndpointURI = new URI( gameServiceURIString + "/players" );
-        Game game = new Game();
-        game.setGameId( UUID.randomUUID() );
-        game.setGameStatus( GAME_RUNNING );
-        game.setCurrentRoundCount( 22 );
+        game = Game.newlyCreatedGame( UUID.randomUUID() );
         gameRepository.save( game );
+        player = new Player();
+        playerWithoutToken = new Player();
+        playerRepository.save(player);
+        playerRepository.save(playerWithoutToken);
     }
 
 
     @Test
-    public void noExceptionWhenConnectionMissing() {
-        playerApplicationService.createPlayers();
-        assert( true );
-    }
-
-    @Test
-    public void testCreatePlayers() {
+    public void testRegisterPlayerWithToken() throws Exception {
         // given
-        playerApplicationService.createPlayers();
+        mockBearerTokenEndpointFor( player );
+        playerApplicationService.obtainBearerTokenForOnePlayer( player );
+        assert ( player.isReadyToPlay() );
 
         // when
-        List<Player> allPlayers = playerRepository.findAll();
+        mockRegistrationEndpointFor(player);
+        playerApplicationService.registerOnePlayerForGame( player, game );
 
         // then
-        assertEquals( Integer.valueOf( env.getProperty("dungeon.numberOfPlayers") ), allPlayers.size() );
-        for ( Player player: allPlayers ) {
-            assertNotNull( player.getEmail(), "player email" );
-            assertNotNull( player.getName(), "player name"  );
-            assertNull( player.getBearerToken(), "player bearer token"  );
-        }
+        List<Player> readyPlayers = playerRepository.findByGameParticipations_Game( game );
+        assertEquals( 1, readyPlayers.size() );
+        assert( readyPlayers.get( 0 ).isParticipantInGame( game ) );
     }
 
 
-    @Test
-    public void testRegisterPlayers() throws Exception {
-        // given
-        playerApplicationService.createPlayers();
 
-        // when
-        List<Player> allPlayers = playerRepository.findAll();
+
+    private void mockBearerTokenEndpointFor( Player player ) throws Exception {
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        for ( Player player: allPlayers ) mockCallToPlayersEndpoint( player );
-
-        // when
-        playerApplicationService.obtainBearerTokensForPlayers();
-
-        // then
-        mockServer.verify();
-        allPlayers = playerRepository.findAll();
-        assertEquals( Integer.valueOf( env.getProperty("dungeon.numberOfPlayers") ), allPlayers.size() );
-        for ( Player player: allPlayers ) {
-            assertNotNull( player.getEmail(), "player email" );
-            assertNotNull( player.getName(), "player name"  );
-            assertNotNull( player.getBearerToken(), "player bearer token" );
-        }
-    }
-
-
-    @Test
-    public void testDoublyRegisterPlayers() throws Exception {
-        // given
-        playerApplicationService.createPlayers();
-
-        // when
-        List<Player> allPlayers = playerRepository.findAll();
-        mockServer = MockRestServiceServer.createServer(restTemplate);
-        for ( Player player: allPlayers ) mockCallToPlayersEndpoint( player );
-
-        // when
-        playerApplicationService.obtainBearerTokensForPlayers();
-        playerApplicationService.obtainBearerTokensForPlayers();
-
-        // then
-        mockServer.verify();
-        allPlayers = playerRepository.findAll();
-        assertEquals( Integer.valueOf( env.getProperty("dungeon.numberOfPlayers") ), allPlayers.size() );
-        for ( Player player: allPlayers ) {
-            assertNotNull( player.getEmail(), "player email" );
-            assertNotNull( player.getName(), "player name"  );
-            assertNotNull( player.getBearerToken(), "player bearer token" );
-        }
-    }
-
-
-
-    private void mockCallToPlayersEndpoint( Player player ) throws Exception {
         PlayerRegistryDto playerRegistryDto = modelMapper.map( player, PlayerRegistryDto.class );
         PlayerRegistryDto responseDto = playerRegistryDto.clone();
         responseDto.setBearerToken( UUID.randomUUID() );
@@ -158,6 +106,14 @@ public class PlayerGameRegistrationTest {
     }
 
 
+
+    private void mockRegistrationEndpointFor( Player player ) throws Exception {
+        mockServer = MockRestServiceServer.createServer(restTemplate);
+        URI uri = new URI( gameServiceURIString + "/games/" + game.getGameId() + "/players/" + player.getBearerToken() );
+        mockServer.expect( ExpectedCount.manyTimes(), requestTo( uri ))
+                .andExpect( method( PUT ))
+                .andRespond( withSuccess() );
+    }
 
 
 }
