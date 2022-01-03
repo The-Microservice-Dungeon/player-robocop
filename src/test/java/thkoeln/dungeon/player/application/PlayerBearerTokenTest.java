@@ -35,6 +35,10 @@ import static thkoeln.dungeon.game.domain.GameStatus.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest( classes = DungeonPlayerConfiguration.class )
 public class PlayerBearerTokenTest {
+    static {
+        System.setProperty("dungeon.mode", "MULTI");
+    }
+
     @Value("${GAME_SERVICE}")
     private String gameServiceURIString;
     private URI playersEndpointURI;
@@ -86,7 +90,7 @@ public class PlayerBearerTokenTest {
         List<Player> allPlayers = playerRepository.findAll();
 
         // then
-        assertEquals( Integer.valueOf( env.getProperty("dungeon.numberOfPlayers") ), allPlayers.size() );
+        assertEquals( Integer.valueOf( env.getProperty("dungeon.multiPlayer.number") ), allPlayers.size() );
         for ( Player player: allPlayers ) {
             assertNotNull( player.getEmail(), "player email" );
             assertNotNull( player.getName(), "player name"  );
@@ -111,7 +115,7 @@ public class PlayerBearerTokenTest {
         // then
         mockServer.verify();
         allPlayers = playerRepository.findAll();
-        assertEquals( Integer.valueOf( env.getProperty("dungeon.numberOfPlayers") ), allPlayers.size() );
+        assertEquals( Integer.valueOf( env.getProperty("dungeon.multiPlayer.number") ), allPlayers.size() );
         for ( Player player: allPlayers ) {
             assertNotNull( player.getEmail(), "player email" );
             assertNotNull( player.getName(), "player name"  );
@@ -137,7 +141,7 @@ public class PlayerBearerTokenTest {
         // then
         mockServer.verify();
         allPlayers = playerRepository.findAll();
-        assertEquals( Integer.valueOf( env.getProperty("dungeon.numberOfPlayers") ), allPlayers.size() );
+        assertEquals( Integer.valueOf( env.getProperty("dungeon.multiPlayer.number") ), allPlayers.size() );
         for ( Player player: allPlayers ) {
             assertNotNull( player.getEmail(), "player email" );
             assertNotNull( player.getName(), "player name"  );

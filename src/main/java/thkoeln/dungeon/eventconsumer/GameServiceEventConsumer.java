@@ -8,7 +8,6 @@ import thkoeln.dungeon.game.application.GameApplicationService;
 import java.util.UUID;
 
 @Component
-@Profile( "prod" )
 public class GameServiceEventConsumer {
     private GameApplicationService gameApplicationService;
 

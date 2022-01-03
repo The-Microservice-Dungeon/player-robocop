@@ -1,16 +1,11 @@
-spring:
-  profiles:
-    default: "prod"  # others are: prod
-    active: "prod"
+server:
+  port: 8099
 dungeon:
-  numberOfPlayers: 5
+  mode: "SINGLE" # either "SINGLE" (if you build a player based on this), or "MULTI" (to test the core services)
+  singlePlayer:
+    playerName: "Martina Musterfrau"
+    playerEmail: "martina@musterfrau.de"
+  multiPlayer:
+    number: 25
   services:
     game: ${GAME_SERVICE}
-  mock:
-    game:
-      gameId: "20165011-013d-4a11-a5a9-c64d22ea76ca"
-      initialDelayUntilStart: 5 # in seconds; 0 means it starts in state "GAME_RUNNING"
-      roundLength: 10 # in seconds
-
-
-

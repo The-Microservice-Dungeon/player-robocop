@@ -7,7 +7,6 @@ import thkoeln.dungeon.command.Command;
 import java.util.UUID;
 
 @Component
-@Profile( "prod" )
 public class CommandExecutorService implements thkoeln.dungeon.command.CommandExecutor {
 
     @Override

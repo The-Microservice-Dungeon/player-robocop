@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.CommandExecutor;
 import thkoeln.dungeon.game.domain.Game;
-import thkoeln.dungeon.player.domain.GameParticipation;
-import thkoeln.dungeon.player.domain.GameParticipationRepository;
-import thkoeln.dungeon.player.domain.Player;
-import thkoeln.dungeon.player.domain.PlayerRepository;
+import thkoeln.dungeon.player.domain.*;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.RESTRequestDeniedException;
@@ -39,8 +36,17 @@ public class PlayerApplicationService {
     private GameParticipationRepository gameParticipationRepository;
     private GameServiceRESTAdapter gameServiceRESTAdapter;
 
-    @Value("${dungeon.numberOfPlayers}")
-    private int numberOfPlayers;
+    @Value("${dungeon.singlePlayer.playerName}")
+    private String singlePlayerName;
+
+    @Value("${dungeon.singlePlayer.playerEmail}")
+    private String singlePlayerEmail;
+
+    @Value("${dungeon.mode}")
+    private PlayerMode playerMode;
+
+    @Value("${dungeon.multiPlayer.number}")
+    private int numberOfMultiPlayers;
 
     @Autowired
     public PlayerApplicationService(
@@ -54,12 +60,30 @@ public class PlayerApplicationService {
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
+    public PlayerMode currentMode() {
+        return playerMode;
+    }
 
+    public int numberOfPlayers() {
+        return currentMode().isSingle() ? 1 : numberOfMultiPlayers;
+    }
+
+
+    /**
+     * Create player(s), if not there already
+     */
     public void createPlayers() {
         List<Player> players = playerRepository.findAll();
         if (players.size() == 0) {
-            for (int iPlayer = 0; iPlayer < numberOfPlayers; iPlayer++) {
+            for (int iPlayer = 0; iPlayer < numberOfPlayers(); iPlayer++) {
                 Player player = new Player();
+                if ( currentMode().isSingle() ) {
+                    player.setName( singlePlayerName );
+                    player.setEmail( singlePlayerEmail );
+                }
+                else {
+                    player.assignRandomName();
+                }
                 playerRepository.save(player);
                 logger.info("Created new player: " + player);
                 players.add(player);

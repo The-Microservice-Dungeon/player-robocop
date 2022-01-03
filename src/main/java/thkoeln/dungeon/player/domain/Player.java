@@ -2,7 +2,9 @@ package thkoeln.dungeon.player.domain;
 
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import thkoeln.dungeon.game.domain.Game;
 
 import javax.persistence.*;
@@ -14,19 +16,17 @@ import java.util.UUID;
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
 public class Player {
     @Id
     private final UUID id = UUID.randomUUID();
+
     private String name;
     private String email;
     private UUID bearerToken;
 
     @OneToMany ( cascade = { CascadeType.MERGE, CascadeType.REMOVE }, fetch = FetchType.EAGER )
     private final List<GameParticipation> gameParticipations = new ArrayList<>();
-
-    public Player() {
-        assignRandomName();
-    }
 
 
     /**
