@@ -1,25 +1,63 @@
-# Generic Player
+# Generic Player template for _The Microservice Dungeon_
 
-This repo contains a generic Dungeon player. It can be used  
-1. ... for **integration testing** the interaction between Player, Game, Robot, Map, Trading, and GameLog service, or 
-2. ... as a **starting point** to build an own player.
+This repo contains a generic, Java-based Dungeon player template. It can be used to build an own player based on it. 
 
-In order to fulfill goal (1), this service can instantiate **more than one player**. If some Dungeon team uses this
-to build their own player, of course they should instantiate **only one player**. 
+**What it has:**
 
-## Profiles 
+- Some basic domain model (see below)
+- Some REST call implementations from player to Game service (caveat: unit-tested, but not yet integration-tested)
+- Some basic event listeners
+- Player registration, and some logic to listen to a game creation and start
 
-The service maintains two Spring profiles, in order to serve the above goals: 
-1. **mock** - used for unit-testing the basic player logic. No Kafka, no REST calls. All event listeners and REST 
-   calls are fully mocked with random data.
-2. **prod** - assumes a running Kafka and an available endpoint for the Game service (either as local Docker 
-   containers, or in production environment; the URLs and ports are controlled via environment variables).
-   If used locally, all dungeon services need to be locally running using the [Python script](https://github.com/The-Microservice-Dungeon/local-dev-environment), 
-   plus a local Kafka (either [manually](https://kafka.apache.org/quickstart), or with this [Compose script](https://github.com/The-Microservice-Dungeon/devops/tree/kafka)).
+**What it doesn't have:**
 
-(FIXME - mock & prod are outdated)
+- Basically anything else. The robots don't have attributes, they don't do anything. There is no money yet. Planets
+  are just UUIDs. 
+- This means: All the rest is yours to implement. 
 
-# Architecture
+**Will it be developed any further?**
+
+No. We will "iron out the kinks", meaning: We will make sure that the REST calls implemented here, and the listeners, 
+work properly with the rest of all services. On top of that, no further features will be added.
+
+
+## How to use it
+
+
+### In `https://github.com/The-Microservice-Dungeon/generic-player`, click "Use this template"
+
+![howto-1](images/howto1.png)
+
+### Enter your repo's name. Three things are important:
+
+1. The repo name must start with "_" (underscore)
+2. The repo must be created in the organization, **NOT in your own Github account**.
+3. Make the repo private.
+
+![howto-2](images/howto2.png)
+
+### Edit the README ...
+
+![howto-3](images/howto3.png)
+
+### ... and replace it with your own documentation. Important: Add your team names as authors!
+
+![howto-4](images/howto4.png)
+
+
+
+## How can I merge later changes to the template into my own repo?
+
+The way to do this is described [here](https://stackoverflow.com/questions/56577184/github-pull-changes-from-a-template-repository). In short:
+* Follow the steps above to create your own repo based on the template
+* Go to the repo
+* `git remote add template https://github.com/The-Microservice-Dungeon/generic-player.git`
+* `git fetch --all`
+* `git merge template/main --allow-unrelated-histories`
+
+
+
+## Architecture 
 
 The domain model is as such:
 
@@ -35,16 +73,3 @@ through the `restadapter` package. (For internal package dependency see above - 
 
 ![Architecture Overview](model/Adapter-Dependencies.png)
 
-
-
-# Player Strategy 
-
-tbd
-
-## At startup
-
-At startup, the service instantiates one or several players, depending on the chosen profile. 
-
-## Some basic strategy
-
-tbd
