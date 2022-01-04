@@ -4,7 +4,12 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import thkoeln.dungeon.eventconsumer.game.GameEventConsumerService;
+import thkoeln.dungeon.eventconsumer.game.GameStatusEvent;
 import thkoeln.dungeon.game.domain.Game;
 import thkoeln.dungeon.game.domain.GameException;
 import thkoeln.dungeon.game.domain.GameRepository;
@@ -90,6 +95,17 @@ public class GameApplicationService {
         logger.info( "Retrieval of new game state finished" );
     }
 
+
+    /**
+     * "Status changed" event published by GameService, esp. after a game has been created
+     */
+    public void gameStatusExternallyChanged( UUID gameId, GameStatus gameStatus ) {
+        switch (gameStatus) {
+            case CREATED:
+                gameExternallyCreated(gameId);
+                break;
+        }
+    }
 
 
     /**

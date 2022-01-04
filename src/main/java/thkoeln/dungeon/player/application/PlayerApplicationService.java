@@ -77,7 +77,7 @@ public class PlayerApplicationService {
         if (players.size() == 0) {
             for (int iPlayer = 0; iPlayer < numberOfPlayers(); iPlayer++) {
                 Player player = new Player();
-                if ( currentMode().isSingle() ) {
+                if ( currentMode().isSingle() && (! "".equals( singlePlayerName ) ) && (! "".equals( singlePlayerEmail ) )  ) {
                     player.setName( singlePlayerName );
                     player.setEmail( singlePlayerEmail );
                 }
