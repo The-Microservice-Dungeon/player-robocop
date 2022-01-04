@@ -73,3 +73,10 @@ through the `restadapter` package. (For internal package dependency see above - 
 
 ![Architecture Overview](model/Adapter-Dependencies.png)
 
+
+## What do I need to do to create my own player based on this?
+
+The Game team has created a great "cheat sheet" which I take the liberty to reproduce here. It gives a good impression
+of the necessary steps. 
+
+![Cheat Sheet](images/Game_Bedienungsanleitung.jpg)
