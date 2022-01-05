@@ -30,7 +30,7 @@ work properly with the rest of all services. On top of that, no further features
 
 ### Enter your repo's name. Three things are important:
 
-1. The repo name must start with "_" (underscore)
+1. The repo name must start with "player-"
 2. The repo must be created in the organization, **NOT in your own Github account**.
 3. Make the repo private.
 
