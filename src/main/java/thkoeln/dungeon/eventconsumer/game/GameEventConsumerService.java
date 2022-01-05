@@ -28,7 +28,7 @@ public class GameEventConsumerService {
      * "Status changed" event published by GameService, esp. after a game has been created, started, or finished
      * --- this extra line for testing purposes ---
      */
-    @KafkaListener( topics = "status" )  // that is what the documentation says
+    //@KafkaListener( topics = "status" )  // that is what the documentation says
     public void consumeGameStatusEvent( @Payload GameStatusEventPayload gameStatusEventPayload, MessageHeaders headers ) {
         GameStatusEvent gameStatusEvent = new GameStatusEvent( headers, gameStatusEventPayload );
         gameStatusEventRepository.save( gameStatusEvent );
