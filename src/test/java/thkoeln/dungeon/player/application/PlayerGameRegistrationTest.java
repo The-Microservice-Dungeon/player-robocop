@@ -26,19 +26,19 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest( classes = DungeonPlayerConfiguration.class )
+@SpringBootTest(classes = DungeonPlayerConfiguration.class)
 public class PlayerGameRegistrationTest {
     @Value("${GAME_SERVICE}")
     private String gameServiceURIString;
     private URI playersEndpointURI;
-    private ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper = new ModelMapper();
     private Game game;
     private Player player, playerWithoutToken;
 
@@ -48,7 +48,7 @@ public class PlayerGameRegistrationTest {
     @Autowired
     private RestTemplate restTemplate;
     private MockRestServiceServer mockServer;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private GameRepository gameRepository;
@@ -64,9 +64,9 @@ public class PlayerGameRegistrationTest {
     public void setUp() throws Exception {
         playerRepository.deleteAll();
         gameRepository.deleteAll();
-        playersEndpointURI = new URI( gameServiceURIString + "/players" );
-        game = Game.newlyCreatedGame( UUID.randomUUID() );
-        gameRepository.save( game );
+        playersEndpointURI = new URI(gameServiceURIString + "/players");
+        game = Game.newlyCreatedGame(UUID.randomUUID());
+        gameRepository.save(game);
         player = new Player();
         playerWithoutToken = new Player();
         playerRepository.save(player);
@@ -77,42 +77,39 @@ public class PlayerGameRegistrationTest {
     @Test
     public void testRegisterPlayerWithToken() throws Exception {
         // given
-        mockBearerTokenEndpointFor( player );
-        playerApplicationService.obtainBearerTokenForOnePlayer( player );
-        assert ( player.isReadyToPlay() );
+        mockBearerTokenEndpointFor(player);
+        playerApplicationService.obtainBearerTokenForOnePlayer(player);
+        assert (player.isReadyToPlay());
 
         // when
         mockRegistrationEndpointFor(player);
-        playerApplicationService.registerOnePlayerForGame( player, game );
+        playerApplicationService.registerOnePlayerForGame(player, game);
 
         // then
-        List<Player> readyPlayers = playerRepository.findByGameParticipations_Game( game );
-        assertEquals( 1, readyPlayers.size() );
-        assert( readyPlayers.get( 0 ).isParticipantInGame( game ) );
+        List<Player> readyPlayers = playerRepository.findByGameParticipations_Game(game);
+        assertEquals(1, readyPlayers.size());
+        assert (readyPlayers.get(0).isParticipantInGame(game));
     }
 
 
-
-
-    private void mockBearerTokenEndpointFor( Player player ) throws Exception {
+    private void mockBearerTokenEndpointFor(Player player) throws Exception {
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        PlayerRegistryDto playerRegistryDto = modelMapper.map( player, PlayerRegistryDto.class );
+        PlayerRegistryDto playerRegistryDto = modelMapper.map(player, PlayerRegistryDto.class);
         PlayerRegistryDto responseDto = playerRegistryDto.clone();
-        responseDto.setBearerToken( UUID.randomUUID() );
-        mockServer.expect( ExpectedCount.manyTimes(), requestTo( playersEndpointURI ))
-                .andExpect( method( POST ))
-                .andExpect(content().json(mapper.writeValueAsString( playerRegistryDto )))
-                .andRespond( withSuccess( mapper.writeValueAsString( responseDto ), MediaType.APPLICATION_JSON ) );
+        responseDto.setBearerToken(UUID.randomUUID());
+        mockServer.expect(ExpectedCount.manyTimes(), requestTo(playersEndpointURI))
+                .andExpect(method(POST))
+                .andExpect(content().json(mapper.writeValueAsString(playerRegistryDto)))
+                .andRespond(withSuccess(mapper.writeValueAsString(responseDto), MediaType.APPLICATION_JSON));
     }
 
 
-
-    private void mockRegistrationEndpointFor( Player player ) throws Exception {
+    private void mockRegistrationEndpointFor(Player player) throws Exception {
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        URI uri = new URI( gameServiceURIString + "/games/" + game.getGameId() + "/players/" + player.getBearerToken() );
-        mockServer.expect( ExpectedCount.manyTimes(), requestTo( uri ))
-                .andExpect( method( PUT ))
-                .andRespond( withSuccess() );
+        URI uri = new URI(gameServiceURIString + "/games/" + game.getGameId() + "/players/" + player.getBearerToken());
+        mockServer.expect(ExpectedCount.manyTimes(), requestTo(uri))
+                .andExpect(method(PUT))
+                .andRespond(withSuccess());
     }
 
 
