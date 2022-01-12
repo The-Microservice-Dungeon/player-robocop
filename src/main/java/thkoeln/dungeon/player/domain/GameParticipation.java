@@ -25,7 +25,7 @@ public class GameParticipation {
     @ManyToOne
     private Game game;
 
-    public GameParticipation( Game game ) {
+    public GameParticipation(Game game) {
         this.game = game;
     }
 

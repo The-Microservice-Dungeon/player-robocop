@@ -25,68 +25,70 @@ public class Planet {
     private String name;
 
     @Setter
-    @Getter ( AccessLevel.NONE )
+    @Getter(AccessLevel.NONE)
     private Boolean spacestation = Boolean.FALSE;
-    public Boolean isSpaceStation() { return spacestation; }
-
-    @OneToOne ( cascade = CascadeType.MERGE)
-    @Setter ( AccessLevel.PROTECTED )
+    @OneToOne(cascade = CascadeType.MERGE)
+    @Setter(AccessLevel.PROTECTED)
     private Planet northNeighbour;
-    @OneToOne ( cascade = CascadeType.MERGE)
-    @Setter ( AccessLevel.PROTECTED )
+    @OneToOne(cascade = CascadeType.MERGE)
+    @Setter(AccessLevel.PROTECTED)
     private Planet eastNeighbour;
-    @OneToOne ( cascade = CascadeType.MERGE)
-    @Setter ( AccessLevel.PROTECTED )
+    @OneToOne(cascade = CascadeType.MERGE)
+    @Setter(AccessLevel.PROTECTED)
     private Planet southNeighbour;
-    @OneToOne ( cascade = CascadeType.MERGE)
-    @Setter ( AccessLevel.PROTECTED )
+    @OneToOne(cascade = CascadeType.MERGE)
+    @Setter(AccessLevel.PROTECTED)
     private Planet westNeighbour;
-
     @Transient
-    private Logger logger = LoggerFactory.getLogger( Planet.class );
+    private Logger logger = LoggerFactory.getLogger(Planet.class);
+
+    public Boolean isSpaceStation() {
+        return spacestation;
+    }
 
     /**
      * A neighbour relationship is always set on BOTH sides.
+     *
      * @param otherPlanet
      * @param direction
      */
-    public void defineNeighbour(Planet otherPlanet, CompassDirection direction ) {
-        if ( otherPlanet == null ) throw new PlanetException( "Cannot establish neighbouring relationship with null planet!" ) ;
+    public void defineNeighbour(Planet otherPlanet, CompassDirection direction) {
+        if (otherPlanet == null)
+            throw new PlanetException("Cannot establish neighbouring relationship with null planet!");
         try {
-            Method otherGetter = neighbouringGetter( direction.getOppositeDirection() );
-            Method setter = neighbouringSetter( direction );
-            setter.invoke(this, otherPlanet );
-            Planet remoteNeighbour = (Planet) otherGetter.invoke( otherPlanet );
-            if ( !this.equals( remoteNeighbour ) ) {
-                Method otherSetter = neighbouringSetter( direction.getOppositeDirection() );
-                otherSetter.invoke( otherPlanet, this );
+            Method otherGetter = neighbouringGetter(direction.getOppositeDirection());
+            Method setter = neighbouringSetter(direction);
+            setter.invoke(this, otherPlanet);
+            Planet remoteNeighbour = (Planet) otherGetter.invoke(otherPlanet);
+            if (!this.equals(remoteNeighbour)) {
+                Method otherSetter = neighbouringSetter(direction.getOppositeDirection());
+                otherSetter.invoke(otherPlanet, this);
             }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new PlanetException("Something went wrong that should not have happened ..." + e.getStackTrace());
         }
-        catch ( IllegalAccessException | InvocationTargetException | NoSuchMethodException e ) {
-            throw new PlanetException( "Something went wrong that should not have happened ..." + e.getStackTrace() );
-        }
-        logger.info( "Established neighbouring relationship between planet '" + this + "' and '" + otherPlanet + "'." );
+        logger.info("Established neighbouring relationship between planet '" + this + "' and '" + otherPlanet + "'.");
     }
 
 
-    protected Method neighbouringGetter( CompassDirection direction ) throws NoSuchMethodException {
-        String name = "get" + WordUtils.capitalize( String.valueOf( direction ) ) + "Neighbour";
-        return this.getClass().getDeclaredMethod( name );
+    protected Method neighbouringGetter(CompassDirection direction) throws NoSuchMethodException {
+        String name = "get" + WordUtils.capitalize(String.valueOf(direction)) + "Neighbour";
+        return this.getClass().getDeclaredMethod(name);
     }
 
 
-    protected Method neighbouringSetter( CompassDirection direction ) throws NoSuchMethodException {
-        String name = "set" + WordUtils.capitalize( String.valueOf( direction ) ) + "Neighbour";
-        return this.getClass().getDeclaredMethod( name, new Class[]{ this.getClass() } );
+    protected Method neighbouringSetter(CompassDirection direction) throws NoSuchMethodException {
+        String name = "set" + WordUtils.capitalize(String.valueOf(direction)) + "Neighbour";
+        return this.getClass().getDeclaredMethod(name, this.getClass());
     }
 
 
     public List<Planet> allNeighbours() {
         List<Planet> allNeighbours = new ArrayList<>();
-        if ( getNorthNeighbour() != null ) allNeighbours.add( getNorthNeighbour() );
-        if ( getWestNeighbour() != null ) allNeighbours.add( getWestNeighbour() );
-        if ( getEastNeighbour() != null ) allNeighbours.add( getEastNeighbour() );
-        if ( getSouthNeighbour() != null ) allNeighbours.add( getSouthNeighbour() );
+        if (getNorthNeighbour() != null) allNeighbours.add(getNorthNeighbour());
+        if (getWestNeighbour() != null) allNeighbours.add(getWestNeighbour());
+        if (getEastNeighbour() != null) allNeighbours.add(getEastNeighbour());
+        if (getSouthNeighbour() != null) allNeighbours.add(getSouthNeighbour());
         return allNeighbours;
     }
 

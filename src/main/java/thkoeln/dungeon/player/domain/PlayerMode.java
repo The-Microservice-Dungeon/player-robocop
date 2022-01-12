@@ -4,6 +4,6 @@ public enum PlayerMode {
     SINGLE, MULTI;
 
     public boolean isSingle() {
-        return this.equals( SINGLE );
+        return this.equals(SINGLE);
     }
 }

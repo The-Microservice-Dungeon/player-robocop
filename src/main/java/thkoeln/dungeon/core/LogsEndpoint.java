@@ -1,16 +1,8 @@
 package thkoeln.dungeon.core;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.endpoint.annotation.DeleteOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.http.HttpStatus;
@@ -18,13 +10,20 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * Very pragmatic approach to access the service logs remotely.
  * Just an additional actuator endpoint which parses the log file configured by spring
  * boot and returns its content in plain text.
- *
+ * <p>
  * Bad Idea for production usage, but should do its job for us ¯\_(ツ)_/¯
- *
+ * <p>
  * TODO: Use a RollingFileAppender w/ .zip archives that can be retrieved from here. But this
  *       is only necessary if the log file will get big. The effort might be not worthy.
  */

@@ -1,6 +1,6 @@
 package thkoeln.dungeon.command;
 
 public enum CommandType {
-    move;
+    move
     /* block, fight, mine, regenerate, use-item-fighting, use-item-movement, use-item-repair */
 }

@@ -14,15 +14,15 @@ import thkoeln.dungeon.player.application.PlayerApplicationService;
 @Service
 public class DungeonPlayerStartupService implements ApplicationListener<ContextRefreshedEvent> {
 
-    private Logger logger = LoggerFactory.getLogger( DungeonPlayerStartupService.class );
-    private GameRepository gameRepository;
-    private GameApplicationService gameApplicationService;
-    private PlayerApplicationService playerApplicationService;
+    private final Logger logger = LoggerFactory.getLogger(DungeonPlayerStartupService.class);
+    private final GameRepository gameRepository;
+    private final GameApplicationService gameApplicationService;
+    private final PlayerApplicationService playerApplicationService;
 
     @Autowired
     public DungeonPlayerStartupService(
-                GameRepository gameRepository, GameApplicationService gameApplicationService,
-                PlayerApplicationService playerApplicationService ) {
+            GameRepository gameRepository, GameApplicationService gameApplicationService,
+            PlayerApplicationService playerApplicationService) {
         this.gameRepository = gameRepository;
         this.gameApplicationService = gameApplicationService;
         this.playerApplicationService = playerApplicationService;

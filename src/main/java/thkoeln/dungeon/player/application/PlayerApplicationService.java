@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.CommandExecutor;
 import thkoeln.dungeon.game.domain.Game;
-import thkoeln.dungeon.player.domain.*;
+import thkoeln.dungeon.player.domain.GameParticipationRepository;
+import thkoeln.dungeon.player.domain.Player;
+import thkoeln.dungeon.player.domain.PlayerMode;
+import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
+import thkoeln.dungeon.restadapter.PlayerRegistryDto;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.RESTRequestDeniedException;
-import thkoeln.dungeon.restadapter.PlayerRegistryDto;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 
 import java.util.List;
@@ -28,13 +31,13 @@ import java.util.UUID;
  */
 @Service
 public class PlayerApplicationService {
-    private Logger logger = LoggerFactory.getLogger(PlayerApplicationService.class);
-    private ModelMapper modelMapper = new ModelMapper();
+    private final Logger logger = LoggerFactory.getLogger(PlayerApplicationService.class);
+    private final ModelMapper modelMapper = new ModelMapper();
 
-    private CommandExecutor commandExecutor;
-    private PlayerRepository playerRepository;
-    private GameParticipationRepository gameParticipationRepository;
-    private GameServiceRESTAdapter gameServiceRESTAdapter;
+    private final CommandExecutor commandExecutor;
+    private final PlayerRepository playerRepository;
+    private final GameParticipationRepository gameParticipationRepository;
+    private final GameServiceRESTAdapter gameServiceRESTAdapter;
 
     @Value("${dungeon.singlePlayer.playerName}")
     private String singlePlayerName;
@@ -53,7 +56,7 @@ public class PlayerApplicationService {
             CommandExecutor commandExecutor,
             PlayerRepository playerRepository,
             GameParticipationRepository gameParticipationRepository,
-            GameServiceRESTAdapter gameServiceRESTAdapter ) {
+            GameServiceRESTAdapter gameServiceRESTAdapter) {
         this.commandExecutor = commandExecutor;
         this.playerRepository = playerRepository;
         this.gameParticipationRepository = gameParticipationRepository;
@@ -77,11 +80,10 @@ public class PlayerApplicationService {
         if (players.size() == 0) {
             for (int iPlayer = 0; iPlayer < numberOfPlayers(); iPlayer++) {
                 Player player = new Player();
-                if ( currentMode().isSingle() && (! "".equals( singlePlayerName ) ) && (! "".equals( singlePlayerEmail ) )  ) {
-                    player.setName( singlePlayerName );
-                    player.setEmail( singlePlayerEmail );
-                }
-                else {
+                if (currentMode().isSingle() && (!"".equals(singlePlayerName)) && (!"".equals(singlePlayerEmail))) {
+                    player.setName(singlePlayerName);
+                    player.setEmail(singlePlayerEmail);
+                } else {
                     player.assignRandomName();
                 }
                 playerRepository.save(player);
@@ -97,36 +99,35 @@ public class PlayerApplicationService {
      */
     public void obtainBearerTokensForPlayers() {
         List<Player> players = playerRepository.findAll();
-        for (Player player : players) obtainBearerTokenForOnePlayer( player );
+        for (Player player : players) obtainBearerTokenForOnePlayer(player);
     }
 
 
     /**
      * Obtain the bearer token for one specific player
+     *
      * @param player
      * @return true if successful
      */
-    protected void obtainBearerTokenForOnePlayer( Player player ) {
-        if ( player.getBearerToken() != null ) return;
+    protected void obtainBearerTokenForOnePlayer(Player player) {
+        if (player.getBearerToken() != null) return;
         try {
             PlayerRegistryDto playerDto = modelMapper.map(player, PlayerRegistryDto.class);
             PlayerRegistryDto registeredPlayerDto = gameServiceRESTAdapter.getBearerTokenForPlayer(playerDto);
-            if ( registeredPlayerDto != null ) {
-                if ( registeredPlayerDto.getBearerToken() == null ) logger.error( "Received no bearer token for " + player + "!");
-                else player.setBearerToken( registeredPlayerDto.getBearerToken() );
-                playerRepository.save( player );
-                logger.info("Bearer token received for " + player );
+            if (registeredPlayerDto != null) {
+                if (registeredPlayerDto.getBearerToken() == null)
+                    logger.error("Received no bearer token for " + player + "!");
+                else player.setBearerToken(registeredPlayerDto.getBearerToken());
+                playerRepository.save(player);
+                logger.info("Bearer token received for " + player);
+            } else {
+                logger.error("PlayerRegistryDto returned by REST service is null for player " + player);
             }
-            else {
-                logger.error( "PlayerRegistryDto returned by REST service is null for player " + player );
-            }
-        }
-        catch ( RESTRequestDeniedException e ) {
+        } catch (RESTRequestDeniedException e) {
             // TODO - unclear what to do in this cases
-            logger.error( "Name collision while getting bearer token for player " + player );
-        }
-        catch ( RESTConnectionFailureException | UnexpectedRESTException e ) {
-            logger.error( "No connection or no valid response from GameService - no bearer token for player " + player );
+            logger.error("Name collision while getting bearer token for player " + player);
+        } catch (RESTConnectionFailureException | UnexpectedRESTException e) {
+            logger.error("No connection or no valid response from GameService - no bearer token for player " + player);
         }
     }
 
@@ -134,24 +135,25 @@ public class PlayerApplicationService {
     /**
      * Once we received the event that a game has been created, this method can be called to register the players
      * for the game.
+     *
      * @param game
      */
-    public void registerPlayersForGame( Game game ) {
+    public void registerPlayersForGame(Game game) {
         List<Player> players = playerRepository.findAll();
-        for (Player player : players) registerOnePlayerForGame( player, game );
+        for (Player player : players) registerOnePlayerForGame(player, game);
     }
-
 
 
     /**
      * Register one specific player for a game
+     *
      * @param player
      * @param game
      */
-    public void registerOnePlayerForGame( Player player, Game game ) {
+    public void registerOnePlayerForGame(Player player, Game game) {
         try {
             if (player.getBearerToken() == null) {
-                obtainBearerTokenForOnePlayer( player );
+                obtainBearerTokenForOnePlayer(player);
             }
             if (player.getBearerToken() == null) {
                 logger.error("No bearer token for " + player + " also after another attempt - cannot register for game!");
@@ -171,21 +173,16 @@ public class PlayerApplicationService {
     }
 
 
-
-
-
-    public void playRound( Integer roundNumber ) {
-        logger.info( "Starting round " + roundNumber );
+    public void playRound(Integer roundNumber) {
+        logger.info("Starting round " + roundNumber);
         Iterable<Player> players = playerRepository.findAll();
-        for ( Player player : players ) {
+        for (Player player : players) {
             player.playRound();
         }
-        UUID transactionId = commandExecutor.executeCommand( null );
-        logger.info( "transactionId " + transactionId );
-        logger.info( "Ending round " + roundNumber );
+        UUID transactionId = commandExecutor.executeCommand(null);
+        logger.info("transactionId " + transactionId);
+        logger.info("Ending round " + roundNumber);
     }
-
-
 
 
     public void receiveCommandAnswer(UUID transactionId, String payload) {

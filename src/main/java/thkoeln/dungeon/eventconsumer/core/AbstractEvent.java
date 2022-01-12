@@ -17,28 +17,25 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @Setter
-@NoArgsConstructor( access = AccessLevel.PROTECTED )
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractEvent {
+    private static final String TRANSACTION_ID_KEY = "transactionId";
     @Id
-    @Setter( AccessLevel.NONE )
+    @Setter(AccessLevel.NONE)
     protected UUID id = UUID.randomUUID();
     protected UUID eventId;
     protected Long timestamp;
     protected UUID transactionId;
-
     @Transient
     protected Logger logger = LoggerFactory.getLogger(PlayerApplicationService.class);
 
-    private static final String TRANSACTION_ID_KEY = "transactionId";
-
-    public AbstractEvent( MessageHeaders messageHeaders ) {
-        setEventId( messageHeaders.getId() );
-        setTimestamp( messageHeaders.getTimestamp() ) ;
+    public AbstractEvent(MessageHeaders messageHeaders) {
+        setEventId(messageHeaders.getId());
+        setTimestamp(messageHeaders.getTimestamp());
         try {
             setTransactionId(UUID.fromString(String.valueOf(messageHeaders.get(TRANSACTION_ID_KEY))));
-        }
-        catch ( IllegalArgumentException e ) {
-            logger.warn( "Event " + eventId + " at time " + timestamp + " doesn't have a transactionId." );
+        } catch (IllegalArgumentException e) {
+            logger.warn("Event " + eventId + " at time " + timestamp + " doesn't have a transactionId.");
         }
     }
 }

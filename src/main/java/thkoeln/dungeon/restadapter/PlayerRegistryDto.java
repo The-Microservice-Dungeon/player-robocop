@@ -4,8 +4,6 @@ package thkoeln.dungeon.restadapter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.UUID;
 
 @Setter
@@ -21,9 +19,9 @@ public class PlayerRegistryDto {
 
     public PlayerRegistryDto clone() {
         PlayerRegistryDto myClone = new PlayerRegistryDto();
-        myClone.setBearerToken( this.bearerToken );
-        myClone.setName( this.name );
-        myClone.setEmail( this.email );
+        myClone.setBearerToken(this.bearerToken);
+        myClone.setName(this.name);
+        myClone.setEmail(this.email);
         return myClone;
     }
 }
