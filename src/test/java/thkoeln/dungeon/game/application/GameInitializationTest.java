@@ -31,19 +31,22 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static thkoeln.dungeon.game.domain.GameStatus.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = DungeonPlayerConfiguration.class)
+@SpringBootTest( classes = DungeonPlayerConfiguration.class )
 public class GameInitializationTest {
     private static final UUID GAME_ID_0 = UUID.randomUUID();
+    private GameDto gameDto0 = new GameDto(GAME_ID_0, CREATED, 0 );
+
     private static final UUID GAME_ID_1 = UUID.randomUUID();
     private static final Integer GAME_ROW_COUNT_1 = 42;
+    private GameDto gameDto1 = new GameDto(GAME_ID_1, GAME_RUNNING, GAME_ROW_COUNT_1);
+
     private static final UUID GAME_ID_2 = UUID.randomUUID();
     private static final Integer GAME_ROW_COUNT_2 = 200;
+    private GameDto gameDto2 = new GameDto(GAME_ID_2, GAME_FINISHED, GAME_ROW_COUNT_2);
+
     private static final UUID GAME_ID_3 = UUID.randomUUID();
     private static final Integer GAME_ROW_COUNT_3 = 0;
-    private final GameDto gameDto0 = new GameDto(GAME_ID_0, CREATED, 0);
-    private final GameDto gameDto1 = new GameDto(GAME_ID_1, GAME_RUNNING, GAME_ROW_COUNT_1);
-    private final GameDto gameDto2 = new GameDto(GAME_ID_2, GAME_FINISHED, GAME_ROW_COUNT_2);
-    private final GameDto gameDto3 = new GameDto(GAME_ID_3, CREATED, GAME_ROW_COUNT_3);
+    private GameDto gameDto3 = new GameDto(GAME_ID_3, CREATED, GAME_ROW_COUNT_3);
 
     private GameDto[] allRemoteGames;
 
@@ -54,7 +57,7 @@ public class GameInitializationTest {
     @Autowired
     private RestTemplate restTemplate;
     private MockRestServiceServer mockServer;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private GameRepository gameRepository;
@@ -66,7 +69,7 @@ public class GameInitializationTest {
     @Before
     public void setUp() throws Exception {
         gameRepository.deleteAll();
-        gamesEndpointURI = new URI(gameServiceURIString + "/games");
+        gamesEndpointURI = new URI( gameServiceURIString + "/games" );
 
         allRemoteGames = new GameDto[3];
         allRemoteGames[0] = gameDto0;
@@ -78,7 +81,7 @@ public class GameInitializationTest {
     @Test
     public void noExceptionWhenConnectionMissing() {
         gameApplicationService.synchronizeGameState();
-        assert (true);
+        assert( true );
     }
 
 
@@ -94,10 +97,10 @@ public class GameInitializationTest {
         // then
         mockServer.verify();
         List<Game> games = gameRepository.findAll();
-        assertEquals(3, games.size());
+        assertEquals( 3, games.size() );
         games = gameApplicationService.retrieveActiveGames();
-        assertEquals(1, games.size());
-        assertEquals(gameDto1.getGameId(), games.get(0).getId());
+        assertEquals( 1, games.size() );
+        assertEquals( gameDto1.getGameId(), games.get( 0 ).getGameId() );
     }
 
 
@@ -115,40 +118,40 @@ public class GameInitializationTest {
         // then
         mockServer.verify();
         List<Game> games = gameRepository.findAll();
-        assertEquals(4, games.size());
+        assertEquals( 4, games.size() );
         games = gameApplicationService.retrieveActiveGames();
-        assertEquals(1, games.size());
-        assertEquals(gameDto0.getGameId(), games.get(0).getId());
-        Game game = gameRepository.findByGameId(GAME_ID_1).get(0);
-        assertEquals(GAME_FINISHED, game.getGameStatus());
-        game = gameRepository.findByGameId(GAME_ID_2).get(0);
-        assertEquals(ORPHANED, game.getGameStatus());
-        game = gameRepository.findByGameId(GAME_ID_3).get(0);
-        assertEquals(CREATED, game.getGameStatus());
+        assertEquals( 1, games.size() );
+        assertEquals(gameDto0.getGameId(), games.get( 0 ).getGameId() );
+        Game game = gameRepository.findByGameId(GAME_ID_1).get( 0 );
+        assertEquals( GAME_FINISHED, game.getGameStatus() );
+        game = gameRepository.findByGameId(GAME_ID_2).get( 0 );
+        assertEquals( ORPHANED, game.getGameStatus() );
+        game = gameRepository.findByGameId(GAME_ID_3).get( 0 );
+        assertEquals( CREATED, game.getGameStatus() );
     }
 
 
     private void mockCallToGamesEndpoint_1() throws Exception {
-        mockServer.expect(ExpectedCount.manyTimes(),
+        mockServer.expect( ExpectedCount.manyTimes(),
                         requestTo(gamesEndpointURI))
-                .andExpect(method(GET))
-                .andRespond(withStatus(HttpStatus.OK)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(mapper.writeValueAsString(allRemoteGames)));
+                .andExpect( method( GET ))
+                .andRespond( withStatus( HttpStatus.OK )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .body( mapper.writeValueAsString(allRemoteGames) ) );
     }
 
     private void mockCallToGamesEndpoint_2() throws Exception {
-        allRemoteGames[0].setGameStatus(GAME_RUNNING);
-        allRemoteGames[1].setGameStatus(GAME_FINISHED);
+        allRemoteGames[0].setGameStatus( GAME_RUNNING );
+        allRemoteGames[1].setGameStatus( GAME_FINISHED );
         allRemoteGames[2] = gameDto3;
 
         mockServer = MockRestServiceServer.createServer(restTemplate);
-        mockServer.expect(ExpectedCount.manyTimes(),
+        mockServer.expect( ExpectedCount.manyTimes(),
                         requestTo(gamesEndpointURI))
-                .andExpect(method(GET))
-                .andRespond(withStatus(HttpStatus.OK)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(mapper.writeValueAsString(allRemoteGames)));
+                .andExpect( method( GET ))
+                .andRespond( withStatus( HttpStatus.OK )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .body( mapper.writeValueAsString(allRemoteGames) ) );
     }
 
 
