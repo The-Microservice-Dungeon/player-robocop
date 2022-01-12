@@ -27,8 +27,6 @@ export default {
               return JSON.parse(body);
             } catch {
               return body
-            } finally {
-              return body
             }
           })
           .then(result => {
