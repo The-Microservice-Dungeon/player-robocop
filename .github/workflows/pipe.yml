@@ -39,13 +39,15 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build frontend
+        run: mvn compile -pl frontend
       - name: Build to GitHub Container Registry
         # use jib plugin to build docker image
         # If you want to change the base image (e.g. if you changed your java version)
         # change the Djib.from.image value. Tags can be found here
         # https://hub.docker.com/_/eclipse-temurin?tab=tags
         run: >
-          mvn compile
+          mvn compile -pl "!frontend"
           com.google.cloud.tools:jib-maven-plugin:3.1.4:build
           -Djib.to.image=ghcr.io/${REPO_LOWERCASE}
           -Djib.from.image=eclipse-temurin:17-alpine
