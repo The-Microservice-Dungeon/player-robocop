@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>th-koeln.dungeon</groupId>
-    <artifactId>player-template-java</artifactId>
+    <artifactId>player-robocop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>player-template-java</name>
-    <description>player-template-java</description>
+    <name>player-robocop</name>
+    <description>player-robocop</description>
     <properties>
         <java.version>16</java.version>
     </properties>
