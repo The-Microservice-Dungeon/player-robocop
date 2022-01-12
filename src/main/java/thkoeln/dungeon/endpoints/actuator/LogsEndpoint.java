@@ -1,4 +1,4 @@
-package thkoeln.dungeon.core;
+package thkoeln.dungeon.endpoints.actuator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
