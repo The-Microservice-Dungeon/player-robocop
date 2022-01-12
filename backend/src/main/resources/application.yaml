@@ -15,7 +15,7 @@ dungeon:
   mode: "SINGLE" # either "SINGLE" (if you build a player based on this), or "MULTI" (to test the core services)
   singlePlayer:
     playerName: Robocop
-    playerEmail: # "martina@musterfrau.de" - if undefined, a random name will be chosen
+    playerEmail: robocop@cop.cop
   multiPlayer:
     number: 25
   services:
