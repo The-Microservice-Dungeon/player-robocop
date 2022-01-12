@@ -5,6 +5,12 @@ spring:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_ADDRESS:localhost:29092}
     consumer:
       group-id: player-robocop
+  web:
+    resources:
+      static-locations:
+        - file:./backend/src/main/resources/public
+        - classpath:/static/
+        - classpath:/public/
   endpoints:
     logfile:
       enabled: true

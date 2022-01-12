@@ -3,7 +3,7 @@
     <package-json value="$PROJECT_DIR$/frontend/package.json" />
     <command value="run" />
     <scripts>
-      <script value="serve" />
+      <script value="watch" />
     </scripts>
     <node-interpreter value="node" />
     <envs />
