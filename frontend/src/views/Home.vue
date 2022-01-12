@@ -8,9 +8,5 @@
 
 export default {
   name: 'Home',
-  mounted() {
-    console.log("mode is " + process.env.NODE_ENV )
-    console.log(process.env.NODE_ENV === 'development')
-  }
 }
 </script>
