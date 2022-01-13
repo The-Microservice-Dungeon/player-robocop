@@ -2,15 +2,14 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/map">Map</router-link> |
-      <router-link to="/actuator" class="dev">Actuator</router-link> |
+      <router-link to="/actuator" class="dev">Actuator</router-link>
     </div>
     <router-view/>
   </div>
 </template>
 
 <style lang="scss">
-$baseTextColor: #2c3e50;
+$baseTextColor: #fbfbfb;
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -24,6 +23,11 @@ $baseTextColor: #2c3e50;
 html, body {
   padding: 0;
   margin: 0;
+  background: rgb(9,9,121);
+  background: linear-gradient(180deg, rgba(9,9,121,1) 0%, rgba(86,75,102,1) 100%);
+  height: 100%;
+  overflow-y: auto;
+  overflow-scrolling: touch;
 }
 
 #nav {
@@ -38,7 +42,8 @@ html, body {
     }
 
     &.router-link-exact-active{
-      color: #42b983;
+      color: #f1ebff;
+      text-decoration-color: #f600ff;
     }
 
     &.dev{

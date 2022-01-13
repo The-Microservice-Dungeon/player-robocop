@@ -60,7 +60,7 @@ export default {
 .out {
   width: auto;
   max-width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   text-align: left;
 }
 </style>
