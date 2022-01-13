@@ -15,6 +15,19 @@
 - frontend will be available on [http://localhost:8103/](http://localhost:8103/#/)
 - All other routes will be passed to Spring
 
+### Database Inspection
+To setup an IntelliJ database connection:
+1. Select H2 as Datasource
+2. Choose "Remote" as the connection type
+3. Set user to robocop and password to password
+4. modify the connection URL to look like this: 
+```
+jdbc:h2:<ABSOLUTE/PATH/TO/DB-FILE>;AUTO_SERVER=TRUE
+```
+5. Connect + Refresh
+6. ???
+7. Profit
+
 ## Architecture 
 
 The domain model is as such:
