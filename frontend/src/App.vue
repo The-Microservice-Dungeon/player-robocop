@@ -1,12 +1,43 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/actuator" class="dev">Actuator</router-link>
-    </div>
-    <router-view/>
+
+    <template v-if="!isAuthenticated()">
+      <login/>
+    </template>
+
+    <template v-else>
+      <div id="nav">
+        <router-link to="/">Home</router-link> |
+        <router-link to="/actuator" class="dev">Actuator</router-link>
+        <a @click="end" class="logout">logout</a>
+      </div>
+      <router-view/>
+    </template>
   </div>
 </template>
+
+<script>
+import {mapGetters, mapMutations} from "vuex";
+import Login from "@/views/Login";
+
+export default {
+  name: 'App',
+  components: {Login},
+  computed: {
+    ...mapGetters([
+      'isAuthenticated',
+    ])
+  },
+  methods: {
+    ...mapMutations([
+        'logout'
+    ]),
+    end () {
+      this.logout()
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 $baseTextColor: #fbfbfb;
@@ -51,6 +82,10 @@ html, body {
       text-decoration-style: dotted;
       font-style: italic;
     }
+  }
+
+  .logout {
+    float: right;
   }
 }
 </style>
