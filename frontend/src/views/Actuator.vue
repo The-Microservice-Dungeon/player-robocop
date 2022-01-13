@@ -18,7 +18,7 @@ export default {
   data () {
     return {
       response: undefined,
-      path: '/actuator'
+      path: '/actuator/logs'
     }
   },
   mounted() {
