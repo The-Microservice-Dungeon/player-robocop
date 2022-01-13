@@ -8,6 +8,13 @@
 | Thomas Raser     | @ThmsRa         |
 
 
+## Installation
+1. Import `player-robocop` Maven Package
+2. Let Intellij figure out everything and install the packages
+3. Choose `RunAll` run configuration. This will start spring and the Vue frontend
+- frontend will be available on [http://localhost:8103/](http://localhost:8103/#/)
+- All other routes will be passed to Spring
+
 ## Architecture 
 
 The domain model is as such:
