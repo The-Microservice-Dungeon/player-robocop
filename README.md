@@ -1,5 +1,13 @@
 # Robocop Player for _The Microservice Dungeon_
 
+## Authors
+| Name             | Github          |
+|------------------|-----------------|
+| Jannik Alexander | @InstantRegrets |
+| Oliver Wichmann  | @OliverW21      |
+| Thomas Raser     | @ThmsRa         |
+
+
 ## Architecture 
 
 The domain model is as such:
