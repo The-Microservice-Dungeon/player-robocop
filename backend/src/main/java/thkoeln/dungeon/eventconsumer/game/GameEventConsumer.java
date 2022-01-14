@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.eventconsumer.core.KafkaErrorService;
 import thkoeln.dungeon.game.application.GameApplicationService;
@@ -17,12 +18,18 @@ public class GameEventConsumer {
     private final KafkaErrorService kafkaErrorService;
     private final Logger logger = LoggerFactory.getLogger(GameEventConsumer.class);
 
+    private SimpMessagingTemplate template;
+
+
     @Autowired
     public GameEventConsumer(GameApplicationService gameApplicationService,
-                             GameStatusEventRepository gameStatusEventRepository, KafkaErrorService kafkaErrorService) {
+                             GameStatusEventRepository gameStatusEventRepository,
+                             KafkaErrorService kafkaErrorService,
+                             SimpMessagingTemplate template) {
         this.gameApplicationService = gameApplicationService;
         this.gameStatusEventRepository = gameStatusEventRepository;
         this.kafkaErrorService = kafkaErrorService;
+        this.template = template;
     }
 
 
@@ -30,13 +37,16 @@ public class GameEventConsumer {
      * "Status changed" event published by GameService, esp. after a game has been created, started, or finished
      */
     @KafkaListener( topics = "status" )  // that is what the documentation says
-    public void consumeRoundStatusEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,
+    public void consumeRoundStatusEvent(@Header String eventId,
+                                        @Header String timestamp,
+                                        @Header String transactionId,
                                         @Payload String payload) {
         try {
             GameStatusEvent gameStatusEvent = new GameStatusEvent(eventId, timestamp, transactionId, payload);
             gameStatusEventRepository.save(gameStatusEvent);
             logger.info("saved game event with status "+gameStatusEvent.getGameStatus().toString());
             gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), gameStatusEvent.getGameStatus());
+            this.template.convertAndSend("game_events", "Game " + gameStatusEvent.getGameId() + " changed its Status to: " + gameStatusEvent.getGameStatus());
         } catch (Exception e) {
             this.kafkaErrorService.newKafkaError("status", payload, e.getMessage());
         }
