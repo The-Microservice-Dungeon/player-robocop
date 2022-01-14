@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ActuatorView from "@/views/ActuatorView";
+import DebugGameManager from "@/views/DebugGameManager";
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/actuator',
     name: 'Actuator',
     component: ActuatorView
+  },
+  {
+    path: '/game',
+    name: 'Game Manager',
+    component: DebugGameManager
   },
 ]
 

@@ -7,7 +7,10 @@
 
     <template v-else>
       <div id="nav">
-        <router-link to="/">Home</router-link> |
+        <router-link to="/">Home</router-link>
+        |
+        <router-link to="/game" class="dev">Game Manager</router-link>
+        |
         <router-link to="/actuator" class="dev">Actuator</router-link>
         <a @click="end" class="logout">logout</a>
       </div>
