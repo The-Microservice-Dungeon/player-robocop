@@ -2,7 +2,7 @@
   <div id="app">
 
     <template v-if="!isAuthenticated()">
-      <login/>
+      <authentication-view/>
     </template>
 
     <template v-else>
@@ -18,11 +18,11 @@
 
 <script>
 import {mapGetters, mapMutations} from "vuex";
-import Login from "@/views/Login";
+import AuthenticationView from "@/views/AuthenticationView";
 
 export default {
   name: 'App',
-  components: {Login},
+  components: {AuthenticationView},
   computed: {
     ...mapGetters([
       'isAuthenticated',
