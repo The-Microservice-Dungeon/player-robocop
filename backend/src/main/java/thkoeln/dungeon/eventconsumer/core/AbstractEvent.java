@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.messaging.MessageHeaders;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 
 import javax.persistence.Id;
@@ -17,25 +16,38 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor( access = AccessLevel.PROTECTED )
 public abstract class AbstractEvent {
-    private static final String TRANSACTION_ID_KEY = "transactionId";
     @Id
-    @Setter(AccessLevel.NONE)
+    @Setter( AccessLevel.NONE )
     protected UUID id = UUID.randomUUID();
     protected UUID eventId;
     protected Long timestamp;
     protected UUID transactionId;
+
     @Transient
     protected Logger logger = LoggerFactory.getLogger(PlayerApplicationService.class);
 
-    public AbstractEvent(MessageHeaders messageHeaders) {
-        setEventId(messageHeaders.getId());
-        setTimestamp(messageHeaders.getTimestamp());
+    public static final String TRANSACTION_ID_KEY = "transactionId";
+
+    public AbstractEvent( String eventIdStr, String timestampStr, String transactionIdStr ) {
         try {
-            setTransactionId(UUID.fromString(String.valueOf(messageHeaders.get(TRANSACTION_ID_KEY))));
-        } catch (IllegalArgumentException e) {
-            logger.warn("Event " + eventId + " at time " + timestamp + " doesn't have a transactionId.");
+            setEventId( UUID.fromString( eventIdStr ) );
+        }
+        catch ( IllegalArgumentException e ) {
+            logger.warn( "Event " + eventId + " at time " + timestamp + " has invalid eventId." );
+        }
+        try {
+            setTimestamp( Long.valueOf( timestampStr ) );
+        }
+        catch ( IllegalArgumentException e ) {
+            logger.warn( "Event " + eventId + " at time " + timestamp + " has invalid timestamp." );
+        }
+        try {
+            setTransactionId( UUID.fromString( transactionIdStr ) );
+        }
+        catch ( IllegalArgumentException e ) {
+            logger.warn( "Event " + eventId + " at time " + timestamp + " doesn't have a valid transactionId " + transactionIdStr );
         }
     }
 }
