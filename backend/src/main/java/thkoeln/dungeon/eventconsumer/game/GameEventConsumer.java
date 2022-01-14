@@ -1,19 +1,14 @@
 package thkoeln.dungeon.eventconsumer.game;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.eventconsumer.core.KafkaErrorService;
 import thkoeln.dungeon.game.application.GameApplicationService;
-import com.google.gson.Gson;
 
 @Service
 public class GameEventConsumer {

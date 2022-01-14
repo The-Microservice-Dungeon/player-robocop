@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static thkoeln.dungeon.game.domain.game.GameStatus.*;
+import static thkoeln.dungeon.game.domain.game.GameStatus.GAME_RUNNING;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest( classes = DungeonPlayerConfiguration.class )
