@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { apiGet } from "@/utils";
+import { apiPost } from "@/utils";
 import { mapMutations } from "vuex";
 
 export default {
@@ -28,7 +28,7 @@ export default {
     authenticate (e) {
       if (e) e.preventDefault()
 
-      apiGet('/authentication', {
+      apiPost('/authentication', {
         password: this.password,
       })
       .then(response => {
