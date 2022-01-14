@@ -1,4 +1,4 @@
-const apiLink = (path, params) => {
+export const apiLink = (path, params) => {
     if (!path.startsWith('/')) path = '/' + path
     let urlString = window.location.protocol + window.location.host + path
     if (urlString.endsWith('/')) {

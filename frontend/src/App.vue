@@ -22,6 +22,9 @@
 <script>
 import {mapGetters, mapMutations} from "vuex";
 import AuthenticationView from "@/views/AuthenticationView";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+import {apiLink} from "@/utils";
 
 export default {
   name: 'App',
@@ -31,13 +34,35 @@ export default {
       'isAuthenticated',
     ])
   },
+  mounted() {
+    this.connectToWebsocket()
+  },
   methods: {
     ...mapMutations([
-        'logout'
+      'logout'
     ]),
-    end () {
+    end() {
       this.logout()
-    }
+    },
+    connectToWebsocket() {
+      this.socket = new SockJS(apiLink("/robocop-websocket").toString())
+      this.stompClient = Stomp.over(this.socket)
+      this.stompClient.connect(
+          {},
+          frame => {
+            this.connected = true
+            console.log(frame);
+            this.stompClient.subscribe("game_events", tick => {
+              console.log(tick)
+              console.log(JSON.parse(tick.body).content)
+            })
+          },
+          error => {
+            console.log(error)
+            this.connected = false
+          }
+      );
+    },
   }
 }
 </script>
@@ -57,8 +82,8 @@ $baseTextColor: #fbfbfb;
 html, body {
   padding: 0;
   margin: 0;
-  background: rgb(9,9,121);
-  background: linear-gradient(180deg, rgba(9,9,121,1) 0%, rgba(86,75,102,1) 100%);
+  background: rgb(9, 9, 121);
+  background: linear-gradient(180deg, rgba(9, 9, 121, 1) 0%, rgba(86, 75, 102, 1) 100%);
   height: 100%;
   overflow-y: auto;
   overflow-scrolling: touch;
@@ -71,16 +96,16 @@ html, body {
     font-weight: bold;
     color: $baseTextColor;
 
-    &:visited{
+    &:visited {
       color: $baseTextColor;
     }
 
-    &.router-link-exact-active{
+    &.router-link-exact-active {
       color: #f1ebff;
       text-decoration-color: #f600ff;
     }
 
-    &.dev{
+    &.dev {
       opacity: 0.8;
       text-decoration-style: dotted;
       font-style: italic;
