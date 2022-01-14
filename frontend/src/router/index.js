@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Actuator from "@/views/Actuator";
+import HomeView from '../views/HomeView.vue'
+import ActuatorView from "@/views/ActuatorView";
 
 Vue.use(VueRouter)
 
@@ -9,12 +9,12 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: HomeView
   },
   {
     path: '/actuator',
     name: 'Actuator',
-    component: Actuator
+    component: ActuatorView
   },
 ]
 

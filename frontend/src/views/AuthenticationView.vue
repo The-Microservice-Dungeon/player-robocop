@@ -15,7 +15,7 @@ import {apiCall} from "@/utils";
 import { mapMutations} from "vuex";
 
 export default {
-  name: "Login",
+  name: "AuthenticationView",
   data () {
     return {
       password: undefined

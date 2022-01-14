@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "Actuator",
+  name: "ActuatorView",
   data () {
     return {
       response: undefined,
