@@ -4,7 +4,6 @@ const apiLink = (path, params) => {
     if (urlString.endsWith('/')) {
         urlString = urlString.substring(0, urlString.length - 1)
     }
-    console.log(urlString)
     let url = new URL(urlString)
     if (params !== undefined && Object.keys(params).length > 0) {
         Object.keys(params).forEach(key => {
