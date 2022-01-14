@@ -15,8 +15,8 @@ import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.DungeonPlayerConfiguration;
-import thkoeln.dungeon.game.domain.Game;
-import thkoeln.dungeon.game.domain.GameRepository;
+import thkoeln.dungeon.game.domain.game.Game;
+import thkoeln.dungeon.game.domain.game.GameRepository;
 import thkoeln.dungeon.restadapter.GameDto;
 
 import java.net.URI;
@@ -28,7 +28,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
-import static thkoeln.dungeon.game.domain.GameStatus.*;
+import static thkoeln.dungeon.game.domain.game.GameStatus.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest( classes = DungeonPlayerConfiguration.class )

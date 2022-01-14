@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.CommandExecutor;
-import thkoeln.dungeon.game.domain.Game;
+import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.player.domain.GameParticipationRepository;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerMode;

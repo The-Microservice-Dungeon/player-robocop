@@ -4,7 +4,7 @@ package thkoeln.dungeon.player.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import thkoeln.dungeon.game.domain.Game;
+import thkoeln.dungeon.game.domain.game.Game;
 
 import javax.persistence.*;
 import java.util.ArrayList;

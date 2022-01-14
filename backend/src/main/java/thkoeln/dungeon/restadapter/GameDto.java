@@ -2,7 +2,7 @@ package thkoeln.dungeon.restadapter;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import thkoeln.dungeon.game.domain.GameStatus;
+import thkoeln.dungeon.game.domain.game.GameStatus;
 
 import java.util.UUID;
 

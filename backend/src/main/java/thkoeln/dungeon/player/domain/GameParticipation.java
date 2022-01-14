@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import thkoeln.dungeon.game.domain.Game;
+import thkoeln.dungeon.game.domain.game.Game;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
