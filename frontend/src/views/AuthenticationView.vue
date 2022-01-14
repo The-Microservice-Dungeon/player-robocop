@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import {apiCall} from "@/utils";
-import { mapMutations} from "vuex";
+import { apiGet } from "@/utils";
+import { mapMutations } from "vuex";
 
 export default {
   name: "AuthenticationView",
@@ -27,8 +27,8 @@ export default {
     ]),
     authenticate (e) {
       if (e) e.preventDefault()
-      
-      apiCall('POST', '/authentication', {
+
+      apiGet('/authentication', {
         password: this.password,
       })
       .then(response => {

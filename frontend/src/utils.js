@@ -27,3 +27,6 @@ export const apiCall = (method = 'GET', path, params = {}, body = undefined, hea
     })
         .catch(console.error)
 }
+
+export const apiPost = (path, params, body, headers) => apiCall('POST', path, params, body, headers);
+export const apiGet = (path, params, body, headers) => apiCall('GET', path, params, body, headers);
