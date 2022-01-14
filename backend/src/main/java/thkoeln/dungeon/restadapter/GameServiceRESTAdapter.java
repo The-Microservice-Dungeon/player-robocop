@@ -3,6 +3,7 @@ package thkoeln.dungeon.restadapter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,27 @@ public class GameServiceRESTAdapter {
             throw new RESTConnectionFailureException(urlString, e.getMessage());
         }
         return gameDtos;
+    }
+
+    public GameDto createNewGame(Integer maxPlayers, Integer maxRounds)
+            throws UnexpectedRESTException, RESTConnectionFailureException {
+        GameDto gameDto;
+        String urlString = gameServiceUrlString + "/games";
+        String json = new JSONObject()
+                .put("maxPlayers", maxPlayers)
+                .put("maxRounds", maxRounds)
+                .toString();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<String>(json, headers);
+        try {
+            gameDto = restTemplate.postForObject(urlString, request, GameDto.class);
+            if (gameDto == null) throw new UnexpectedRESTException("Received a null GameDto array");
+            logger.info("Created new Game " + gameDto);
+        } catch (RestClientException e) {
+            throw new RESTConnectionFailureException(urlString, e.getMessage());
+        }
+        return gameDto;
     }
 
 

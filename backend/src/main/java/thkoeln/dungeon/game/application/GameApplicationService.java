@@ -15,10 +15,7 @@ import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class GameApplicationService {
@@ -53,8 +50,8 @@ public class GameApplicationService {
         try {
             gameDtos = gameServiceRESTAdapter.fetchCurrentGameState();
         } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
-            logger.warn("Problems with GameService while synchronizing game state - need to try again later.\n" +
-                    e.getStackTrace());
+            logger.warn("Problems with GameService while synchronizing game state (" + e.getMessage() + ") - need to try again later.\n" +
+                    Arrays.toString(e.getStackTrace()).replaceAll(",", "\n"));
         }
 
         // We need to treat the new games (those we haven't stored yet) and those we
@@ -80,11 +77,15 @@ public class GameApplicationService {
             }
         }
         for (GameDto gameDto : unknownGameDtos) {
-            Game game = modelMapper.map(gameDto, Game.class);
-            gameRepository.save(game);
-            logger.info("Received game " + game + " for the first time");
+            this.storeGame(gameDto);
+            logger.info("Received game " + gameDto + " for the first time");
         }
         logger.info("Retrieval of new game state finished");
+    }
+
+    public void storeGame (GameDto gameDto) {
+        Game game = modelMapper.map(gameDto, Game.class);
+        gameRepository.save(game);
     }
 
 
@@ -112,8 +113,8 @@ public class GameApplicationService {
         if (fittingGames.size() == 0) {
             game = Game.newlyCreatedGame(gameId);
             gameRepository.save(game);
-        } else {
-            if (fittingGames.size() > 1) game = mergeGamesIntoOne(fittingGames);
+        } else if (fittingGames.size() > 1){
+            game = mergeGamesIntoOne(fittingGames);
             game.resetToNewlyCreated();
             gameRepository.save(game);
         }
