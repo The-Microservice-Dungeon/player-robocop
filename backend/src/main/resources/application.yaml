@@ -40,7 +40,7 @@ dungeon:
 
 logging:
   file:
-    path: /logs
+    path: ./backend/logs
 
 management:
   endpoint:

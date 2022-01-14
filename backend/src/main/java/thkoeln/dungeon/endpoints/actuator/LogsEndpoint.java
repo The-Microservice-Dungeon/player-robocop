@@ -30,9 +30,7 @@ import java.util.stream.Stream;
 @Component
 @Endpoint(id = "logs")
 @Slf4j
-public class LogsEndpoint {
-    private final String logFilePath;
-
+public record LogsEndpoint(String logFilePath) {
     @Autowired
     public LogsEndpoint(
             @Value("${logging.file.path}/spring.log")
