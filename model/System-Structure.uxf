@@ -1,0 +1,24 @@
+<diagram program="umletino" version="14.3.0"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>440</x><y>180</y><w>130</w><h>60</h></coordinates><panel_attributes>Frontend
+/Vue.js/
+/(Js, Html, Css + npm)/
+bg=cyan</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>440</x><y>380</y><w>130</w><h>60</h></coordinates><panel_attributes>Backend
+/Spring Boot/
+/(Java + Maven)/
+bg=green</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>310</x><y>570</y><w>130</w><h>60</h></coordinates><panel_attributes>Game Service
+valign=center
+bg=yellow</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>550</x><y>570</y><w>130</w><h>60</h></coordinates><panel_attributes>Kafka Event
+Service
+valign=center
+bg=orange</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>560</x><y>200</y><w>240</w><h>230</h></coordinates><panel_attributes>lt=&lt;.&gt;
+m1=&lt;&lt;communicates using REST&gt;&gt;
+m1pos=35,91
+</panel_attributes><additional_attributes>10;10;60;10;60;210;10;210</additional_attributes></element><element><id>Relation</id><coordinates><x>220</x><y>200</y><w>240</w><h>230</h></coordinates><panel_attributes>lt=&lt;.
+m1=&lt;&lt;information via Websocket&gt;&gt;
+m1pos=-45,91
+</panel_attributes><additional_attributes>220;10;160;10;160;210;220;210</additional_attributes></element><element><id>Relation</id><coordinates><x>260</x><y>430</y><w>240</w><h>160</h></coordinates><panel_attributes>lt=&lt;.&gt;
+m1=&lt;&lt;communicates through `RestAdapter`&gt;&gt;
+m1pos=-120,-60
+</panel_attributes><additional_attributes>120;140;120;70;220;70;220;10</additional_attributes></element><element><id>Relation</id><coordinates><x>520</x><y>430</y><w>220</w><h>160</h></coordinates><panel_attributes>lt=.&gt;
+m1=&lt;&lt;information via `EventConnector`&gt;&gt;
+m1pos=-90,-60
+</panel_attributes><additional_attributes>100;140;100;70;10;70;10;10</additional_attributes></element></diagram>
