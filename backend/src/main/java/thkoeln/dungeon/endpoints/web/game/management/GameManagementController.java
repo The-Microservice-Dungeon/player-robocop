@@ -1,4 +1,4 @@
-package thkoeln.dungeon.endpoints.web.gamemanagement;
+package thkoeln.dungeon.endpoints.web.game.management;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
