@@ -9,6 +9,6 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BattleCommandBody extends CommandBody{
+public class BattleCommandBody extends CommandBody {
     private UUID targetId; // Robot UUID
 }

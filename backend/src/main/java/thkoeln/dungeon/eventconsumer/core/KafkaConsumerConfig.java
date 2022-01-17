@@ -21,6 +21,7 @@ public class KafkaConsumerConfig {
     private String bootstrapAddress;
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
+
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();

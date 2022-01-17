@@ -32,7 +32,7 @@ public class KafkaError {
     @Getter
     private String payload;
 
-    public KafkaError(String topic, String message, String payload){
+    public KafkaError(String topic, String message, String payload) {
         this.topic = topic;
         this.message = message;
         this.payload = payload;

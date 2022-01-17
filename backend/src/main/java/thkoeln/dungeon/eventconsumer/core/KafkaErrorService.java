@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KafkaErrorService {
-    private final KafkaErrorRepository kafkaErrorRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaErrorService.class);
+    private final KafkaErrorRepository kafkaErrorRepository;
 
     @Autowired
     public KafkaErrorService(KafkaErrorRepository kafkaErrorRepository) {
@@ -16,8 +16,8 @@ public class KafkaErrorService {
     }
 
     public void newKafkaError(String topic, String consumerRecord, String exception) {
-        KafkaError error = new KafkaError(topic, exception, consumerRecord );
-        LOGGER.error("Error processing " +topic + " event."+"\nException: "+exception+"\nPayload: "+consumerRecord);
+        KafkaError error = new KafkaError(topic, exception, consumerRecord);
+        LOGGER.error("Error processing " + topic + " event." + "\nException: " + exception + "\nPayload: " + consumerRecord);
         this.kafkaErrorRepository.save(error);
     }
 }

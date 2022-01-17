@@ -19,12 +19,13 @@ public class GameStatusEventPayloadDto {
     @JsonProperty("status")
     private GameStatus gameStatus;
 
+    public GameStatusEventPayloadDto(String gameIdString, String gameStatusString) {
+        setGameStatus(GameStatus.valueOf(gameStatusString));
+        setGameId(UUID.fromString(gameIdString));
+    }
+
     public static GameStatusEventPayloadDto fromJsonString(String jsonString) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
-        return objectMapper.readValue( jsonString, GameStatusEventPayloadDto.class );
-    }
-    public GameStatusEventPayloadDto( String gameIdString, String gameStatusString ) {
-        setGameStatus( GameStatus.valueOf( gameStatusString ) );
-        setGameId( UUID.fromString( gameIdString ) );
+        return objectMapper.readValue(jsonString, GameStatusEventPayloadDto.class);
     }
 }

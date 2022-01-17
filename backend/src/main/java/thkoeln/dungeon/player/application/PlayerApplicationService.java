@@ -113,7 +113,7 @@ public class PlayerApplicationService {
         if (player.getBearerToken() != null) return;
         try {
             PlayerRegistryDto playerDto = modelMapper.map(player, PlayerRegistryDto.class);
-            PlayerRegistryDto registeredPlayerDto = gameServiceRESTAdapter.getBearerTokenForPlayer(playerDto);
+            PlayerRegistryDto registeredPlayerDto = gameServiceRESTAdapter.registerNewPlayer(playerDto);
             if (registeredPlayerDto != null) {
                 if (registeredPlayerDto.getBearerToken() == null)
                     logger.error("Received no bearer token for " + player + "!");

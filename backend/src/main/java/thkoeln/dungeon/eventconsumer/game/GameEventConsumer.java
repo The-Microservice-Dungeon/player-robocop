@@ -36,7 +36,7 @@ public class GameEventConsumer {
     /**
      * "Status changed" event published by GameService, esp. after a game has been created, started, or finished
      */
-    @KafkaListener( topics = "status" )  // that is what the documentation says
+    @KafkaListener(topics = "status")  // that is what the documentation says
     public void consumeRoundStatusEvent(@Header String eventId,
                                         @Header String timestamp,
                                         @Header String transactionId,
@@ -44,7 +44,7 @@ public class GameEventConsumer {
         try {
             GameStatusEvent gameStatusEvent = new GameStatusEvent(eventId, timestamp, transactionId, payload);
             gameStatusEventRepository.save(gameStatusEvent);
-            logger.info("saved game event with status "+gameStatusEvent.getGameStatus().toString());
+            logger.info("saved game event with status " + gameStatusEvent.getGameStatus().toString());
             gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), gameStatusEvent.getGameStatus());
             this.template.convertAndSend("game_events", "Game " + gameStatusEvent.getGameId() + " changed its Status to: " + gameStatusEvent.getGameStatus());
         } catch (Exception e) {

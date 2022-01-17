@@ -21,15 +21,14 @@ public class GameStatusEvent extends AbstractEvent {
     private GameStatus gameStatus;
     private UUID gameId;
 
-    public GameStatusEvent( String eventIdStr, String timestampStr, String transactionIdStr, String payloadString ) {
-        super(  eventIdStr, timestampStr, transactionIdStr );
+    public GameStatusEvent(String eventIdStr, String timestampStr, String transactionIdStr, String payloadString) {
+        super(eventIdStr, timestampStr, transactionIdStr);
         try {
             GameStatusEventPayloadDto payload = GameStatusEventPayloadDto.fromJsonString(payloadString);
-            setGameStatus( payload.getGameStatus() );
-            setGameId( payload.getGameId() );
-        }
-        catch(JsonProcessingException conversionFailed ) {
-            logger.error( "Error converting payload for event: " + payloadString );
+            setGameStatus(payload.getGameStatus());
+            setGameId(payload.getGameId());
+        } catch (JsonProcessingException conversionFailed) {
+            logger.error("Error converting payload for event: " + payloadString);
         }
     }
 

@@ -19,10 +19,10 @@ import java.util.*;
 
 @Service
 public class GameApplicationService {
-    ModelMapper modelMapper = new ModelMapper();
     private final GameRepository gameRepository;
     private final GameServiceRESTAdapter gameServiceRESTAdapter;
     private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
+    ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     public GameApplicationService(GameRepository gameRepository,
@@ -83,7 +83,7 @@ public class GameApplicationService {
         logger.info("Retrieval of new game state finished");
     }
 
-    public void storeGame (GameDto gameDto) {
+    public void storeGame(GameDto gameDto) {
         Game game = modelMapper.map(gameDto, Game.class);
         gameRepository.save(game);
     }
@@ -113,7 +113,7 @@ public class GameApplicationService {
         if (fittingGames.size() == 0) {
             game = Game.newlyCreatedGame(gameId);
             gameRepository.save(game);
-        } else if (fittingGames.size() > 1){
+        } else if (fittingGames.size() > 1) {
             game = mergeGamesIntoOne(fittingGames);
             game.resetToNewlyCreated();
             gameRepository.save(game);

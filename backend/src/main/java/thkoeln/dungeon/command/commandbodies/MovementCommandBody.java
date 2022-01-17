@@ -9,6 +9,6 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MovementCommandBody extends CommandBody{
+public class MovementCommandBody extends CommandBody {
     private UUID planetId; // Planet UUID
 }

@@ -8,6 +8,6 @@ import thkoeln.dungeon.command.ItemType;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MoveItemUseCommandBody extends CommandBody{
+public class MoveItemUseCommandBody extends CommandBody {
     private ItemType itemType;
 }
