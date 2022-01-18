@@ -29,12 +29,9 @@ spring:
       dialect: org.hibernate.dialect.H2Dialect
 
 dungeon:
-  mode: "SINGLE" # either "SINGLE" (if you build a player based on this), or "MULTI" (to test the core services)
-  singlePlayer:
+  player:
     playerName: Robocop
     playerEmail: robocop@cop.cop
-  multiPlayer:
-    number: 25
   services:
     game: ${GAME_SERVICE}
 

@@ -10,7 +10,6 @@ import thkoeln.dungeon.command.CommandExecutor;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.player.domain.GameParticipationRepository;
 import thkoeln.dungeon.player.domain.Player;
-import thkoeln.dungeon.player.domain.PlayerMode;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.PlayerRegistryDto;
@@ -39,17 +38,12 @@ public class PlayerApplicationService {
     private final GameParticipationRepository gameParticipationRepository;
     private final GameServiceRESTAdapter gameServiceRESTAdapter;
 
-    @Value("${dungeon.singlePlayer.playerName}")
-    private String singlePlayerName;
+    @Value("${dungeon.player.playerName}")
+    private String playerName;
 
-    @Value("${dungeon.singlePlayer.playerEmail}")
-    private String singlePlayerEmail;
+    @Value("${dungeon.player.playerEmail}")
+    private String playerEmail;
 
-    @Value("${dungeon.mode}")
-    private PlayerMode playerMode;
-
-    @Value("${dungeon.multiPlayer.number}")
-    private int numberOfMultiPlayers;
 
     @Autowired
     public PlayerApplicationService(
@@ -63,14 +57,6 @@ public class PlayerApplicationService {
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
-    public PlayerMode currentMode() {
-        return playerMode;
-    }
-
-    public int numberOfPlayers() {
-        return currentMode().isSingle() ? 1 : numberOfMultiPlayers;
-    }
-
 
     /**
      * Create player(s), if not there already
@@ -78,18 +64,16 @@ public class PlayerApplicationService {
     public void createPlayers() {
         List<Player> players = playerRepository.findAll();
         if (players.size() == 0) {
-            for (int iPlayer = 0; iPlayer < numberOfPlayers(); iPlayer++) {
-                Player player = new Player();
-                if (currentMode().isSingle() && (!"".equals(singlePlayerName)) && (!"".equals(singlePlayerEmail))) {
-                    player.setName(singlePlayerName);
-                    player.setEmail(singlePlayerEmail);
-                } else {
-                    player.assignRandomName();
-                }
-                playerRepository.save(player);
-                logger.info("Created new player: " + player);
-                players.add(player);
+            Player player = new Player();
+            if ((!"".equals(playerName)) && (!"".equals(playerEmail))) {
+                player.setName(playerName);
+                player.setEmail(playerEmail);
+            } else {
+                player.assignRandomName();
             }
+            playerRepository.save(player);
+            logger.info("Created new player: " + player);
+            players.add(player);
         }
     }
 
