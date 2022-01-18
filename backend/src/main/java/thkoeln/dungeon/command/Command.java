@@ -10,9 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import java.util.UUID;
 
-/**
- * Should be abstract, but that conflicts with JPS
- */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

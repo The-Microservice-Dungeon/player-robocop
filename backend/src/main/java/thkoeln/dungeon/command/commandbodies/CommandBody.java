@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public abstract class CommandBody {
     private UUID robotId; // Id of own Robot
 
