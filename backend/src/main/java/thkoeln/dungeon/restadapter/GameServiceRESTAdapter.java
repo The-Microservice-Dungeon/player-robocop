@@ -160,7 +160,7 @@ public class GameServiceRESTAdapter {
             throw new UnexpectedRESTException(
                     "Unexpected error converting playerRegistryDto to JSON: " + playerRegistryDto);
         } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().equals(HttpStatus.CONFLICT)) {
+            if (e.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
                 // this is a business logic problem - so let the application service handle this
                 throw new RESTRequestDeniedException("Player " + playerRegistryDto + " already registered");
             } else {
@@ -192,6 +192,7 @@ public class GameServiceRESTAdapter {
                 .build()
                 .encode()
                 .toUri();
+        logger.info("Fetching URI: " + targetURL);
         try {
             returnedPlayerRegistryDto = restTemplate.getForObject(targetURL, PlayerRegistryDto.class);
             if (returnedPlayerRegistryDto == null)
