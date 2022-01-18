@@ -108,11 +108,37 @@ public class PlayerApplicationService {
                 logger.error("PlayerRegistryDto returned by REST service is null for player " + player);
             }
         } catch (RESTRequestDeniedException e) {
-            // TODO - unclear what to do in this cases
-            logger.error("Name collision while getting bearer token for player " + player);
+            logger.error("Name collision while getting bearer token for player " + player + ". Re-fetching player info");
+            UUID bearerTokenFromExistingPlayer = this.retrieveBearerTokenForExistingPlayer(player);
+            if (bearerTokenFromExistingPlayer != null) {
+                player.setBearerToken(bearerTokenFromExistingPlayer);
+                playerRepository.save(player);
+                logger.info("Received Bearer token for existing player: " + player);
+            }
         } catch (RESTConnectionFailureException | UnexpectedRESTException e) {
             logger.error("No connection or no valid response from GameService - no bearer token for player " + player);
         }
+    }
+
+    /**
+     * Obtain bearer token from an existing player
+     *
+     * @param player
+     * @return
+     */
+    protected UUID retrieveBearerTokenForExistingPlayer(Player player) {
+        try {
+            PlayerRegistryDto playerDto = modelMapper.map(player, PlayerRegistryDto.class);
+            PlayerRegistryDto playerInfoDto = gameServiceRESTAdapter.getPlayerDetails(playerDto);
+            if (playerInfoDto != null) {
+                if (playerInfoDto.getBearerToken() == null)
+                    throw new UnexpectedRESTException("Didn't receive Bearer Token for existing Player");
+                else return playerInfoDto.getBearerToken();
+            }
+        } catch (RESTConnectionFailureException | UnexpectedRESTException e) {
+            logger.error("No connection or no valid response from GameService - again, no bearer token for player " + player);
+        }
+        return null;
     }
 
 
