@@ -1,24 +1,36 @@
 <template>
   <div>
     <h1>Manage the Game Service here</h1>
-    <h2 style="color: red">ONLY USE THIS WITH THE LOCAL DEV ENVIRONMENT!</h2>
+    <h2 style="color: red">
+      ONLY USE THIS WITH THE LOCAL DEV ENVIRONMENT!
+    </h2>
     <form>
-      <input type="number" v-model="maxRounds" placeholder="maxRounds">
-      <input type="number" v-model="maxPlayers" placeholder="maxPlayers">
-      <button @click="createNewGame">Create new Game</button>
+      <input
+        v-model="maxRounds"
+        type="number"
+        placeholder="maxRounds"
+      >
+      <input
+        v-model="maxPlayers"
+        type="number"
+        placeholder="maxPlayers"
+      >
+      <button @click="createNewGame">
+        Create new Game
+      </button>
     </form>
     <div>
       <h5>Current Games</h5>
-      <div v-text="games"></div>
+      <div v-text="games"/>
     </div>
   </div>
 </template>
 
 <script>
-import {apiGet, apiPost} from "@/utils";
+import { apiGet, apiPost } from '@/utils'
 
 export default {
-  name: "DebugGameManager",
+  name: 'DebugGameManager',
   data () {
     return {
       games: [],
@@ -26,7 +38,7 @@ export default {
       maxPlayers: 1,
     }
   },
-  mounted() {
+  mounted () {
     this.fetchGames()
   },
   methods: {
@@ -37,14 +49,14 @@ export default {
         this.games = response._embedded.games
       })
     },
-    createNewGame(e) {
+    createNewGame (e) {
       if (e) e.preventDefault()
       console.log(this.maxRounds)
       console.log(this.maxPlayers)
 
       const params = {
         maxRounds: this.maxRounds,
-        maxPlayers: this.maxPlayers
+        maxPlayers: this.maxPlayers,
       }
 
       apiPost('/games/create', params)
@@ -54,8 +66,8 @@ export default {
       })
 
       this.fetchGames()
-    }
-  }
+    },
+  },
 }
 </script>
 

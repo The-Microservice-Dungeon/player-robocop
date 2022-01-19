@@ -7,7 +7,7 @@ const storeVersion = 1
 
 export default new Vuex.Store({
     state: {
-        authenticated: false
+        authenticated: false,
     },
     getters: {
         isAuthenticated: state => () => {
@@ -33,7 +33,7 @@ export default new Vuex.Store({
         },
         logout (state) {
             state.authenticated = false
-        }
+        },
     },
     actions: {},
 })

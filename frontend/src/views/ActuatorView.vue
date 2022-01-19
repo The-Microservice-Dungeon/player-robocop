@@ -3,7 +3,9 @@
     <div>
       <form>
         <input v-model="path">
-        <button @click="fetchActuatorData">Update</button>
+        <button @click="fetchActuatorData">
+          Update
+        </button>
       </form>
     </div>
     <div class="outWrapper">
@@ -14,14 +16,20 @@
 
 <script>
 export default {
-  name: "ActuatorView",
+  name: 'ActuatorView',
+  filters: {
+    pretty: function (value) {
+      if (typeof value === 'object') return JSON.stringify(value, null, 2)
+      else return value
+    },
+  },
   data () {
     return {
       response: undefined,
-      path: '/actuator/logs'
+      path: '/actuator/logs',
     }
   },
-  mounted() {
+  mounted () {
     this.fetchActuatorData()
   },
   methods: {
@@ -31,7 +39,7 @@ export default {
           .then(res => res.text())
           .then(body => {
             try {
-              return JSON.parse(body);
+              return JSON.parse(body)
             } catch {
               return body
             }
@@ -39,14 +47,8 @@ export default {
           .then(result => {
             this.response = result
           })
-    }
+    },
   },
-  filters: {
-    pretty: function (value) {
-      if (typeof value === 'object') return JSON.stringify(value, null, 2);
-      else return value
-    }
-  }
 }
 </script>
 

@@ -1,18 +1,32 @@
 <template>
   <div id="app">
-
     <template v-if="!isAuthenticated()">
       <authentication-view/>
     </template>
 
     <template v-else>
       <div id="nav">
-        <router-link to="/">Home</router-link>
+        <router-link to="/">
+          Home
+        </router-link>
         |
-        <router-link to="/game" class="dev">Game Manager</router-link>
+        <router-link
+          to="/game"
+          class="dev"
+        >
+          Game Manager
+        </router-link>
         |
-        <router-link to="/actuator" class="dev">Actuator</router-link>
-        <a @click="end" class="logout">logout</a>
+        <router-link
+          to="/actuator"
+          class="dev"
+        >
+          Actuator
+        </router-link>
+        <a
+          class="logout"
+          @click="end"
+        >logout</a>
       </div>
       <router-view/>
     </template>
@@ -20,50 +34,65 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
-import AuthenticationView from "@/views/AuthenticationView";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
-import {apiLink} from "@/utils";
+import { mapGetters, mapMutations } from 'vuex'
+import AuthenticationView from '@/views/AuthenticationView'
+import SockJS from 'sockjs-client'
+import Stomp from 'webstomp-client'
+import { apiLink } from '@/utils'
 
 export default {
   name: 'App',
-  components: {AuthenticationView},
+  components: { AuthenticationView },
+  data () {
+    return {
+      stompClient: undefined,
+      connected: false,
+    }
+  },
   computed: {
     ...mapGetters([
       'isAuthenticated',
-    ])
+    ]),
   },
-  mounted() {
+  mounted () {
     this.connectToWebsocket()
   },
   methods: {
     ...mapMutations([
-      'logout'
+      'logout',
     ]),
-    end() {
+    end () {
       this.logout()
     },
-    connectToWebsocket() {
-      this.socket = new SockJS(apiLink("/robocop-websocket").toString())
-      this.stompClient = Stomp.over(this.socket)
+    connectToWebsocket () {
+      const options = { debug: false, heartbeat: { incoming: 10000, outgoing: 10000 }, protocols: ['v10.stomp', 'v11.stomp', 'v12.stomp'] }
+      const socket = new SockJS(apiLink('/robocop-websocket').toString())
+      this.stompClient = Stomp.over(socket, options)
       this.stompClient.connect(
           {},
-          frame => {
-            this.connected = true
-            console.log(frame);
-            this.stompClient.subscribe("game_events", tick => {
-              console.log(tick)
-              console.log(JSON.parse(tick.body).content)
-            })
+          (frame) => {
+            if (frame.command === 'CONNECTED') {
+              this.connected = true
+              this.stompClient.subscribe('game_events', tick => this.handleGameEvent(tick))
+            }
           },
           error => {
             console.log(error)
             this.connected = false
           }
-      );
+      )
     },
-  }
+    handleGameEvent (tick) {
+      console.log('Game Event Recieved')
+      let info = tick.body
+      try {
+        info = JSON.parse(info).content
+      } catch (e) {
+        console.warn(e)
+      }
+      console.log(info)
+    },
+  },
 }
 </script>
 
