@@ -1,27 +1,42 @@
 <template>
   <div class="infoCard">
     <h3>Map</h3>
-    <input
-      v-model="camera.x"
-      step="32"
-      :min="0"
-      :max="maxHorizontalScroll"
-      type="number"
-      @change="render"
-    >
-    <input
-      v-model="camera.y"
-      step="32"
-      type="number"
-      @change="render"
-    >
-    <input
-      v-model="zoomLevel"
-      step="0.1"
-      type="number"
-      min="1"
-      @change="render"
-    >
+    <label for="xOffset">
+      X Offset
+      <input
+        id="xOffset"
+        v-model="camera.x"
+        step="32"
+        :min="0"
+        :max="calculateMaxHorizontalScroll()"
+        type="number"
+        @change="render"
+      >
+    </label>
+    <label for="yOffset">
+      Y Offset
+      <input
+        id="yOffset"
+        v-model="camera.y"
+        step="32"
+        :min="-mapHeight / 2"
+        :max="mapHeight / 2"
+        type="number"
+        @change="render"
+      >
+    </label>
+    <label for="zoom">
+      Zoom
+      <input
+        id="zoom"
+        v-model="zoomLevel"
+        step="0.1"
+        type="number"
+        min="1"
+        max="2"
+        @change="render"
+      >
+    </label>
     <canvas
       ref="mapCanvas"
       class="mapCanvas"
@@ -47,23 +62,17 @@ export default {
       tileAtlas: undefined,
       map: [],
       camera: {},
-      zoomLevel: 1,
+      zoomLevel: '1',
     }
-  },
-  computed: {
-    maxHorizontalScroll: function () {
-      if (this.zoomLevel === 1) return 0
-      return ((this.cols - this.camera.width / this.cols / 2) * this.cols / 2) * this.zoomLevel
-    },
   },
   mounted () {
     this.loadTiles()
-    .then(() => {
-      this.setMapDimensions()
-      this.buildMap()
-      this.initCanvas()
-      this.drawMapWithCamera()
-    })
+      .then(() => {
+        this.setMapDimensions()
+        this.buildMap()
+        this.initCanvas()
+        this.drawMapWithCamera()
+      })
   },
   methods: {
     loadTiles () {
@@ -92,6 +101,7 @@ export default {
     setMapDimensions () {
       this.mapWidth = this.cols * this.tileResolution / this.zoomLevel
       this.mapHeight = this.rows * this.tileResolution / this.zoomLevel
+      this.calculateMaxHorizontalScroll()
     },
     buildMap () {
       const totalLength = this.cols * this.rows
@@ -170,6 +180,20 @@ export default {
           this.tileResolution // target height
         )
       }
+    },
+    calculateMaxHorizontalScroll () {
+      let maxScroll = 0
+      if (this.zoomLevel === '1.1') maxScroll = 416
+      if (this.zoomLevel === '1.2') maxScroll = 736
+      if (this.zoomLevel === '1.3') maxScroll = 1024
+      if (this.zoomLevel === '1.4') maxScroll = 1280
+      if (this.zoomLevel === '1.5') maxScroll = 1504
+      if (this.zoomLevel === '1.6') maxScroll = 1696
+      if (this.zoomLevel === '1.7') maxScroll = 1856
+      if (this.zoomLevel === '1.8') maxScroll = 1984
+      if (this.zoomLevel === '1.9') maxScroll = 2144
+      if (this.zoomLevel === '2') maxScroll = 2240
+      return maxScroll
     },
   },
 }
