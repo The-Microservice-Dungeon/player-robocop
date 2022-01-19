@@ -4,8 +4,23 @@
     <input
       v-model="camera.x"
       step="32"
+      :min="0"
+      :max="maxHorizontalScroll"
       type="number"
-      @change="drawMapWithCamera"
+      @change="render"
+    >
+    <input
+      v-model="camera.y"
+      step="32"
+      type="number"
+      @change="render"
+    >
+    <input
+      v-model="zoomLevel"
+      step="0.1"
+      type="number"
+      min="1"
+      @change="render"
     >
     <canvas
       ref="mapCanvas"
@@ -32,12 +47,20 @@ export default {
       tileAtlas: undefined,
       map: [],
       camera: {},
+      zoomLevel: 1,
     }
+  },
+  computed: {
+    maxHorizontalScroll: function () {
+      if (this.zoomLevel === 1) return 0
+      return ((this.cols - this.camera.width / this.cols / 2) * this.cols / 2) * this.zoomLevel
+    },
   },
   mounted () {
     this.loadTiles()
     .then(() => {
-      this.initMap()
+      this.setMapDimensions()
+      this.buildMap()
       this.initCanvas()
       this.drawMapWithCamera()
     })
@@ -61,10 +84,24 @@ export default {
 
       return loadingPromise
     },
-    initMap () {
-      this.map = Array.from({ length: this.cols * this.rows }, (x, i) => i % 3 === 0 ? 1 : 2)
-      this.mapWidth = this.cols * this.tileResolution / 2
-      this.mapHeight = this.rows * this.tileResolution / 2
+    render () {
+      this.setMapDimensions()
+      this.updateCanvas()
+      this.drawMapWithCamera()
+    },
+    setMapDimensions () {
+      this.mapWidth = this.cols * this.tileResolution / this.zoomLevel
+      this.mapHeight = this.rows * this.tileResolution / this.zoomLevel
+    },
+    buildMap () {
+      const totalLength = this.cols * this.rows
+      this.map = Array.from({ length: totalLength }, (x, i) => {
+        if (i >= 0 && i < this.cols) return 2
+        if (i % mapSize === 0 && i / 2 % mapSize === 0) return 2
+        if ((i + 1) % mapSize === 0 && (i + 1) / 2 % mapSize === 0) return 2
+        if (totalLength - i < mapSize * 2) return 2
+        return i % 3 === 0 ? 2 : 1
+      })
       console.log(this.map)
     },
     getTile (col, row) {
@@ -80,11 +117,18 @@ export default {
       this.ctx.canvas.height = this.mapHeight
 
       this.camera = {
-        x: this.mapWidth / 2,
-        y: this.mapHeight / 2,
+        x: 0,
+        y: 0,
         width: this.mapWidth,
         height: this.mapHeight,
       }
+    },
+    updateCanvas () {
+      this.ctx.canvas.width = this.mapWidth
+      this.ctx.canvas.height = this.mapHeight
+
+      this.camera.width = this.mapWidth
+      this.camera.height = this.mapHeight
     },
     drawMap () {
       for (let col = 0; col < this.cols; col++) {
