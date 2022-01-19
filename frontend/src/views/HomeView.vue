@@ -11,6 +11,7 @@
       <player-info/>
       <game-info/>
     </div>
+    <map-info/>
   </div>
 </template>
 
@@ -18,9 +19,10 @@
 
 import PlayerInfo from '@/components/PlayerInfo'
 import GameInfo from '@/components/GameInfo'
+import MapInfo from '@/components/MapInfo'
 export default {
   name: 'HomeView',
-  components: { GameInfo, PlayerInfo },
+  components: { MapInfo, GameInfo, PlayerInfo },
 }
 </script>
 
