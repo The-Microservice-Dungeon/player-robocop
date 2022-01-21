@@ -213,7 +213,7 @@ export default {
       if (tile !== -1) { // -1 => empty tile
         this.ctx.drawImage(
           this.tileAtlas, // image
-          (tile - 1) * this.tileResolution, // source x
+          tile * this.tileResolution, // source x
           0, // source y
           this.tileResolution, // source width
           this.tileResolution, // source height
