@@ -53,14 +53,18 @@ export default {
   name: 'MapInfo',
   data () {
     return {
-      tileResolution: 64,
+      tileResolution: 32,
       cols: mapSize * 2,
       rows: mapSize * 2,
       mapWidth: undefined,
       mapHeight: undefined,
       ctx: undefined,
       tileAtlas: undefined,
-      map: [],
+      layers: [
+        [], // gravity
+        [], // stations / resources
+        [], // robots
+      ],
       camera: {},
       zoomLevel: '1',
     }
@@ -105,20 +109,42 @@ export default {
     },
     buildMap () {
       const totalLength = this.cols * this.rows
-      this.map = Array.from({ length: totalLength }, (x, i) => {
-        if (i >= 0 && i < this.cols) return 2
-        if (i % mapSize === 0 && i / 2 % mapSize === 0) return 2
-        if ((i + 1) % mapSize === 0 && (i + 1) / 2 % mapSize === 0) return 2
-        if (totalLength - i < mapSize * 2) return 2
+      // random Gravity Map
+      this.layers[0] = Array.from({ length: totalLength }, (x, i) => {
+        // borders
+        if (this.tileIsBorder(totalLength, i)) return 2
+        // center of map
         return i % 3 === 0 ? 2 : 1
       })
-      console.log(this.map)
+      // random Station/Resources Map
+      this.layers[1] = Array.from({ length: totalLength }, (x, i) => {
+        if (!this.tileIsBorder(totalLength, i)) {
+          let shouldDraw = this.getRandomInt(1, 4)
+          if (shouldDraw === 1) return this.getRandomInt(4, 9)
+        }
+        return 0
+      })
+      // random robots
+      this.layers[2] = Array.from({ length: totalLength }, (x, i) => {
+        if (!this.tileIsBorder(totalLength, i)) {
+          let shouldDraw = this.getRandomInt(1, 25)
+          if (shouldDraw === 1) return 11
+        }
+        return 0
+      })
+      console.log(this.layers)
     },
-    getTile (col, row) {
-      return this.map[row * this.cols + col]
+    getTile (layer, col, row) {
+      return this.layers[layer][row * this.cols + col]
     },
-    setTile (col, row, value) {
-      this.map[row * this.cols + col] = value
+    setTile (layer, col, row, value) {
+      this.layers[layer][row * this.cols + col] = value
+    },
+    tileIsBorder (totalLength, i) {
+      if (i >= 0 && i < this.cols) return true
+      if (i % mapSize === 0 && i / 2 % mapSize === 0) return true
+      if ((i + 1) % mapSize === 0 && (i + 1) / 2 % mapSize === 0) return true
+      return totalLength - i < mapSize * 2
     },
     initCanvas () {
       const canvas = this.$refs['mapCanvas']
@@ -141,10 +167,12 @@ export default {
       this.camera.height = this.mapHeight
     },
     drawMap () {
-      for (let col = 0; col < this.cols; col++) {
-        for (let row = 0; row < this.rows; row++) {
-          let tile = this.getTile(col, row)
-          this.drawTile(tile, col * this.tileResolution, row * this.tileResolution)
+      for (let layer in this.layers) {
+        for (let col = 0; col < this.cols; col++) {
+          for (let row = 0; row < this.rows; row++) {
+            let tile = this.getTile(layer, col, row)
+            this.drawTile(tile, col * this.tileResolution, row * this.tileResolution)
+          }
         }
       }
     },
@@ -157,12 +185,14 @@ export default {
       let offsetX = -this.camera.x + startCol * this.tileResolution
       let offsetY = -this.camera.y + startRow * this.tileResolution
 
-      for (let col = startCol; col <= endCol; col++) {
-        for (let row = startRow; row <= endRow; row++) {
-          let tile = this.getTile(col, row)
-          let x = (col - startCol) * this.tileResolution + offsetX
-          let y = (row - startRow) * this.tileResolution + offsetY
-          this.drawTile(tile, x, y)
+      for (let layer in this.layers) {
+        for (let col = startCol; col <= endCol; col++) {
+          for (let row = startRow; row <= endRow; row++) {
+            let tile = this.getTile(layer, col, row)
+            let x = (col - startCol) * this.tileResolution + offsetX
+            let y = (row - startRow) * this.tileResolution + offsetY
+            this.drawTile(tile, x, y)
+          }
         }
       }
     },
@@ -194,6 +224,11 @@ export default {
       if (this.zoomLevel === '1.9') maxScroll = 2144
       if (this.zoomLevel === '2') maxScroll = 2240
       return maxScroll
+    },
+    getRandomInt (min, max) {
+      min = Math.ceil(min)
+      max = Math.floor(max)
+      return Math.floor(Math.random() * (max - min)) + min
     },
   },
 }
