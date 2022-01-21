@@ -33,7 +33,7 @@
         step="0.1"
         type="number"
         min="1"
-        max="2"
+        max="4"
         @change="render"
       >
     </label>
@@ -213,16 +213,37 @@ export default {
     },
     calculateMaxHorizontalScroll () {
       let maxScroll = 0
-      if (this.zoomLevel === '1.1') maxScroll = 416
-      if (this.zoomLevel === '1.2') maxScroll = 736
-      if (this.zoomLevel === '1.3') maxScroll = 1024
-      if (this.zoomLevel === '1.4') maxScroll = 1280
-      if (this.zoomLevel === '1.5') maxScroll = 1504
-      if (this.zoomLevel === '1.6') maxScroll = 1696
-      if (this.zoomLevel === '1.7') maxScroll = 1856
-      if (this.zoomLevel === '1.8') maxScroll = 1984
-      if (this.zoomLevel === '1.9') maxScroll = 2144
-      if (this.zoomLevel === '2') maxScroll = 2240
+      // This is f* ugly. TODO: Figure out a correlation between zoom level and allowed scroll
+      if (this.zoomLevel === '1.1') maxScroll = 192
+      if (this.zoomLevel === '1.2') maxScroll = 384
+      if (this.zoomLevel === '1.3') maxScroll = 512
+      if (this.zoomLevel === '1.4') maxScroll = 640
+      if (this.zoomLevel === '1.5') maxScroll = 736
+      if (this.zoomLevel === '1.6') maxScroll = 832
+      if (this.zoomLevel === '1.7') maxScroll = 928
+      if (this.zoomLevel === '1.8') maxScroll = 992
+      if (this.zoomLevel === '1.9') maxScroll = 1056
+      if (this.zoomLevel === '2') maxScroll = 1120
+      if (this.zoomLevel === '2.1') maxScroll = 1184
+      if (this.zoomLevel === '2.2') maxScroll = 1216
+      if (this.zoomLevel === '2.3') maxScroll = 1280
+      if (this.zoomLevel === '2.4') maxScroll = 1312
+      if (this.zoomLevel === '2.5') maxScroll = 1344
+      if (this.zoomLevel === '2.6') maxScroll = 1376
+      if (this.zoomLevel === '2.7') maxScroll = 1408
+      if (this.zoomLevel === '2.8') maxScroll = 1440
+      if (this.zoomLevel === '2.9') maxScroll = 1472
+      if (this.zoomLevel === '3') maxScroll = 1504
+      if (this.zoomLevel === '3.1') maxScroll = 1520
+      if (this.zoomLevel === '3.2') maxScroll = 1536
+      if (this.zoomLevel === '3.3') maxScroll = 1560
+      if (this.zoomLevel === '3.4') maxScroll = 1596
+      if (this.zoomLevel === '3.5') maxScroll = 1600
+      if (this.zoomLevel === '3.6') maxScroll = 1616
+      if (this.zoomLevel === '3.7') maxScroll = 1632
+      if (this.zoomLevel === '3.8') maxScroll = 1660
+      if (this.zoomLevel === '3.9') maxScroll = 1664
+      if (this.zoomLevel === '4') maxScroll = 1678
       return maxScroll
     },
     getRandomInt (min, max) {
