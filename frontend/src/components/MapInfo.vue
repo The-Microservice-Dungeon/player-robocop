@@ -33,7 +33,7 @@
         step="0.1"
         type="range"
         min="1"
-        max="2.9"
+        max="4"
         @input="render"
       >
     </label>
