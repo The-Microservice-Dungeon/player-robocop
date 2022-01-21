@@ -184,8 +184,7 @@ public class GameServiceRESTAdapter {
     public PlayerRegistryDto getPlayerDetails(PlayerRegistryDto playerRegistryDto)
             throws RESTConnectionFailureException {
         PlayerRegistryDto returnedPlayerRegistryDto;
-        String urlString = gameServiceUrlString + "/players";
-        URI targetURL = UriComponentsBuilder.fromUriString(urlString)
+        URI targetURL = UriComponentsBuilder.fromUriString(gameServiceUrlString)
                 .path("/players")
                 .queryParam("name", playerRegistryDto.getName())
                 .queryParam("mail", playerRegistryDto.getEmail())
@@ -198,7 +197,7 @@ public class GameServiceRESTAdapter {
             if (returnedPlayerRegistryDto == null)
                 throw new UnexpectedRESTException("Received a no data for Player " + playerRegistryDto.getName() + " with mail " + playerRegistryDto.getEmail());
         } catch (HttpClientErrorException e) {
-            throw new RESTConnectionFailureException(urlString, "Status code " + e.getStatusCode());
+            throw new RESTConnectionFailureException(targetURL.toString(), "Status code " + e.getStatusCode());
         } catch (RestClientException | UnexpectedRESTException e) {
             throw new RESTConnectionFailureException("/players", e.getMessage());
         }
