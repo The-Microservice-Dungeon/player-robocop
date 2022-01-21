@@ -125,25 +125,25 @@ export default {
       // random Gravity Map
       this.layers[0] = Array.from({ length: totalLength }, (x, i) => {
         // borders
-        if (this.tileIsBorder(totalLength, i)) return 2
+        if (this.tileIsBorder(totalLength, i)) return 1
         // center of map
-        return i % 3 === 0 ? 2 : 1
+        return i % 3 === 0 ? 1 : 0
       })
       // random Station/Resources Map
       this.layers[1] = Array.from({ length: totalLength }, (x, i) => {
         if (!this.tileIsBorder(totalLength, i)) {
           let shouldDraw = this.getRandomInt(1, 4)
-          if (shouldDraw === 1) return this.getRandomInt(4, 9)
+          if (shouldDraw === 1) return this.getRandomInt(3, 8)
         }
-        return 0
+        return -1
       })
       // random robots
       this.layers[2] = Array.from({ length: totalLength }, (x, i) => {
         if (!this.tileIsBorder(totalLength, i)) {
           let shouldDraw = this.getRandomInt(1, 25)
-          if (shouldDraw === 1) return 11
+          if (shouldDraw === 1) return 10
         }
-        return 0
+        return -1
       })
       console.log(this.layers)
     },
@@ -210,7 +210,7 @@ export default {
       }
     },
     drawTile (tile, x, y) {
-      if (tile !== 0) { // 0 => empty tile
+      if (tile !== -1) { // -1 => empty tile
         this.ctx.drawImage(
           this.tileAtlas, // image
           (tile - 1) * this.tileResolution, // source x
