@@ -26,15 +26,15 @@
       >
     </label>
     <label for="zoom">
-      Zoom
+      Zoom: {{ zoomLevel }}
       <input
         id="zoom"
         v-model="zoomLevel"
         step="0.1"
         type="range"
         min="1"
-        max="4"
-        @change="render"
+        max="2.9"
+        @input="render"
       >
     </label>
     <canvas
@@ -86,7 +86,7 @@ export default {
         this.setMapDimensions()
         this.buildMap()
         this.initCanvas()
-        this.drawMapWithCamera()
+        this.drawMap()
       })
   },
   methods: {
