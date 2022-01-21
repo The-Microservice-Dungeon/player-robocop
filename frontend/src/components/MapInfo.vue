@@ -6,7 +6,7 @@
       <input
         id="xOffset"
         v-model="camera.x"
-        step="32"
+        step="8"
         :min="0"
         :max="calculateMaxHorizontalScroll()"
         type="number"
@@ -276,11 +276,11 @@ export default {
 <style scoped>
 .infoCard {
   max-height: 100vh;
+  width: 55vw;
 }
 
 .mapCanvas {
   max-height: 100vh;
-
   width: 95%;
 }
 </style>
