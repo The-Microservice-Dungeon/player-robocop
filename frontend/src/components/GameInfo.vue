@@ -17,11 +17,14 @@
     <h4>Current Round Info</h4>
     <div class="infoWrapper">
       <span>
-        Current Round: {{ round.currentRound }}
+        Current Round: {{ game.currentRound.roundNumber }}
       </span>
       <br>
       <span>
-        Round Time: {{ round.roundTime }}
+        Round Status: {{ game.currentRound.roundStatus }}
+      </span><br>
+      <span>
+        Round Time: {{ game.currentRound.roundTime }}
       </span>
     </div>
   </div>
@@ -36,10 +39,11 @@ export default {
         status: 'created',
         playerCount: 1,
         maxRounds: 100,
-      },
-      round: {
-        currentRound: 1,
-        roundTime: new Date().getTime(),
+        currentRound: {
+          roundNumber: 1,
+          roundTime: new Date().getTime(),
+          roundStatus: 'CREATED',
+        },
       },
     }
   },
