@@ -47,15 +47,19 @@
 <script>
 import mapTiles from '@/assets/mapTiles.png'
 
-const mapSize = 35
-
 export default {
   name: 'MapInfo',
+  props: {
+    playerCount: {
+      type: Number,
+      default: 20,
+    },
+  },
   data () {
     return {
       tileResolution: 32,
-      cols: mapSize * 2,
-      rows: mapSize * 2,
+      cols: undefined,
+      rows: undefined,
       mapWidth: undefined,
       mapHeight: undefined,
       ctx: undefined,
@@ -68,6 +72,13 @@ export default {
       camera: {},
       zoomLevel: '1',
     }
+  },
+  computed: {
+    mapSize: function () {
+      if (this.playerCount < 10) return 15
+      if (this.playerCount < 20) return 20
+      return 35
+    },
   },
   mounted () {
     this.loadTiles()
@@ -103,6 +114,8 @@ export default {
       this.drawMapWithCamera()
     },
     setMapDimensions () {
+      this.cols = this.mapSize * 2
+      this.rows = this.mapSize * 2
       this.mapWidth = this.cols * this.tileResolution / this.zoomLevel
       this.mapHeight = this.rows * this.tileResolution / this.zoomLevel
       this.calculateMaxHorizontalScroll()
@@ -142,9 +155,9 @@ export default {
     },
     tileIsBorder (totalLength, i) {
       if (i >= 0 && i < this.cols) return true
-      if (i % mapSize === 0 && i / 2 % mapSize === 0) return true
-      if ((i + 1) % mapSize === 0 && (i + 1) / 2 % mapSize === 0) return true
-      return totalLength - i < mapSize * 2
+      if (i % this.mapSize === 0 && i / 2 % this.mapSize === 0) return true
+      if ((i + 1) % this.mapSize === 0 && (i + 1) / 2 % this.mapSize === 0) return true
+      return totalLength - i < this.mapSize * 2
     },
     initCanvas () {
       const canvas = this.$refs['mapCanvas']
