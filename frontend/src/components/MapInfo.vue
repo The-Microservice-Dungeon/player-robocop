@@ -274,7 +274,13 @@ export default {
 </script>
 
 <style scoped>
+.infoCard {
+  max-height: 100vh;
+}
+
 .mapCanvas {
-  width: 50%;
+  max-height: 100vh;
+
+  width: 95%;
 }
 </style>

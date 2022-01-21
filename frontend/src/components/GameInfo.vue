@@ -5,9 +5,11 @@
       <span>
         Status: {{ game.status }}
       </span>
+      <br>
       <span>
         Players: {{ game.playerCount }}
       </span>
+      <br>
       <span>
         Max. Rounds: {{ game.maxRounds }}
       </span>
@@ -17,6 +19,7 @@
       <span>
         Current Round: {{ round.currentRound }}
       </span>
+      <br>
       <span>
         Round Time: {{ round.roundTime }}
       </span>

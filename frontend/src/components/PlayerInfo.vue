@@ -5,12 +5,15 @@
       <span>
         Name: {{ player.name }}
       </span>
+      <br>
       <span>
         Email: {{ player.email }}
       </span>
+      <br>
       <span>
         robots: {{ player.robots }}
       </span>
+      <br>
       <span>
         Money: {{ player.money }}
       </span>

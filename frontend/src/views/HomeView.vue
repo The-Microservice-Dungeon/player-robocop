@@ -7,11 +7,18 @@
     <h1 style="margin-top: 0">
       Robocop Dashboard
     </h1>
-    <div class="generalInfo">
-      <player-info/>
-      <game-info/>
+    <div class="infos">
+      <div class="infoLeft">
+        <div class="generalInfo">
+          <player-info/>
+          <game-info/>
+        </div>
+        <map-info/>
+      </div>
+      <div class="infoRight">
+        <robot-info/>
+      </div>
     </div>
-    <map-info/>
   </div>
 </template>
 
@@ -20,17 +27,29 @@
 import PlayerInfo from '@/components/PlayerInfo'
 import GameInfo from '@/components/GameInfo'
 import MapInfo from '@/components/MapInfo'
+import RobotInfo from '@/components/RobotInfo'
 export default {
   name: 'HomeView',
-  components: { MapInfo, GameInfo, PlayerInfo },
+  components: { RobotInfo, MapInfo, GameInfo, PlayerInfo },
 }
 </script>
 
 <style scoped>
+.infos {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start
+}
+
 .generalInfo {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.infoRight {
+  min-width: 25vw;
 }
 </style>
 
@@ -39,7 +58,7 @@ export default {
   border: 2px solid white;
   border-radius: 32px;
   padding: 8px;
-  min-width: 45%;
+  max-width: 90%;
   margin: 8px auto 0;
   background: #1a103a87;
   min-height: 116px;
@@ -53,10 +72,7 @@ export default {
   }
 
   .infoWrapper {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    width: 100%;
+    min-width: 20vw;
   }
 }
 </style>
