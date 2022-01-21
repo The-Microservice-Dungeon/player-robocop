@@ -31,7 +31,7 @@
         id="zoom"
         v-model="zoomLevel"
         step="0.1"
-        type="number"
+        type="range"
         min="1"
         max="4"
         @change="render"
@@ -119,6 +119,7 @@ export default {
       this.mapWidth = this.cols * this.tileResolution / this.zoomLevel
       this.mapHeight = this.rows * this.tileResolution / this.zoomLevel
       this.calculateMaxHorizontalScroll()
+      this.clampMaxHorizontalScroll()
     },
     buildMap () {
       const totalLength = this.cols * this.rows
@@ -258,6 +259,10 @@ export default {
       if (this.zoomLevel === '3.9') maxScroll = 1664
       if (this.zoomLevel === '4') maxScroll = 1678
       return maxScroll
+    },
+    clampMaxHorizontalScroll () {
+      const maxScroll = this.calculateMaxHorizontalScroll()
+      if (this.camera.x > maxScroll) this.camera.x = maxScroll
     },
     getRandomInt (min, max) {
       min = Math.ceil(min)
