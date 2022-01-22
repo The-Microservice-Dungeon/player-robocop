@@ -7,10 +7,10 @@ import lombok.Setter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import thkoeln.dungeon.game.domain.round.Round;
+import thkoeln.dungeon.game.domain.round.RoundStatus;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,7 +29,14 @@ public class Game {
     // we better keep these two apart.
     private UUID gameId;
     private GameStatus gameStatus;
-    private Integer currentRoundCount;
+
+    @Embedded
+    private Round round;
+
+    public void startNextRound(int currentRoundNumber){
+        this.round = new Round(++currentRoundNumber);
+        logger.info("Round number ${currentRoundCount} initialized, fire commands now!");
+    }
 
     @Transient
     private Logger logger = LoggerFactory.getLogger(Game.class);
@@ -43,8 +50,12 @@ public class Game {
 
     public void resetToNewlyCreated() {
         setGameStatus(GameStatus.CREATED);
-        setCurrentRoundCount(0);
+        setRound(new Round(0));
         logger.warn("Reset game " + this + " to CREATED!");
+    }
+
+    public void end(){
+        setGameStatus(GameStatus.GAME_FINISHED);
     }
 
     public void makeOrphan() {
@@ -58,6 +69,10 @@ public class Game {
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
         return id.equals(game.id);
+    }
+
+    public void setCurrentRoundCount(int currentRoundNumber){
+        this.round = new Round(currentRoundNumber);
     }
 
     @Override
