@@ -26,7 +26,11 @@ public class Planet {
 
     @Setter
     @Getter(AccessLevel.NONE)
-    private Boolean spacestation = Boolean.FALSE;
+    private PlanetType planetType = PlanetType.DEFAULT;
+
+    @Setter
+    private ResourceType resourceType;
+
     @OneToOne(cascade = CascadeType.MERGE)
     @Setter(AccessLevel.PROTECTED)
     private Planet northNeighbour;
@@ -39,11 +43,12 @@ public class Planet {
     @OneToOne(cascade = CascadeType.MERGE)
     @Setter(AccessLevel.PROTECTED)
     private Planet westNeighbour;
+
     @Transient
     private Logger logger = LoggerFactory.getLogger(Planet.class);
 
     public Boolean isSpaceStation() {
-        return spacestation;
+        return this.planetType == PlanetType.SPACESTATION;
     }
 
     /**
