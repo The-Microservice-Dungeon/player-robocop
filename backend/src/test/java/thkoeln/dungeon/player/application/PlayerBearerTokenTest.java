@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static thkoeln.dungeon.game.domain.game.GameStatus.GAME_RUNNING;
+import static thkoeln.dungeon.game.domain.game.GameStatus.STARTED;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DungeonPlayerConfiguration.class)
@@ -69,7 +69,7 @@ public class PlayerBearerTokenTest {
         playersEndpointURI = new URI(gameServiceURIString + "/players");
         Game game = new Game();
         game.setGameId(UUID.randomUUID());
-        game.setGameStatus(GAME_RUNNING);
+        game.setGameStatus(STARTED);
         game.setCurrentRoundCount(22);
         gameRepository.save(game);
     }
@@ -90,7 +90,7 @@ public class PlayerBearerTokenTest {
         List<Player> allPlayers = playerRepository.findAll();
 
         // then
-        assertEquals(Integer.valueOf(env.getProperty("dungeon.multiPlayer.number")), allPlayers.size());
+        assertEquals(1, allPlayers.size());
         for (Player player : allPlayers) {
             assertNotNull(player.getEmail(), "player email");
             assertNotNull(player.getName(), "player name");
@@ -115,7 +115,7 @@ public class PlayerBearerTokenTest {
         // then
         mockServer.verify();
         allPlayers = playerRepository.findAll();
-        assertEquals(Integer.valueOf(env.getProperty("dungeon.multiPlayer.number")), allPlayers.size());
+        assertEquals(1, allPlayers.size());
         for (Player player : allPlayers) {
             assertNotNull(player.getEmail(), "player email");
             assertNotNull(player.getName(), "player name");
@@ -141,7 +141,7 @@ public class PlayerBearerTokenTest {
         // then
         mockServer.verify();
         allPlayers = playerRepository.findAll();
-        assertEquals(Integer.valueOf(env.getProperty("dungeon.multiPlayer.number")), allPlayers.size());
+        assertEquals(1, allPlayers.size());
         for (Player player : allPlayers) {
             assertNotNull(player.getEmail(), "player email");
             assertNotNull(player.getName(), "player name");

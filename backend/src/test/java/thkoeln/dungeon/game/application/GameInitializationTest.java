@@ -41,8 +41,8 @@ public class GameInitializationTest {
     private static final UUID GAME_ID_3 = UUID.randomUUID();
     private static final Integer GAME_ROW_COUNT_3 = 0;
     private GameDto gameDto0 = new GameDto(GAME_ID_0, CREATED, 0);
-    private GameDto gameDto1 = new GameDto(GAME_ID_1, GAME_RUNNING, GAME_ROW_COUNT_1);
-    private GameDto gameDto2 = new GameDto(GAME_ID_2, GAME_FINISHED, GAME_ROW_COUNT_2);
+    private GameDto gameDto1 = new GameDto(GAME_ID_1, STARTED, GAME_ROW_COUNT_1);
+    private GameDto gameDto2 = new GameDto(GAME_ID_2, ENDED, GAME_ROW_COUNT_2);
     private GameDto gameDto3 = new GameDto(GAME_ID_3, CREATED, GAME_ROW_COUNT_3);
 
     private GameDto[] allRemoteGames;
@@ -120,7 +120,7 @@ public class GameInitializationTest {
         assertEquals(1, games.size());
         assertEquals(gameDto0.getGameId(), games.get(0).getGameId());
         Game game = gameRepository.findByGameId(GAME_ID_1).get(0);
-        assertEquals(GAME_FINISHED, game.getGameStatus());
+        assertEquals(ENDED, game.getGameStatus());
         game = gameRepository.findByGameId(GAME_ID_2).get(0);
         assertEquals(ORPHANED, game.getGameStatus());
         game = gameRepository.findByGameId(GAME_ID_3).get(0);
@@ -138,8 +138,8 @@ public class GameInitializationTest {
     }
 
     private void mockCallToGamesEndpoint_2() throws Exception {
-        allRemoteGames[0].setGameStatus(GAME_RUNNING);
-        allRemoteGames[1].setGameStatus(GAME_FINISHED);
+        allRemoteGames[0].setGameStatus(STARTED);
+        allRemoteGames[1].setGameStatus(ENDED);
         allRemoteGames[2] = gameDto3;
 
         mockServer = MockRestServiceServer.createServer(restTemplate);
