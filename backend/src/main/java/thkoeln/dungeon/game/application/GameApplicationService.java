@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.game.domain.game.Game;
-import thkoeln.dungeon.game.domain.game.GameException;
 import thkoeln.dungeon.game.domain.game.GameRepository;
 import thkoeln.dungeon.game.domain.game.GameStatus;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
@@ -35,7 +34,7 @@ public class GameApplicationService {
 
 
     public List<Game> retrieveActiveGames() {
-        return gameRepository.findAllByGameStatusEquals(GameStatus.GAME_RUNNING);
+        return gameRepository.findAllByGameStatusEquals(GameStatus.STARTED);
     }
 
 
@@ -92,10 +91,11 @@ public class GameApplicationService {
      * "Status changed" event published by GameService, esp. after a game has been created
      */
     public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {
+        List<Game> foundGames = gameRepository.findByGameId(gameId);
         switch (gameStatus) {
             case CREATED -> gameExternallyCreated(gameId);
-            case GAME_RUNNING -> gameExternallyStarted(gameId);
-            case GAME_FINISHED -> gameEndedExternally();
+            case STARTED -> gameExternallyStarted(gameId);
+            case ENDED -> gameEndedExternally(gameId);
         }
     }
 
@@ -108,52 +108,62 @@ public class GameApplicationService {
         logger.info("Processing external event that the game has been created");
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.isEmpty()){
-            logger.info("Found no Game in Database, synchronizing...");
+            logger.info("Synchronizing game state via REST...");
             synchronizeGameState();
         }
-
+        else {
+            throw new IllegalStateException("Found "+ foundGames.size() + " matching games with same gameId.");
+        }
     }
 
     /**
      * To be called by event consumer listening to GameService event
      *
-     * @param eventId
+     * @param gameId
      * The id of the triggering event
      */
-    public void gameExternallyStarted(UUID eventId) {
-        logger.info("Processing external event that the game with id " + eventId + " has started");
-        List<Game> foundGames = gameRepository.findAllByGameStatusEquals(GameStatus.CREATED);
+    public void gameExternallyStarted(UUID gameId) {
+        logger.info("Processing external event that the game with id " + gameId + " has started");
+        List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.size()!=1){
-            throw new IllegalStateException("Found "+ foundGames.size() + " matching games with game status GAME_CREATED");
+            logger.warn("Found "+ foundGames.size() + " matching games with gameId. Expected 1"+ gameId);
+            return;
         }
-        foundGames.get(0).resetToNewlyCreated();
+        Game game = foundGames.get(0);
+        game.start();
+        gameRepository.save(game);
     }
 
 
     /**
      * To be called by event consumer listening to GameService event
      */
-    public void gameEndedExternally() {
-        List<Game> foundGames = gameRepository.findAllByGameStatusEquals(GameStatus.GAME_RUNNING);
-        if (foundGames.size() != 1){
-            throw new IllegalStateException("Found "+ foundGames.size() + " matching games with game status GAME_Running");
+    public void gameEndedExternally(UUID gameId) {
+        logger.info("Processing external event that the game with id " + gameId + " has ended");
+        List<Game> foundGames = gameRepository.findByGameId(gameId);
+        if (foundGames.size()!=1){
+            logger.warn("Found "+ foundGames.size() + " matching games with gameId. Expected 1"+ gameId);
+            return;
         }
-        logger.info("Processing external event that the game with id " + foundGames.get(0).getGameId() + " has ended");
-        foundGames.get(0).end();
+        Game game = foundGames.get(0);
+        game.end();
+        gameRepository.save(game);
     }
 
     public void roundStatusExternallyChanged(UUID eventId, Integer roundNumber, RoundStatus roundStatus){
         logger.info("Processing 'roundStatus' event with eventId "+ eventId);
-        List<Game> foundGames = gameRepository.findAllByGameStatusEquals(GameStatus.GAME_RUNNING);
+        List<Game> foundGames = gameRepository.findAllByGameStatusEquals(GameStatus.STARTED);
         if (foundGames.size() != 1){
-            throw new IllegalStateException("Found "+ foundGames.size() + " matching games with game status GAME_RUNNING");
+            logger.warn("Found "+ foundGames.size() + " matching games with game status STARTED. Expected 1");
+            return;
         }
         Game game = foundGames.get(0);
         switch (roundStatus){
-            case INITIALIZED -> game.startNextRound(roundNumber);
-            case RUNNING -> game.getRound().commandInputEnded();
+            case STARTED -> game.startRound(roundNumber);
+            case COMMAND_INPUT_ENDED -> game.getRound().commandInputEnded();
             case ENDED -> game.getRound().roundEnded();
         }
+        gameRepository.save(game);
     }
 
 }

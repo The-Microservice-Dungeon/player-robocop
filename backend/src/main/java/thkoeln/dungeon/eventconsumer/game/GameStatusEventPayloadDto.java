@@ -14,9 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameStatusEventPayloadDto {
-    @JsonProperty("gameId")
     private UUID gameId;
-    @JsonProperty("status")
     private GameStatus gameStatus;
 
     public GameStatusEventPayloadDto(String gameIdString, String gameStatusString) {

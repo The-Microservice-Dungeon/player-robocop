@@ -8,7 +8,6 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thkoeln.dungeon.game.domain.round.Round;
-import thkoeln.dungeon.game.domain.round.RoundStatus;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -33,9 +32,17 @@ public class Game {
     @Embedded
     private Round round;
 
-    public void startNextRound(int currentRoundNumber){
-        this.round = new Round(++currentRoundNumber);
-        logger.info("Round number ${currentRoundCount} initialized, fire commands now!");
+    public void startRound(int currentRoundNumber) {
+        this.round = new Round(currentRoundNumber);
+        logger.info("Round number " + currentRoundNumber + " has begun, fire commands now!");
+    }
+
+    public void start() {
+        setGameStatus(GameStatus.STARTED);
+    }
+
+    public void end() {
+        setGameStatus(GameStatus.ENDED);
     }
 
     @Transient
@@ -54,15 +61,11 @@ public class Game {
         logger.warn("Reset game " + this + " to CREATED!");
     }
 
-    public void end(){
-        setGameStatus(GameStatus.GAME_FINISHED);
-    }
 
     public void makeOrphan() {
         setGameStatus(GameStatus.ORPHANED);
         logger.warn("Marked game " + this + " as ORPHANED!");
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,7 +74,7 @@ public class Game {
         return id.equals(game.id);
     }
 
-    public void setCurrentRoundCount(int currentRoundNumber){
+    public void setCurrentRoundCount(int currentRoundNumber) {
         this.round = new Round(currentRoundNumber);
     }
 

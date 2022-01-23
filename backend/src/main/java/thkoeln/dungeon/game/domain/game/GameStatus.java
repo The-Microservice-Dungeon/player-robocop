@@ -1,16 +1,20 @@
 package thkoeln.dungeon.game.domain.game;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.ToString;
 
 @ToString
 public enum GameStatus {
+    @JsonProperty("created")
     CREATED("created"),
-    GAME_RUNNING("game_running"),
-    GAME_FINISHED("game_finished"),
-    ORPHANED("orphaned"); // this is the state a game takes when the GameService doesn't list it anymore
-
+    @JsonProperty("started")
+    STARTED("started"),
+    @JsonProperty("ended")
+    ENDED("ended"),
+    //State that game takes if it isn't listed by the game service anymore.
+    ORPHANED("orphaned");
 
     private final String key;
 

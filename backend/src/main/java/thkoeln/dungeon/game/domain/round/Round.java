@@ -1,9 +1,7 @@
 package thkoeln.dungeon.game.domain.round;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,17 +19,22 @@ public class Round {
     private final Logger logger = LoggerFactory.getLogger(Round.class);
 
     public Round(Integer roundNumber){
-        this.roundStatus = RoundStatus.INITIALIZED;
+        if (roundNumber==0){
+            this.roundStatus = RoundStatus.BEFORE_FIRST_ROUND;
+        }
+        else {
+            this.roundStatus = RoundStatus.STARTED;
+        }
         this.roundNumber = roundNumber;
-        logger.info("round status set to ${roundStatus}");
+        logger.info("round status set to "+ this.getRoundStatus());
     }
 
     public void commandInputEnded(){
-        this.roundStatus = RoundStatus.RUNNING;
-        logger.info("round status set to RUNNING");
+        this.roundStatus = RoundStatus.COMMAND_INPUT_ENDED;
+        logger.info("round status set to "+ this.getRoundStatus());
     }
     public void roundEnded(){
         this.roundStatus = RoundStatus.ENDED;
-        logger.info("round status set to ENDED");
+        logger.info("round status set to "+ this.getRoundStatus());
     }
 }

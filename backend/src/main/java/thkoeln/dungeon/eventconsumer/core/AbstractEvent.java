@@ -6,11 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.support.KafkaHeaders;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.UUID;
 
 @MappedSuperclass
@@ -23,7 +28,7 @@ public abstract class AbstractEvent {
     @Setter(AccessLevel.NONE)
     protected UUID id = UUID.randomUUID();
     protected UUID eventId;
-    protected Long timestamp;
+    protected Date timestamp;
     protected UUID transactionId;
     @Transient
     protected Logger logger = LoggerFactory.getLogger(PlayerApplicationService.class);
@@ -35,8 +40,12 @@ public abstract class AbstractEvent {
             logger.warn("Event " + eventId + " at time " + timestamp + " has invalid eventId.");
         }
         try {
-            setTimestamp(Long.valueOf(timestampStr));
-        } catch (IllegalArgumentException e) {
+            //At least that's what game sends as timestamp
+            SimpleDateFormat dateTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            dateTime.setTimeZone(TimeZone.getTimeZone("GMT"));
+            Date date = dateTime.parse(timestampStr);
+            setTimestamp(date);
+        } catch (ParseException e) {
             logger.warn("Event " + eventId + " at time " + timestamp + " has invalid timestamp.");
         }
         try {
