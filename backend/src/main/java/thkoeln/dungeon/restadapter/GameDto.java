@@ -17,14 +17,6 @@ public class GameDto {
     private UUID gameId;
     private GameStatus gameStatus;
     private Integer currentRoundCount;
-    private List<UUID> participatingPlayers;
 
-    /***
-     * Constructor for gameDTO
-     * @param gameId0
-     * @param created
-     * @param i
-     */
-    public GameDto(UUID gameId0, GameStatus created, int i) {
-    }
+
 }
