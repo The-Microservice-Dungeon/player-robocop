@@ -98,12 +98,7 @@ public class UIController {
                 .toMap();
     }
 
-    @GetMapping("/map")
-    Map getMap() throws RESTConnectionFailureException, UnexpectedRESTException {
-        GameServiceRESTAdapter gsAdapter = new GameServiceRESTAdapter(new RestTemplate());
-        GameDto[] tmp = gsAdapter.fetchCurrentGameState();
-        return new Map(tmp[0]);
-    }
+
 
 
 }
