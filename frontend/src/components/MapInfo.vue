@@ -1,45 +1,55 @@
 <template>
   <div class="infoCard">
     <h3>Map</h3>
-    <label for="xOffset">
-      X Offset: {{ camera.x }}
-      <input
-        id="xOffset"
-        v-model="camera.x"
-        step="8"
-        :min="0"
-        :max="calculateMaxHorizontalScroll()"
-        type="range"
-        @input="render"
+    <div class="controls">
+      <div class="sliders">
+        <label for="xOffset">
+          X Offset: {{ camera.x }}
+          <input
+            id="xOffset"
+            v-model="camera.x"
+            class="slider"
+            step="8"
+            :min="0"
+            :max="calculateMaxHorizontalScroll()"
+            type="range"
+            @input="render"
+          >
+        </label>
+        <label for="yOffset">
+          Y Offset: {{ camera.y }}
+          <input
+            id="yOffset"
+            v-model="camera.y"
+            class="slider"
+            step="32"
+            :min="calculateMinVerticalScroll()"
+            :max="calculateMaxVerticalScroll()"
+            type="range"
+            @input="render"
+          >
+        </label>
+        <label for="zoom">
+          Zoom: {{ zoomLevel }}
+          <input
+            id="zoom"
+            v-model="zoomLevel"
+            class="slider"
+            step="0.1"
+            type="range"
+            min="1"
+            max="4"
+            @input="render"
+          >
+        </label>
+      </div>
+      <button
+        class="resetButton"
+        @click="resetCamera"
       >
-    </label>
-    <label for="yOffset">
-      Y Offset: {{ camera.y }}
-      <input
-        id="yOffset"
-        v-model="camera.y"
-        step="32"
-        :min="calculateMinVerticalScroll()"
-        :max="calculateMaxVerticalScroll()"
-        type="range"
-        @input="render"
-      >
-    </label>
-    <label for="zoom">
-      Zoom: {{ zoomLevel }}
-      <input
-        id="zoom"
-        v-model="zoomLevel"
-        step="0.1"
-        type="range"
-        min="1"
-        max="4"
-        @input="render"
-      >
-    </label>
-    <button @click="resetCamera">
-      Reset View
-    </button>
+        Reset View
+      </button>
+    </div>
     <canvas
       ref="mapCanvas"
       class="mapCanvas"
@@ -303,6 +313,27 @@ export default {
 .infoCard {
   max-height: 100vh;
   width: 55vw;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.sliders {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.slider {
+  width: 50%;
+}
+
+.resetButton {
+  height: 2rem;
+  margin-top: 1rem;
 }
 
 .mapCanvas {
