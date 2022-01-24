@@ -28,7 +28,7 @@
           @click="end"
         >logout</a>
       </div>
-      <router-view/>
+      <router-view class="view"/>
     </template>
   </div>
 </template>
@@ -95,6 +95,12 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.view {
+  padding-bottom: 16px;
+}
+</style>
 
 <style lang="scss">
 $baseTextColor: #fbfbfb;
