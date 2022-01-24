@@ -48,7 +48,7 @@ public class GameEventConsumer {
             gameStatusEventRepository.save(gameStatusEvent);
             logger.info("saved game event with status " + gameStatusEvent.getStatus().toString());
             gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), gameStatusEvent.getStatus());
-            this.template.convertAndSend("game_events", "Game " + gameStatusEvent.getGameId() + " changed its Status to: " + gameStatusEvent.getStatus());
+            this.template.convertAndSend("game_events", "game_status_change");
         } catch (Exception e) {
             this.kafkaErrorService.newKafkaError("status", payload, e.getMessage());
         }
@@ -62,6 +62,7 @@ public class GameEventConsumer {
             roundStatusEventRepository.save(roundStatusEvent);
             logger.info("saved round event with status "+roundStatusEvent.getRoundStatus().toString());
             gameApplicationService.roundStatusExternallyChanged(roundStatusEvent.getEventId(), roundStatusEvent.getRoundNumber(), roundStatusEvent.getRoundStatus());
+            this.template.convertAndSend("game_events", "round_status_change");
         } catch (KafkaException e) {
             this.kafkaErrorService.newKafkaError("roundStatus", payload, e.getMessage());
         }
