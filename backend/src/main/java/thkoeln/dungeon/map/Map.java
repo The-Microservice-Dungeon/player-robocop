@@ -34,8 +34,24 @@ public class Map {
     @Getter
     int numberPlayers;
 
+    @Getter
+    int mapSize;
+
+    @Getter
+    int anzahlCols;
+
+    @Getter
+    int centerIndex;
+
+    /***
+     * Creates a Map and calculates the center Position
+     * @param gameDto
+     */
     public Map(GameDto gameDto){
-       numberPlayers = gameDto.getParticipatingPlayers().size();
+       this.numberPlayers = gameDto.getParticipatingPlayers().size();
+       this.mapSize = numberPlayers;
+       this.anzahlCols = this.mapSize * 2;
+       this.centerIndex = this.mapSize * this.anzahlCols + this.mapSize;
     }
 
     public Map() {
