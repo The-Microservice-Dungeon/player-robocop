@@ -4,13 +4,14 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameRepository;
+import thkoeln.dungeon.game.domain.round.Round;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,17 +36,22 @@ public class UIController {
     }
 
     @GetMapping("/game")
-    // TODO: Return Actual Data
     Map<String, Object> currentGameInfo(){
+        // Game game = gameRepo.findAll().get(0);
+        // Round round = game.getRound();
+
         JSONObject roundJson = new JSONObject()
+                // .put("roundNumber", round.getRoundNumber())
                 .put("roundNumber", 1)
-                .put("roundTime", "SomeTime")
-                .put("roundStatus", "CREATED");
+                .put("roundTime", "SomeTime") // TODO: Return Actual Data
+                //.put("roundStatus", round.getRoundStatus());
+                .put("roundStatus", "Created");
 
         JSONObject gameJson = new JSONObject()
-                .put("status", "CREATED")
-                .put("playerCount", 1)
-                .put("maxRounds", 420)
+                //.put("status", game.getGameStatus())
+                .put("status", "Created")
+                .put("playerCount", 1) // TODO: Return Actual Data
+                .put("maxRounds", 420) // TODO: Return Actual Data
                 .put("currentRound", roundJson);
 
         return new JSONObject()
