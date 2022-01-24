@@ -12,8 +12,7 @@ import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
+
 public class Robot {
     @Id
     private final UUID id = UUID.randomUUID();
