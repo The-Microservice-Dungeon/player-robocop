@@ -2,27 +2,27 @@
   <div class="infoCard">
     <h3>Map</h3>
     <label for="xOffset">
-      X Offset
+      X Offset: {{ camera.x }}
       <input
         id="xOffset"
         v-model="camera.x"
         step="8"
         :min="0"
         :max="calculateMaxHorizontalScroll()"
-        type="number"
-        @change="render"
+        type="range"
+        @input="render"
       >
     </label>
     <label for="yOffset">
-      Y Offset
+      Y Offset: {{ camera.y }}
       <input
         id="yOffset"
         v-model="camera.y"
         step="32"
-        :min="-mapHeight / 2"
-        :max="mapHeight / 2"
-        type="number"
-        @change="render"
+        :min="calculateMinVerticalScroll()"
+        :max="calculateMaxVerticalScroll()"
+        type="range"
+        @input="render"
       >
     </label>
     <label for="zoom">
@@ -37,6 +37,9 @@
         @input="render"
       >
     </label>
+    <button @click="resetCamera">
+      Reset View
+    </button>
     <canvas
       ref="mapCanvas"
       class="mapCanvas"
@@ -120,6 +123,7 @@ export default {
       this.mapHeight = this.rows * this.tileResolution / this.zoomLevel
       this.calculateMaxHorizontalScroll()
       this.clampMaxHorizontalScroll()
+      this.clampMaxVerticalScroll()
     },
     buildMap () {
       const totalLength = this.cols * this.rows
@@ -127,6 +131,9 @@ export default {
       this.layers[0] = Array.from({ length: totalLength }, (x, i) => {
         // borders
         if (this.tileIsBorder(totalLength, i)) return 1
+        console.log(this.getCenter())
+        console.log(i)
+        if (this.getCenter() === i) return 2
         // center of map
         return i % 3 === 0 ? 1 : 0
       })
@@ -264,10 +271,29 @@ export default {
       const maxScroll = this.calculateMaxHorizontalScroll()
       if (this.camera.x > maxScroll) this.camera.x = maxScroll
     },
+    calculateMinVerticalScroll () {
+      return Math.floor(-this.mapHeight / 2)
+    },
+    calculateMaxVerticalScroll () {
+      return Math.floor(this.rows * this.tileResolution - (this.mapHeight / 2))
+    },
+    clampMaxVerticalScroll () {
+      const maxScroll = this.calculateMaxVerticalScroll()
+      if (this.camera.y > maxScroll) this.camera.y = maxScroll
+    },
+    resetCamera () {
+      this.camera.y = 0
+      this.camera.x = 0
+      this.zoomLevel = 1
+      this.render()
+    },
     getRandomInt (min, max) {
       min = Math.ceil(min)
       max = Math.floor(max)
       return Math.floor(Math.random() * (max - min)) + min
+    },
+    getCenter () {
+      return this.mapSize * this.cols + this.mapSize
     },
   },
 }
