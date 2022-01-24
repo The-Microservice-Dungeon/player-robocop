@@ -60,7 +60,7 @@ public class Map {
 
 
     public void addRobot(Robot rob){
-        rob.setMap(this);
+
         robots.add(rob);
     }
 

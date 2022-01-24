@@ -18,8 +18,6 @@ public class Robot {
     private final UUID id = UUID.randomUUID();
 
 
-    @ManyToOne
-    @JoinColumn(name = "map_ID")
-    private Map map;
+
 
 }
