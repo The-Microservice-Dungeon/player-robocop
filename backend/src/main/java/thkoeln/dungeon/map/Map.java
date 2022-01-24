@@ -26,10 +26,7 @@ public class Map {
     @OneToMany(mappedBy = "map")
     List<Planet> planets;
 
-    @Getter
-    @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "map")
-    List<Robot> robots;
+
 
     @Getter
     int numberPlayers;
@@ -48,10 +45,10 @@ public class Map {
      * @param gameDto
      */
     public Map(GameDto gameDto){
-       this.numberPlayers = gameDto.getParticipatingPlayers().size();
-       this.mapSize = numberPlayers;
-       this.anzahlCols = this.mapSize * 2;
-       this.centerIndex = this.mapSize * this.anzahlCols + this.mapSize;
+     //  this.numberPlayers = gameDto.getParticipatingPlayers().size();
+     //  this.mapSize = numberPlayers;
+     //  this.anzahlCols = this.mapSize * 2;
+     //  this.centerIndex = this.mapSize * this.anzahlCols + this.mapSize;
     }
 
     public Map() {
@@ -59,10 +56,6 @@ public class Map {
     }
 
 
-    public void addRobot(Robot rob){
-
-        robots.add(rob);
-    }
 
 
 
