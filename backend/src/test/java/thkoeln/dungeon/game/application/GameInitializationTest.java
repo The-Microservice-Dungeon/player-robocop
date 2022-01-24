@@ -40,10 +40,10 @@ public class GameInitializationTest {
     private static final Integer GAME_ROW_COUNT_2 = 200;
     private static final UUID GAME_ID_3 = UUID.randomUUID();
     private static final Integer GAME_ROW_COUNT_3 = 0;
-   // private GameDto gameDto0 = new GameDto(GAME_ID_0, CREATED, 0);
-   // private GameDto gameDto1 = new GameDto(GAME_ID_1, STARTED, GAME_ROW_COUNT_1);
-    // private GameDto gameDto2 = new GameDto(GAME_ID_2, ENDED, GAME_ROW_COUNT_2);
-   // private GameDto gameDto3 = new GameDto(GAME_ID_3, CREATED, GAME_ROW_COUNT_3);
+    private GameDto gameDto0 = new GameDto(GAME_ID_0, CREATED, 0);
+    private GameDto gameDto1 = new GameDto(GAME_ID_1, STARTED, GAME_ROW_COUNT_1);
+     private GameDto gameDto2 = new GameDto(GAME_ID_2, ENDED, GAME_ROW_COUNT_2);
+    private GameDto gameDto3 = new GameDto(GAME_ID_3, CREATED, GAME_ROW_COUNT_3);
 
     private GameDto[] allRemoteGames;
 
