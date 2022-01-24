@@ -14,5 +14,7 @@ public class Robot {
     @Id
     private final UUID id = UUID.randomUUID();
 
+    private int energy;
+    private int health;
 
 }
