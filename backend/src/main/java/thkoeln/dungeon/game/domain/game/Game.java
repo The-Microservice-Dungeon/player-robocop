@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import thkoeln.dungeon.game.domain.round.Round;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ public class Game {
     private UUID gameId;
     private GameStatus gameStatus;
 
+
     @Embedded
     private Round round;
 
@@ -44,6 +46,8 @@ public class Game {
     public void end() {
         setGameStatus(GameStatus.ENDED);
     }
+
+
 
     @Transient
     private Logger logger = LoggerFactory.getLogger(Game.class);

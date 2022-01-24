@@ -4,11 +4,18 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameRepository;
+
+import thkoeln.dungeon.map.Map;
 import thkoeln.dungeon.game.domain.round.Round;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
+import thkoeln.dungeon.restadapter.GameDto;
+import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
+import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
+import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
@@ -90,5 +97,13 @@ public class UIController {
                 .put("robots", robotObjects)
                 .toMap();
     }
+
+    @GetMapping("/map")
+    Map getMap() throws RESTConnectionFailureException, UnexpectedRESTException {
+        GameServiceRESTAdapter gsAdapter = new GameServiceRESTAdapter(new RestTemplate());
+        GameDto[] tmp = gsAdapter.fetchCurrentGameState();
+        return new Map(tmp[0]);
+    }
+
 
 }

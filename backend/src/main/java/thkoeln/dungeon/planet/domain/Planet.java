@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import thkoeln.dungeon.map.Map;
 
 import javax.persistence.*;
 import java.lang.reflect.InvocationTargetException;
@@ -46,6 +47,14 @@ public class Planet {
 
     @Transient
     private Logger logger = LoggerFactory.getLogger(Planet.class);
+
+    @ManyToOne
+    @JoinColumn(name = "map_ID")
+    private Map map;
+
+    public void setMap(Map map) {
+        this.map = map;
+    }
 
     public Boolean isSpaceStation() {
         return this.planetType == PlanetType.SPACESTATION;
