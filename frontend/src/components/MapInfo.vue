@@ -141,8 +141,6 @@ export default {
       this.layers[0] = Array.from({ length: totalLength }, (x, i) => {
         // borders
         if (this.tileIsBorder(totalLength, i)) return 1
-        console.log(this.getCenter())
-        console.log(i)
         if (this.getCenter() === i) return 2
         // center of map
         return i % 3 === 0 ? 1 : 0
