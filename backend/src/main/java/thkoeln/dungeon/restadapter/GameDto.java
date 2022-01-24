@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import thkoeln.dungeon.game.domain.game.GameStatus;
 
+import java.util.List;
 import java.util.UUID;
 
 @Setter
@@ -16,4 +17,5 @@ public class GameDto {
     private UUID gameId;
     private GameStatus gameStatus;
     private Integer currentRoundCount;
+    private List<UUID> participatingPlayers;
 }
