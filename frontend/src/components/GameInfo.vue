@@ -1,7 +1,11 @@
 <template>
   <div class="infoCard">
     <h3>Game Info</h3>
-    <template v-if="!loading">
+    <bounce-loader
+      v-if="loading"
+      :color="'red'"
+    />
+    <template v-else>
       <div class="infoWrapper">
         <span>
           Status: {{ game.status }}
@@ -29,10 +33,6 @@
         </span>
       </div>
     </template>
-    <bounce-loader
-      v-else
-      :color="'red'"
-    />
   </div>
 </template>
 
