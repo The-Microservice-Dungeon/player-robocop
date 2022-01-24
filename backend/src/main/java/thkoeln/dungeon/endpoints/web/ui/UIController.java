@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameRepository;
 
-import thkoeln.dungeon.map.Map;
+
 import thkoeln.dungeon.game.domain.round.Round;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
