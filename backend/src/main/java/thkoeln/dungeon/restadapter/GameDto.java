@@ -17,6 +17,9 @@ public class GameDto {
     private UUID gameId;
     private GameStatus gameStatus;
     private Integer currentRoundCount;
+    private List<UUID> participatingPlayers;
 
 
+    public GameDto(UUID gameId0, GameStatus created, int i) {
+    }
 }

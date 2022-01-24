@@ -27,7 +27,6 @@ public class Map {
     List<Planet> planets;
 
 
-
     @Getter
     int numberPlayers;
 
@@ -44,19 +43,25 @@ public class Map {
      * Creates a Map and calculates the center Position
      * @param gameDto
      */
-    public Map(GameDto gameDto){
-     //  this.numberPlayers = gameDto.getParticipatingPlayers().size();
-     //  this.mapSize = numberPlayers;
-     //  this.anzahlCols = this.mapSize * 2;
-     //  this.centerIndex = this.mapSize * this.anzahlCols + this.mapSize;
+    public Map(GameDto gameDto) {
+        this.numberPlayers = gameDto.getParticipatingPlayers().size();
+
+        if (numberPlayers < 10) {
+            this.mapSize = 15;
+        } else if (numberPlayers < 20) {
+            this.mapSize = 20;
+        } else {
+            this.mapSize = 35;
+        }
+        this.anzahlCols = this.mapSize * 2;
+        this.centerIndex = this.mapSize * this.anzahlCols + this.mapSize;
     }
 
     public Map() {
 
     }
-
-
-
-
-
 }
+
+
+
+
