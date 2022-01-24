@@ -70,7 +70,7 @@ export default {
   },
   data () {
     return {
-      tileResolution: 32,
+      tileResolution: 64,
       cols: undefined,
       rows: undefined,
       mapWidth: undefined,
