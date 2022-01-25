@@ -8,21 +8,18 @@ import thkoeln.dungeon.robot.domain.Robot;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import java.util.UUID;
 
 @Embeddable
 public class PositionVO {
 
     @Getter
     @Setter
-    @OneToOne
-    @JoinColumn(name = "planet_ID")
-    private Planet planet;
+    private UUID planet;
 
     @Getter
     @Setter
-    @OneToOne
-    @JoinColumn(name = "robot_ID")
-    private Robot robot;
+    private UUID robot;
 
     @Getter
     @Setter
@@ -36,8 +33,7 @@ public class PositionVO {
     }
 
 
+    public PositionVO() {
 
-
-
-
+    }
 }

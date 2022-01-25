@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.game.domain.game.Game;
+import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.game.domain.game.GameRepository;
 
 
@@ -17,7 +18,7 @@ import thkoeln.dungeon.game.domain.round.Round;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
-import thkoeln.dungeon.restadapter.GameDto;
+
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
@@ -118,7 +119,7 @@ public class UIController {
     Map<String, Object> getMap() {
         GameDto[] gameDtos;
         try {
-            gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
+           gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
         } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
             return new JSONObject().toMap();
         }
@@ -128,7 +129,7 @@ public class UIController {
         thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
 
         tmpMap.addFirstBot(new Robot(false));
-     //   tmpMap.addFirstPlanet(new Planet());
+        tmpMap.addFirstPlanet(new Planet());
 
        return new JSONObject(tmpMap).toMap();
        // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
