@@ -1,9 +1,8 @@
-package thkoeln.dungeon.restadapter;
+package thkoeln.dungeon.command;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.istack.NotNull;
 import lombok.*;
-import thkoeln.dungeon.command.CommandType;
-import thkoeln.dungeon.command.CommandBody;
 
 import java.util.UUID;
 
@@ -14,9 +13,13 @@ import java.util.UUID;
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommandDto {
+    @NotNull
     private UUID gameId;
+    @NotNull
     private UUID playerToken;
     private UUID robotId;
+    @NotNull
     private CommandType commandType;
+    @NotNull
     private CommandBody commandObject;
 }

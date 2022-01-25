@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import thkoeln.dungeon.planet.domain.Planet;
-import thkoeln.dungeon.restadapter.GameDto;
+import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.robot.domain.Robot;
 
 import javax.persistence.*;

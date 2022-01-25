@@ -153,6 +153,10 @@ public class PlayerApplicationService {
         for (Player player : players) registerOnePlayerForGame(player, game);
     }
 
+    public Player retrieveCurrentPlayer(){
+        return playerRepository.findByNameAndEmail(playerName, playerEmail);
+    }
+
 
     /**
      * Register one specific player for a game

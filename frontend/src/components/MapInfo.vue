@@ -1,5 +1,5 @@
 <template>
-  <div class="infoCard">
+  <div :class="maxWidth ? 'maxWidth infoCard' : 'infoCard'">
     <h3>Map</h3>
     <div class="controls">
       <div class="sliders">
@@ -71,13 +71,15 @@ import mapTiles from '@/assets/mapTiles.png'
 export default {
   name: 'MapInfo',
   props: {
-    playerCount: {
-      type: Number,
-      default: 20,
+    isMobile: {
+      type: Boolean,
+      default: false,
     },
   },
   data () {
     return {
+      maxWidth: !this.isMobile,
+      playerCount: 20,
       tileResolution: 64,
       cols: undefined,
       rows: undefined,
@@ -99,6 +101,11 @@ export default {
       if (this.playerCount < 10) return 15
       if (this.playerCount < 20) return 20
       return 35
+    },
+  },
+  watch: {
+    isMobile () {
+      this.maxWidth = !this.isMobile
     },
   },
   mounted () {
@@ -323,7 +330,7 @@ export default {
 </script>
 
 <style scoped>
-.infoCard {
+.maxWidth {
   max-height: 100vh;
   width: 55vw;
 }

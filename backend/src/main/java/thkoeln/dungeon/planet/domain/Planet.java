@@ -22,6 +22,10 @@ public class Planet {
     @Id
     private final UUID id = UUID.randomUUID();
 
+    //todo: not yet implemented
+    @Setter
+    private UUID externalId = UUID.randomUUID();
+
     @Setter
     private String name;
 
