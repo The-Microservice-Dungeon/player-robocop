@@ -3,6 +3,7 @@ package thkoeln.dungeon.endpoints.web.ui;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,15 +38,18 @@ public class UIController {
     private final GameRepository gameRepo;
     private final PlayerRepository playerRepo;
     private final RobotRepository roboRepo;
+    private final GameServiceRESTAdapter gameServiceRESTAdapter;
 
     /**
      * Constructor
      * @param gameRepo
      */
-    UIController(GameRepository gameRepo, PlayerRepository playerRepo, RobotRepository roboRepo) {
+    @Autowired
+    UIController(GameServiceRESTAdapter gameServiceRESTAdapter, GameRepository gameRepo, PlayerRepository playerRepo, RobotRepository roboRepo) {
         this.gameRepo = gameRepo;
         this.playerRepo = playerRepo;
         this.roboRepo = roboRepo;
+        this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
     @GetMapping("/game")
@@ -111,21 +115,22 @@ public class UIController {
     }
 
     @GetMapping("/map")
-    String getMap() throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
-        GameDto[] gameDtos = restTemplate.getForObject("http://localhost:8080/games", GameDto[].class);
-
-        if (gameDtos != null) {
-            return "{}";
+    Map<String, Object> getMap() {
+        GameDto[] gameDtos;
+        try {
+            gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
+        } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
+            return new JSONObject().toMap();
         }
+
 
         System.out.println(gameDtos[0].getParticipatingPlayers());
         thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
 
         tmpMap.addFirstBot(new Robot(false));
      //   tmpMap.addFirstPlanet(new Planet());
-        ObjectMapper objectMapper = new ObjectMapper();
-       return objectMapper.writeValueAsString(tmpMap);
+
+       return new JSONObject(tmpMap).toMap();
        // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
        // GameDto tmpDTO = restAdapter.fetchCurrentGameState()[0];
        // thkoeln.dungeon.map.Map map = new thkoeln.dungeon.map.Map(tmpDTO);
