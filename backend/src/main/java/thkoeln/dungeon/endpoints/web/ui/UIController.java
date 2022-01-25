@@ -104,25 +104,27 @@ public class UIController {
                 .toMap();
     }
 
-        @GetMapping("/map")
-        String getMap() throws JsonProcessingException {
+    @GetMapping("/map")
+    String getMap() throws JsonProcessingException {
+        RestTemplate restTemplate = new RestTemplate();
+        GameDto[] gameDtos = restTemplate.getForObject("http://localhost:8080/games", GameDto[].class);
 
-
-            RestTemplate restTemplate = new RestTemplate();
-            GameDto[] gameDtos = restTemplate.getForObject("http://localhost:8080/games", GameDto[].class);
-
-            System.out.println(gameDtos[0].getParticipatingPlayers());
-            thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
-
-            tmpMap.addFirstBot(new Robot(false));
-         //   tmpMap.addFirstPlanet(new Planet());
-            ObjectMapper objectMapper = new ObjectMapper();
-           return objectMapper.writeValueAsString(tmpMap);
-           // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
-           // GameDto tmpDTO = restAdapter.fetchCurrentGameState()[0];
-           // thkoeln.dungeon.map.Map map = new thkoeln.dungeon.map.Map(tmpDTO);
-           // JSONObject mapJson = new JSONObject().put("numberPlayers", tmpMap.getNumberPlayers());
-           // return new JSONObject().put("map", mapJson).toMap();
+        if (gameDtos != null) {
+            return "{}";
         }
+
+        System.out.println(gameDtos[0].getParticipatingPlayers());
+        thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
+
+        tmpMap.addFirstBot(new Robot(false));
+     //   tmpMap.addFirstPlanet(new Planet());
+        ObjectMapper objectMapper = new ObjectMapper();
+       return objectMapper.writeValueAsString(tmpMap);
+       // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
+       // GameDto tmpDTO = restAdapter.fetchCurrentGameState()[0];
+       // thkoeln.dungeon.map.Map map = new thkoeln.dungeon.map.Map(tmpDTO);
+       // JSONObject mapJson = new JSONObject().put("numberPlayers", tmpMap.getNumberPlayers());
+       // return new JSONObject().put("map", mapJson).toMap();
+    }
 
 }
