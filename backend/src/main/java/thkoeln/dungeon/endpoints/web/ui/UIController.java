@@ -1,31 +1,21 @@
 package thkoeln.dungeon.endpoints.web.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.game.domain.game.Game;
+import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.game.domain.game.GameRepository;
-
-
 import thkoeln.dungeon.game.domain.round.Round;
-import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
-import thkoeln.dungeon.restadapter.GameDto;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +32,7 @@ public class UIController {
 
     /**
      * Constructor
+     *
      * @param gameRepo
      */
     @Autowired
@@ -53,11 +44,11 @@ public class UIController {
     }
 
     @GetMapping("/game")
-    Map<String, Object> currentGameInfo(){
-         Game game = gameRepo.findAll().get(0);
-         if (game == null) {
-             return new JSONObject().toMap();
-         }
+    Map<String, Object> currentGameInfo() {
+        Game game = gameRepo.findAll().get(0);
+        if (game == null) {
+            return new JSONObject().toMap();
+        }
         Round round = game.getRound();
 
         JSONObject roundJson = new JSONObject()
@@ -80,7 +71,7 @@ public class UIController {
     }
 
     @GetMapping("/player")
-    Map<String, Object> playerInfo(){
+    Map<String, Object> playerInfo() {
         Player player = playerRepo.findAll().get(0);
 
         JSONObject playerJson = new JSONObject()
@@ -95,9 +86,9 @@ public class UIController {
     }
 
     @GetMapping("/robots")
-    Map<String, Object> allRobotInfo(){
+    Map<String, Object> allRobotInfo() {
 
-        List <Robot> robots = roboRepo.findAll();
+        List<Robot> robots = roboRepo.findAll();
 
         ArrayList<JSONObject> robotObjects = new ArrayList<>();
 
@@ -128,14 +119,14 @@ public class UIController {
         thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
 
         tmpMap.addFirstBot(new Robot(false));
-     //   tmpMap.addFirstPlanet(new Planet());
+        //   tmpMap.addFirstPlanet(new Planet());
 
-       return new JSONObject(tmpMap).toMap();
-       // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
-       // GameDto tmpDTO = restAdapter.fetchCurrentGameState()[0];
-       // thkoeln.dungeon.map.Map map = new thkoeln.dungeon.map.Map(tmpDTO);
-       // JSONObject mapJson = new JSONObject().put("numberPlayers", tmpMap.getNumberPlayers());
-       // return new JSONObject().put("map", mapJson).toMap();
+        return new JSONObject(tmpMap).toMap();
+        // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
+        // GameDto tmpDTO = restAdapter.fetchCurrentGameState()[0];
+        // thkoeln.dungeon.map.Map map = new thkoeln.dungeon.map.Map(tmpDTO);
+        // JSONObject mapJson = new JSONObject().put("numberPlayers", tmpMap.getNumberPlayers());
+        // return new JSONObject().put("map", mapJson).toMap();
     }
 
 }
