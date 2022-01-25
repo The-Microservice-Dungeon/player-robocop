@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import thkoeln.dungeon.game.domain.game.Game;
+import thkoeln.dungeon.robot.domain.Robot;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,6 +25,11 @@ public class Player {
     private String name;
     private String email;
     private UUID bearerToken;
+
+    private Float money;
+
+    @OneToMany
+    private List<Robot> robots;
 
     /**
      * Choose a random and unique name and email for the player
