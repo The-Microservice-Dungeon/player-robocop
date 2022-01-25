@@ -7,4 +7,4 @@ target/
 logs
 
 /db/
-/backend/db/robocop.mv.db
+/backend/db/
