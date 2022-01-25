@@ -29,3 +29,5 @@ export const apiCall = (method = 'GET', path, params = {}, body = undefined, hea
 
 export const apiPost = (path, params, body, headers) => apiCall('POST', path, params, body, headers)
 export const apiGet = (path, params, body, headers) => apiCall('GET', path, params, body, headers)
+
+export const isScreenMobile = () => window.innerWidth <= 620

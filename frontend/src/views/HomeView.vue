@@ -7,18 +7,26 @@
     <h1 style="margin-top: 0">
       Robocop Dashboard
     </h1>
-    <div class="infos">
-      <div class="infoLeft">
-        <div class="generalInfo">
-          <player-info/>
-          <game-info/>
+    <template v-if="!isMobile">
+      <div class="infos">
+        <div class="infoLeft">
+          <div class="generalInfo">
+            <player-info/>
+            <game-info/>
+          </div>
+          <map-info/>
         </div>
-        <map-info/>
+        <div class="infoRight">
+          <robot-info/>
+        </div>
       </div>
-      <div class="infoRight">
-        <robot-info/>
-      </div>
-    </div>
+    </template>
+    <template v-else>
+      <player-info/>
+      <game-info/>
+      <map-info :is-mobile="isMobile"/>
+      <robot-info/>
+    </template>
   </div>
 </template>
 
@@ -28,9 +36,21 @@ import PlayerInfo from '@/components/PlayerInfo'
 import GameInfo from '@/components/GameInfo'
 import MapInfo from '@/components/MapInfo'
 import RobotInfo from '@/components/RobotInfo'
+import { isScreenMobile } from '@/utils'
+
 export default {
   name: 'HomeView',
   components: { RobotInfo, MapInfo, GameInfo, PlayerInfo },
+  data () {
+    return {
+      isMobile: isScreenMobile(),
+    }
+  },
+  mounted () {
+    window.addEventListener('resize', () => {
+      this.isMobile = isScreenMobile()
+    })
+  },
 }
 </script>
 
