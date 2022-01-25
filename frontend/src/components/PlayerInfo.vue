@@ -51,7 +51,7 @@ export default {
         .then(response => response.json())
         .then(response => {
           if (response) {
-            this.player = response
+            this.player = response.player
             this.loading = false
           }
         })
