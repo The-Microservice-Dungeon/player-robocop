@@ -58,17 +58,14 @@ public class UIController {
         Round round = game.getRound();
 
         JSONObject roundJson = new JSONObject()
-                // .put("roundNumber", round.getRoundNumber())
-                .put("roundNumber", 1)
+                .put("roundNumber", round.getRoundNumber())
                 .put("roundTime", "SomeTime") // TODO: Return Actual Data
-                //.put("roundStatus", round.getRoundStatus());
-                .put("roundStatus", "Created");
+                .put("roundStatus", round.getRoundStatus());
 
         JSONObject gameJson = new JSONObject()
-                //.put("status", game.getGameStatus())
-                .put("status", "Created")
-                .put("playerCount", 1) // TODO: Return Actual Data
-                .put("maxRounds", 420) // TODO: Return Actual Data
+                .put("status", game.getGameStatus())
+                .put("playerCount", game.getNumberOfPlayers())
+                .put("maxRounds", game.getMaxRounds())
                 .put("currentRound", roundJson);
 
         return new JSONObject()

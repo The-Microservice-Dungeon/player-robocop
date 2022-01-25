@@ -33,6 +33,9 @@ public class Game {
     private Integer maxPlayers;
     private Integer maxRounds;
 
+    @ElementCollection
+    private List<UUID> participatingPlayers;
+
     @Embedded
     private Round round;
 
@@ -82,6 +85,10 @@ public class Game {
 
     public void setCurrentRoundCount(int currentRoundNumber) {
         this.round = new Round(currentRoundNumber);
+    }
+
+    public Integer getNumberOfPlayers () {
+        return this.participatingPlayers.size();
     }
 
     @Override
