@@ -1,9 +1,12 @@
 package thkoeln.dungeon.endpoints.web.ui;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameRepository;
@@ -19,6 +22,8 @@ import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +103,24 @@ public class UIController {
                 .toMap();
     }
 
+        @GetMapping("/map")
+        String getMap() throws JsonProcessingException {
 
 
+            RestTemplate restTemplate = new RestTemplate();
+            GameDto   gameDtos[] = restTemplate.getForObject("http://localhost:8080/games", GameDto[].class);
+
+            System.out.println(gameDtos[0].getParticipatingPlayers());
+            thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
+
+
+            ObjectMapper objectMapper = new ObjectMapper();
+           return objectMapper.writeValueAsString(tmpMap);
+           // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
+           // GameDto tmpDTO = restAdapter.fetchCurrentGameState()[0];
+           // thkoeln.dungeon.map.Map map = new thkoeln.dungeon.map.Map(tmpDTO);
+           // JSONObject mapJson = new JSONObject().put("numberPlayers", tmpMap.getNumberPlayers());
+           // return new JSONObject().put("map", mapJson).toMap();
+        }
 
 }

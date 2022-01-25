@@ -1,16 +1,16 @@
 package thkoeln.dungeon.map;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.restadapter.GameDto;
 import thkoeln.dungeon.robot.domain.Robot;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +39,12 @@ public class Map {
     @Getter
     int centerIndex;
 
+
+
+    int[][] layers;
+
+
+
     /***
      * Creates a Map and calculates the center Position
      * @param gameDto
@@ -55,13 +61,31 @@ public class Map {
         }
         this.anzahlCols = this.mapSize * 2;
         this.centerIndex = this.mapSize * this.anzahlCols + this.mapSize;
+
+        this.layers = new int[this.anzahlCols][this.anzahlCols];
     }
 
     public Map() {
 
+
+
     }
 }
 
+class layers{
+    int[][] layers;
 
+    public layers(int size) {
+        this.layers = new int[size][size];
+    }
+
+    public int[][] getLayers() {
+        return layers;
+    }
+
+    public void setLayers(int[][] layers) {
+        this.layers = layers;
+    }
+}
 
 
