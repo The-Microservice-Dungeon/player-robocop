@@ -26,10 +26,11 @@ public class Player {
     private String email;
     private UUID bearerToken;
 
-    private Float money;
+    private Float money = 200F;
 
+    // TODO: Fill with data when new Robot gets spawned
     @OneToMany
-    private List<Robot> robots;
+    private List<Robot> robots = new ArrayList<>();
 
     /**
      * Choose a random and unique name and email for the player
@@ -65,6 +66,10 @@ public class Player {
 
     public void playRound() {
         // todo
+    }
+
+    public Integer getRobotCount () {
+        return this.robots.size();
     }
 
     @Override
