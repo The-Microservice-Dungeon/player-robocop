@@ -10,7 +10,7 @@ import thkoeln.dungeon.game.domain.game.GameRepository;
 import thkoeln.dungeon.game.domain.game.GameStatus;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
-import thkoeln.dungeon.restadapter.GameDto;
+import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
@@ -32,11 +32,25 @@ public class GameApplicationService {
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
+    public Game retrieveCreatedGame() throws IllegalStateException{
+        List<Game> found = gameRepository.findAllByGameStatusEquals(GameStatus.CREATED);
+        if (found.size()!=1){
+            throw new IllegalStateException("There has to be exactly one created game. Found "+found.size());
+        }
+        return found.get(0);
+    }
+
+    public Game retrieveStartedGame() throws IllegalStateException{
+        List<Game> found = gameRepository.findAllByGameStatusEquals(GameStatus.STARTED);
+        if (found.size()!=1){
+            throw new IllegalStateException("There has to be exactly one started game. Found "+found.size());
+        }
+        return found.get(0);
+    }
 
     public List<Game> retrieveActiveGames() {
         return gameRepository.findAllByGameStatusEquals(GameStatus.STARTED);
     }
-
 
     /**
      * Makes sure that our own game state is consistent with what GameService says.
@@ -134,7 +148,6 @@ public class GameApplicationService {
         gameRepository.save(game);
     }
 
-
     /**
      * To be called by event consumer listening to GameService event
      */
@@ -142,7 +155,7 @@ public class GameApplicationService {
         logger.info("Processing external event that the game with id " + gameId + " has ended");
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.size()!=1){
-            logger.warn("Found "+ foundGames.size() + " matching games with gameId. Expected 1"+ gameId);
+            logger.warn("Found "+ foundGames.size() + " matching games with gameId: "+ gameId+". Expected 1");
             return;
         }
         Game game = foundGames.get(0);
@@ -154,7 +167,7 @@ public class GameApplicationService {
         logger.info("Processing 'roundStatus' event with eventId "+ eventId);
         List<Game> foundGames = gameRepository.findAllByGameStatusEquals(GameStatus.STARTED);
         if (foundGames.size() != 1){
-            logger.warn("Found "+ foundGames.size() + " matching games with game status STARTED. Expected 1");
+            logger.warn("Found "+ foundGames.size() + " matching games with game status STARTED. Expected 1 ");
             return;
         }
         Game game = foundGames.get(0);
