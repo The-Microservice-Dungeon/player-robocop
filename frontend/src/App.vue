@@ -39,6 +39,7 @@ import AuthenticationView from '@/views/AuthenticationView'
 import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
 import { apiLink } from '@/utils'
+import { EventBus } from '@/event-bus'
 
 export default {
   name: 'App',
@@ -85,11 +86,7 @@ export default {
     handleGameEvent (tick) {
       console.log('Game Event Recieved')
       let info = tick.body
-      try {
-        info = JSON.parse(info).content
-      } catch (e) {
-        console.warn(e)
-      }
+      EventBus.$emit(info)
       console.log(info)
     },
   },

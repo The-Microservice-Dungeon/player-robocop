@@ -42,6 +42,7 @@
 <script>
 import { apiGet } from '@/utils'
 import BounceLoader from 'vue-spinner/src/BounceLoader.vue'
+import { EventBus } from '@/event-bus'
 
 export default {
   name: 'GameInfo',
@@ -57,9 +58,18 @@ export default {
   },
   mounted () {
     this.fetchGameData()
+
+    EventBus.$on('round_status_change', () => {
+      this.fetchGameData()
+    })
+
+    EventBus.$on('game_status_change', () => {
+      this.fetchGameData()
+    })
   },
   methods: {
     fetchGameData () {
+      this.loading = true
       apiGet('/game')
         .then((response) => {
           if (response.status !== 200) throw new Error('Unexpected Response ' + response.status)
