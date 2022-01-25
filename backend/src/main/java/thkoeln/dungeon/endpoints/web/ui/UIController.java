@@ -13,6 +13,7 @@ import thkoeln.dungeon.game.domain.game.GameRepository;
 
 
 import thkoeln.dungeon.game.domain.round.Round;
+import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameDto;
@@ -113,7 +114,8 @@ public class UIController {
             System.out.println(gameDtos[0].getParticipatingPlayers());
             thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
 
-
+            tmpMap.addFirstBot(new Robot(false));
+         //   tmpMap.addFirstPlanet(new Planet());
             ObjectMapper objectMapper = new ObjectMapper();
            return objectMapper.writeValueAsString(tmpMap);
            // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
