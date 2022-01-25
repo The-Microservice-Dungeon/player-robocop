@@ -5,6 +5,9 @@
       v-if="loading"
       :color="'red'"
     />
+    <template v-else-if="noData">
+      <h4>No Player Data</h4>
+    </template>
     <template v-else>
       <div class="infoWrapper">
         <span>
@@ -40,6 +43,7 @@ export default {
     return {
       player: undefined,
       loading: true,
+      noData: false,
     }
   },
   mounted () {
@@ -48,12 +52,21 @@ export default {
   methods: {
     fetchPlayerData () {
       apiGet('/player')
+        .then((response) => {
+          if (response.status !== 200) throw new Error('Unexpected Response ' + response.status)
+          return response
+        })
         .then(response => response.json())
         .then(response => {
           if (response) {
             this.player = response.player
             this.loading = false
           }
+        })
+        .catch(e => {
+          this.noData = true
+          this.loading = false
+          console.warn(e)
         })
     },
   },
