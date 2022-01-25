@@ -57,6 +57,10 @@ export default {
   methods: {
     fetchGameData () {
       apiGet('/game')
+        .then((response) => {
+          if (response.status !== 200) throw new Error('Unexpected Response ' + response.status)
+          return response
+        })
         .then(response => response.json())
         .then(response => {
           if (response) {
@@ -64,6 +68,9 @@ export default {
             this.loading = false
           }
         })
+      .catch(e => {
+        console.warn(e)
+      })
     },
   },
 }
