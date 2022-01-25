@@ -16,6 +16,7 @@ import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +45,15 @@ public class UIController {
     }
 
     @GetMapping("/game")
-    Map<String, Object> currentGameInfo() {
-        Game game = gameRepo.findAll().get(0);
-        if (game == null) {
+    Map<String, Object> currentGameInfo(HttpServletResponse response) {
+        List<Game> gameList = gameRepo.findAll();
+        if (gameList.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return new JSONObject().toMap();
         }
+
+        Game game = gameList.get(0);
+
         Round round = game.getRound();
 
         JSONObject roundJson = new JSONObject()
