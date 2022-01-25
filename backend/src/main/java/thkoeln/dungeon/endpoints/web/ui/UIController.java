@@ -76,11 +76,14 @@ public class UIController {
     Map<String, Object> playerInfo(){
         Player player = playerRepo.findAll().get(0);
 
-        return new JSONObject()
+        JSONObject playerJson = new JSONObject()
                 .put("name", player.getName())
                 .put("email", player.getEmail())
                 .put("money", 0) // TODO: Return Actual Data
-                .put("robots", 0) // TODO: Return Actual Data
+                .put("robots", 0); // TODO: Return Actual Data
+
+        return new JSONObject()
+                .put("player", playerJson)
                 .toMap();
     }
 
