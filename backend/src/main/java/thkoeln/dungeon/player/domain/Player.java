@@ -60,7 +60,7 @@ public class Player {
     private GameParticipation findParticipationFor(Game game) {
         Optional<GameParticipation> found = gameParticipations.stream()
                 .filter(gp -> gp.getGame().equals(game)).findFirst();
-        return found.isPresent() ? found.get() : null;
+        return found.orElse(null);
     }
 
 
