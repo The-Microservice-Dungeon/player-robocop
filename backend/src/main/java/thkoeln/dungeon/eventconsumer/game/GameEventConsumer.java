@@ -9,8 +9,10 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import thkoeln.dungeon.command.CommandDispatcherService;
 import thkoeln.dungeon.eventconsumer.core.KafkaErrorService;
 import thkoeln.dungeon.game.application.GameApplicationService;
+import thkoeln.dungeon.game.domain.round.RoundStatus;
 
 @Service
 public class GameEventConsumer {
@@ -20,18 +22,21 @@ public class GameEventConsumer {
     private final RoundStatusEventRepository roundStatusEventRepository;
     private final Logger logger = LoggerFactory.getLogger(GameEventConsumer.class);
     private final SimpMessagingTemplate template;
+    private final CommandDispatcherService commandDispatcherService;
 
     @Autowired
     public GameEventConsumer(GameApplicationService gameApplicationService,
                              GameStatusEventRepository gameStatusEventRepository,
                              KafkaErrorService kafkaErrorService,
                              RoundStatusEventRepository roundStatusEventRepository,
-                             SimpMessagingTemplate template) {
+                             SimpMessagingTemplate template,
+                             CommandDispatcherService commandDispatcherService) {
         this.gameApplicationService = gameApplicationService;
         this.gameStatusEventRepository = gameStatusEventRepository;
         this.kafkaErrorService = kafkaErrorService;
         this.roundStatusEventRepository = roundStatusEventRepository;
         this.template = template;
+        this.commandDispatcherService = commandDispatcherService;
     }
 
 
@@ -48,8 +53,9 @@ public class GameEventConsumer {
             gameStatusEventRepository.save(gameStatusEvent);
             logger.info("saved game event with status " + gameStatusEvent.getStatus().toString());
             gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), gameStatusEvent.getStatus());
+            commandDispatcherService.init();
             this.template.convertAndSend("game_events", "game_status_change");
-        } catch (Exception e) {
+        } catch (KafkaException e) {
             this.kafkaErrorService.newKafkaError("status", payload, e.getMessage());
         }
     }
@@ -62,6 +68,9 @@ public class GameEventConsumer {
             roundStatusEventRepository.save(roundStatusEvent);
             logger.info("saved round event with status "+roundStatusEvent.getRoundStatus().toString());
             gameApplicationService.roundStatusExternallyChanged(roundStatusEvent.getEventId(), roundStatusEvent.getRoundNumber(), roundStatusEvent.getRoundStatus());
+            if (roundStatusEvent.getRoundNumber() == 1 && roundStatusEvent.getRoundStatus()== RoundStatus.STARTED){
+                commandDispatcherService.buyRobot();
+            }
             this.template.convertAndSend("game_events", "round_status_change");
         } catch (KafkaException e) {
             this.kafkaErrorService.newKafkaError("roundStatus", payload, e.getMessage());

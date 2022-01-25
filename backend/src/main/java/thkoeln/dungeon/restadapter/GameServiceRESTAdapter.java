@@ -17,6 +17,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import thkoeln.dungeon.command.CommandAnswer;
+import thkoeln.dungeon.command.CommandDto;
+import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.RESTRequestDeniedException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
@@ -214,18 +217,17 @@ public class GameServiceRESTAdapter {
      * @throws UnexpectedRESTException
      * @throws RESTConnectionFailureException
      */
-    public CommandDto sendCommand(CommandDto commandDto)
+    public UUID sendCommand(CommandDto commandDto)
             throws UnexpectedRESTException, RESTConnectionFailureException {
-        CommandDto returnedCommandDto = null;
+        CommandAnswer response;
         String urlString = gameServiceUrlString + "/commands";
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(commandDto);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> request = new HttpEntity<String>(json, headers);
-            returnedCommandDto =
-                    restTemplate.postForObject(urlString, request, CommandDto.class);
+            HttpEntity<String> request = new HttpEntity<>(json, headers);
+            response = restTemplate.postForObject(urlString, request, CommandAnswer.class);
         } catch (JsonProcessingException e) {
             throw new UnexpectedRESTException(
                     "Unexpected error converting commandDto to JSON: " + commandDto);
@@ -235,7 +237,12 @@ public class GameServiceRESTAdapter {
             throw new RESTConnectionFailureException("/commands", e.getMessage());
         }
         logger.info("Successfully send command of type: " + commandDto.getCommandType());
-        return returnedCommandDto;
+        if (response != null) {
+            return response.getTransactionId();
+        }
+        else {
+            throw new UnexpectedRESTException("Response to command is null");
+        }
     }
 
 }

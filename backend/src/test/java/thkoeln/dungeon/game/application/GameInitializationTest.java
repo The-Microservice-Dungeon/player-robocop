@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import thkoeln.dungeon.DungeonPlayerConfiguration;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameRepository;
-import thkoeln.dungeon.restadapter.GameDto;
+import thkoeln.dungeon.game.domain.game.GameDto;
 
 import java.net.URI;
 import java.util.List;
@@ -42,7 +42,7 @@ public class GameInitializationTest {
     private static final Integer GAME_ROW_COUNT_3 = 0;
     private GameDto gameDto0 = new GameDto(GAME_ID_0, CREATED, 0);
     private GameDto gameDto1 = new GameDto(GAME_ID_1, STARTED, GAME_ROW_COUNT_1);
-     private GameDto gameDto2 = new GameDto(GAME_ID_2, ENDED, GAME_ROW_COUNT_2);
+    private GameDto gameDto2 = new GameDto(GAME_ID_2, ENDED, GAME_ROW_COUNT_2);
     private GameDto gameDto3 = new GameDto(GAME_ID_3, CREATED, GAME_ROW_COUNT_3);
 
     private GameDto[] allRemoteGames;
