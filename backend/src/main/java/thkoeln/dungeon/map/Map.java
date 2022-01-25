@@ -22,10 +22,7 @@ public class Map {
     @Id
     private final UUID id = UUID.randomUUID();
 
-    @Getter
-    @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "map")
-    List<Planet> planets;
+
 
 
     @Getter
@@ -43,13 +40,8 @@ public class Map {
     @Getter
     int contentLength;
 
-    @Getter
-    @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "map")
-    List<Robot> robots;
-
-
-
+    @ElementCollection
+    List<PositionVO> positions;
 
     /***
      * Creates a Map and calculates the center Position
@@ -67,8 +59,8 @@ public class Map {
         }
         this.anzahlCols = this.mapSize * 2;
         this.centerIndex = this.mapSize * this.anzahlCols + this.mapSize;
-         this.contentLength = (int) Math.pow((mapSize*2),2);
-
+        this.contentLength = (int) Math.pow((mapSize*2),2);
+        this.initMap();
         //this.layers = new UUID[contentLength][contentLength];
 
     }
@@ -76,18 +68,21 @@ public class Map {
 
     public void addFirstBot(Robot bot){
 
-      Robot[] tmpList = new Robot[this.contentLength];
-      tmpList[centerIndex] = bot;
-      this.robots = Arrays.asList(tmpList);
+        this.positions.get(centerIndex).setRobot(bot);
+
     }
 
     public void addFirstPlanet(Planet planet){
-        Planet[] planetArray = new Planet[this.contentLength];
-        planetArray[centerIndex] = planet;
-        this.planets = Arrays.asList(planetArray);
+        this.positions.get(centerIndex).setPlanet(planet);
     }
 
 
+    public void initMap(){
+        this.positions = new ArrayList<>();
+        for (int i = 0; i < this.contentLength ; i++) {
+                this.positions.add(new PositionVO(i));
+        }
+    }
 
     public Map() {
 
