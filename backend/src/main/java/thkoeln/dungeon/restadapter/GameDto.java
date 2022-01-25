@@ -16,6 +16,8 @@ import java.util.UUID;
 public class GameDto {
     private UUID gameId;
     private GameStatus gameStatus;
+    private Integer maxPlayers;
+    private Integer maxRounds;
     private Integer currentRoundCount;
     private List<UUID> participatingPlayers;
 

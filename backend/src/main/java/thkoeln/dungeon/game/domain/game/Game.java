@@ -30,6 +30,8 @@ public class Game {
     private UUID gameId;
     private GameStatus gameStatus;
 
+    private Integer maxPlayers;
+    private Integer maxRounds;
 
     @Embedded
     private Round round;

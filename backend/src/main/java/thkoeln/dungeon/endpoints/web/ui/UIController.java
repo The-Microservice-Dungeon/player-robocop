@@ -50,8 +50,11 @@ public class UIController {
 
     @GetMapping("/game")
     Map<String, Object> currentGameInfo(){
-        // Game game = gameRepo.findAll().get(0);
-        // Round round = game.getRound();
+         Game game = gameRepo.findAll().get(0);
+         if (game == null) {
+             return new JSONObject().toMap();
+         }
+        Round round = game.getRound();
 
         JSONObject roundJson = new JSONObject()
                 // .put("roundNumber", round.getRoundNumber())
