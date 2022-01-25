@@ -109,7 +109,7 @@ public class UIController {
 
 
             RestTemplate restTemplate = new RestTemplate();
-            GameDto   gameDtos[] = restTemplate.getForObject("http://localhost:8080/games", GameDto[].class);
+            GameDto[] gameDtos = restTemplate.getForObject("http://localhost:8080/games", GameDto[].class);
 
             System.out.println(gameDtos[0].getParticipatingPlayers());
             thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
