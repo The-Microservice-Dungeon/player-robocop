@@ -5,6 +5,9 @@
       v-if="loading"
       :color="'red'"
     />
+    <template v-else-if="noData">
+      <h4>No Game data</h4>
+    </template>
     <template v-else>
       <div class="infoWrapper">
         <span>
@@ -49,6 +52,7 @@ export default {
     return {
       game: undefined,
       loading: true,
+      noData: false,
     }
   },
   mounted () {
@@ -69,6 +73,8 @@ export default {
           }
         })
       .catch(e => {
+        this.noData = true
+        this.loading = false
         console.warn(e)
       })
     },
