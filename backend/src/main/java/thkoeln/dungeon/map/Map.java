@@ -11,6 +11,7 @@ import thkoeln.dungeon.robot.domain.Robot;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,9 +40,14 @@ public class Map {
     @Getter
     int centerIndex;
 
+    @Getter
+    int contentLength;
 
+    @Getter
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "map")
+    List<Robot> robots;
 
-    int[][] layers;
 
 
 
@@ -61,9 +67,27 @@ public class Map {
         }
         this.anzahlCols = this.mapSize * 2;
         this.centerIndex = this.mapSize * this.anzahlCols + this.mapSize;
+         this.contentLength = (int) Math.pow((mapSize*2),2);
 
-        this.layers = new int[this.anzahlCols][this.anzahlCols];
+        //this.layers = new UUID[contentLength][contentLength];
+
     }
+
+
+    public void addFirstBot(Robot bot){
+
+      Robot[] tmpList = new Robot[this.contentLength];
+      tmpList[centerIndex] = bot;
+      this.robots = Arrays.asList(tmpList);
+    }
+
+    public void addFirstPlanet(Planet planet){
+        Planet[] planetArray = new Planet[this.contentLength];
+        planetArray[centerIndex] = planet;
+        this.planets = Arrays.asList(planetArray);
+    }
+
+
 
     public Map() {
 
