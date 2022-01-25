@@ -80,8 +80,8 @@ public class UIController {
         JSONObject playerJson = new JSONObject()
                 .put("name", player.getName())
                 .put("email", player.getEmail())
-                .put("money", 0) // TODO: Return Actual Data
-                .put("robots", 0); // TODO: Return Actual Data
+                .put("money", player.getMoney())
+                .put("robots", player.getRobotCount());
 
         return new JSONObject()
                 .put("player", playerJson)
