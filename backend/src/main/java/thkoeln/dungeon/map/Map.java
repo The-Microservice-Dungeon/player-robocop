@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @Entity
@@ -113,7 +114,24 @@ public class Map {
 
     public void addPlanet (Planet planet) {
         // TODO: implement either matching or storing as not connected planet
+        Random rand = new Random();
+        //Randomness will be replaced another time
+        this.getPositions().get(rand.nextInt(this.contentLength)).setPlanet(planet);
     }
+
+    /***
+     * Tracks bot Movement
+     * @param robot
+     * @param targetPlanet
+     */
+    public void trackBotMovement(Robot robot, Planet targetPlanet){
+            PositionVO position = robot.getPosition();
+            robot.setPosition(null);
+            position.setRobot(null);
+
+            targetPlanet.getPosition().setRobot(robot);
+    }
+
 
 
     public void initMap() {
