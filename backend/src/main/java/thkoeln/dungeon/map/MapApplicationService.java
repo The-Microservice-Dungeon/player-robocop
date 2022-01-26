@@ -32,8 +32,15 @@ public class MapApplicationService {
     }
 
     // TODO: call on new planet found
+    // Maybe this should be called and handle new planet, neighbour generation etc?
     public void addNewPlanet (Planet planet) {
-        this.currentMap.addPlanet(planet);
+        // first try to create neighbour connections for new planet
+        // if no neighbours are found save the planet as "floating"
+        // if neighbour exists let map position the new planet on the map based on the position of the existing neighbour
+
+
+        Planet neighbour = null;
+        this.currentMap.addNeighboursOfPlanetToMap(neighbour);
     }
 
     // TODO: call on Robot move

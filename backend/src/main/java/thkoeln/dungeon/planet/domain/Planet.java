@@ -4,6 +4,8 @@ import lombok.*;
 import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import thkoeln.dungeon.eventconsumer.robot.PlanetMovementDto;
+import thkoeln.dungeon.map.Map;
 import thkoeln.dungeon.map.PositionVO;
 
 import javax.persistence.*;
@@ -18,7 +20,7 @@ import java.util.UUID;
 @Getter
 public class Planet {
     @Id
-    private final UUID planetId;
+    private UUID planetId = UUID.randomUUID();
 
     @Setter
     private String name;
@@ -58,6 +60,17 @@ public class Planet {
     public Boolean isSpaceStation() {
         return this.planetType == PlanetType.SPACESTATION;
     }
+
+    public Planet (UUID id) {
+        this.planetId = id;
+    }
+
+    public Planet (PlanetMovementDto movementDto) {
+        this.setPlanetType(movementDto.getPlanetType());
+        this.setMovementDifficulty(movementDto.getMovementDifficulty());
+        this.setResourceType(movementDto.getResourceType());
+    }
+
 
     public Planet (UUID planetId, Boolean isSpaceStation, Boolean isResource) {
         this.planetId = planetId;
