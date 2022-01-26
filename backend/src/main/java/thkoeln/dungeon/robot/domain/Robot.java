@@ -18,14 +18,13 @@ import java.util.UUID;
 public class Robot {
     @Id
     private final UUID robotId;
+
     private int energy;
     private int health;
 
-    @Getter
-    @Setter
     private boolean dummy = false;
 
-    @Embedded
+    @Transient
     @Nullable
     private PositionVO position;
 

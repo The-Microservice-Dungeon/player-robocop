@@ -31,7 +31,7 @@ public class Planet {
 
     @Setter
     @Getter
-    @Embedded
+    @Transient
     private PositionVO position;
 
     @Setter

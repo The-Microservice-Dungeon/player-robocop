@@ -1,12 +1,10 @@
 package thkoeln.dungeon.map;
 
 import io.micrometer.core.lang.Nullable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -16,9 +14,9 @@ import java.util.UUID;
 @Getter
 public class PositionVO {
 
-    private @Nullable UUID referencingPlanetId;
+    private UUID referencingPlanetId;
 
-    private @Nullable UUID referencingRobotId;
+    private UUID referencingRobotId;
 
     private int posIndex;
 
@@ -33,7 +31,6 @@ public class PositionVO {
         PositionVO that = (PositionVO) o;
         return x == that.x && y == that.y;
     }
-
 
     @Override
     public int hashCode() {
