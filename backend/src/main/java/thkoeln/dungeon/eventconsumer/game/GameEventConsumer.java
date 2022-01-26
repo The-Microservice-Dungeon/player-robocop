@@ -47,24 +47,37 @@ public class GameEventConsumer {
     public void consumeGameStatusEvent(@Header String eventId,
                                         @Header String timestamp,
                                         @Header String transactionId,
-                                        @Payload String payload) {
+                                        @Payload String payloadStr) {
         try {
-            GameStatusEvent gameStatusEvent = new GameStatusEvent(eventId, timestamp, transactionId, payload);
+            GameStatusEvent gameStatusEvent = new GameStatusEvent()
+                    .fillHeader(eventId, timestamp, transactionId)
+                    .fillWithPayload(payloadStr);
             gameStatusEventRepository.save(gameStatusEvent);
             logger.info("saved game event with status " + gameStatusEvent.getStatus().toString());
-            gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), gameStatusEvent.getStatus());
-            commandDispatcherService.init();
+            switch (gameStatusEvent.getStatus()){
+                case CREATED ->{
+                    gameApplicationService.gameExternallyCreated(gameStatusEvent.getGameId());
+                    Thread.sleep(300);
+                    commandDispatcherService.init();
+                }
+                case STARTED -> gameApplicationService.gameExternallyStarted(gameStatusEvent.getGameId());
+                case ENDED -> gameApplicationService.gameExternallyEnded(gameStatusEvent.getGameId());
+            }
             this.template.convertAndSend("game_events", "game_status_change");
         } catch (KafkaException e) {
-            this.kafkaErrorService.newKafkaError("status", payload, e.getMessage());
+            this.kafkaErrorService.newKafkaError("status", payloadStr, e.getMessage());
+        }catch (InterruptedException e){
+            logger.error("yikes");
         }
     }
 
-    @KafkaListener( topics = "roundStatus" )  // that is what the documentation says
+    @KafkaListener( topics = "roundStatus" )
     public void consumeRoundStatusEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,
-                                        @Payload String payload) {
+                                        @Payload String payloadStr) {
         try {
-            RoundStatusEvent roundStatusEvent = new RoundStatusEvent(eventId, timestamp, transactionId, payload);
+            RoundStatusEvent roundStatusEvent = new RoundStatusEvent()
+                    .fillHeader(eventId, timestamp, transactionId)
+                    .fillWithPayload(payloadStr);
             roundStatusEventRepository.save(roundStatusEvent);
             logger.info("saved round event with status "+roundStatusEvent.getRoundStatus().toString());
             gameApplicationService.roundStatusExternallyChanged(roundStatusEvent.getEventId(), roundStatusEvent.getRoundNumber(), roundStatusEvent.getRoundStatus());
@@ -73,7 +86,7 @@ public class GameEventConsumer {
             }
             this.template.convertAndSend("game_events", "round_status_change");
         } catch (KafkaException e) {
-            this.kafkaErrorService.newKafkaError("roundStatus", payload, e.getMessage());
+            this.kafkaErrorService.newKafkaError("roundStatus", payloadStr, e.getMessage());
         }
     }
 }

@@ -1,5 +1,7 @@
 package thkoeln.dungeon.eventconsumer.core;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,9 +33,9 @@ public abstract class AbstractEvent {
     protected Date timestamp;
     protected UUID transactionId;
     @Transient
-    protected Logger logger = LoggerFactory.getLogger(PlayerApplicationService.class);
+    protected Logger logger = LoggerFactory.getLogger(AbstractEvent.class);
 
-    public AbstractEvent(String eventIdStr, String timestampStr, String transactionIdStr) {
+    public <EventType extends AbstractEvent> EventType fillHeader( String eventIdStr, String timestampStr, String transactionIdStr ) {
         try {
             setEventId(UUID.fromString(eventIdStr));
         } catch (IllegalArgumentException e) {
@@ -53,5 +55,19 @@ public abstract class AbstractEvent {
         } catch (IllegalArgumentException e) {
             logger.warn("Event " + eventId + " at time " + timestamp + " doesn't have a valid transactionId " + transactionIdStr);
         }
+        return (EventType) this;
     }
+
+    public <EventType extends AbstractEvent> EventType fillWithPayload( String jsonString ) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+            return (EventType) objectMapper.readValue( jsonString, this.getClass() );
+        }
+        catch(JsonProcessingException conversionFailed ) {
+            logger.error( "Error converting payload for event with jsonString " + jsonString );
+            logger.error("Reason: "+ conversionFailed.getMessage());
+            return (EventType) this;
+        }
+    }
+
 }

@@ -109,7 +109,7 @@ public class GameApplicationService {
         switch (gameStatus) {
             case CREATED -> gameExternallyCreated(gameId);
             case STARTED -> gameExternallyStarted(gameId);
-            case ENDED -> gameEndedExternally(gameId);
+            case ENDED -> gameExternallyEnded(gameId);
         }
     }
 
@@ -151,7 +151,7 @@ public class GameApplicationService {
     /**
      * To be called by event consumer listening to GameService event
      */
-    public void gameEndedExternally(UUID gameId) {
+    public void gameExternallyEnded(UUID gameId) {
         logger.info("Processing external event that the game with id " + gameId + " has ended");
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.size()!=1){
