@@ -281,7 +281,7 @@ export default {
       }
     },
     calculateMaxScroll () {
-      return this.cols * this.tileResolution - this.mapWidth
+      return Math.floor(this.cols * this.tileResolution - this.mapWidth)
     },
     clampScroll () {
       const maxScroll = this.calculateMaxScroll()
