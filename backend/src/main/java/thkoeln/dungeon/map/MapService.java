@@ -25,15 +25,15 @@ public class MapService {
 
     public MapJSONWrapper getLayerMap () {
         Map demoMap = this.getDemoMap();
-        MapJSONWrapper wapper = new MapJSONWrapper(demoMap.getContentLength());
+        MapJSONWrapper wrapper = new MapJSONWrapper(demoMap.getContentLength());
 
         int i = 0;
         for (PositionVO pvo : demoMap.getPositions()) {
-            wapper.addGravity(pvo.getPlanet(), i);
-            wapper.addPlanetType(pvo.getPlanet(), i);
-            wapper.addRobot(pvo.getRobot(), i);
+            wrapper.addGravity(pvo.getPlanet(), i);
+            wrapper.addPlanetType(pvo.getPlanet(), i);
+            wrapper.addRobot(pvo.getRobot(), i);
             i++;
         }
-        return wapper;
+        return wrapper;
     }
 }
