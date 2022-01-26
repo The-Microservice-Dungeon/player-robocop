@@ -272,7 +272,8 @@ export default {
       this.render()
     },
     resetCamera () {
-      this.zoomLevel = 1.5
+      this.zoomLevel = 4
+      this.setMapDimensions()
       this.initCamera()
       this.render()
     },
