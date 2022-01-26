@@ -15,11 +15,15 @@ public class PositionVO {
 
     @Getter
     @Setter
-    private UUID planet;
+    @OneToOne
+    @JoinColumn(name = "planet_ID")
+    private Planet planet;
 
     @Getter
     @Setter
-    private UUID robot;
+    @OneToOne
+    @JoinColumn(name = "robot_ID")
+    private Robot robot;
 
     @Getter
     @Setter

@@ -8,6 +8,8 @@ import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.game.domain.game.GameRepository;
 import thkoeln.dungeon.game.domain.round.Round;
+import thkoeln.dungeon.map.MapJSONWrapper;
+import thkoeln.dungeon.map.PositionVO;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
@@ -121,13 +123,25 @@ public class UIController {
         }
 
 
-        System.out.println(gameDtos[0].getParticipatingPlayers());
+      //  System.out.println(gameDtos[0].getParticipatingPlayers());
         thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
 
         tmpMap.addFirstBot(new Robot(false));
         tmpMap.addFirstPlanet(new Planet());
 
-        return new JSONObject(tmpMap).toMap();
+        MapJSONWrapper mapper = new MapJSONWrapper(tmpMap.getContentLength());
+
+        int i = 0;
+        for (PositionVO pvo: tmpMap.getPositions()
+             ) {
+            mapper.addGravity(pvo.getPlanet(),i);
+            mapper.addRobot(pvo.getRobot(),i);
+            mapper.addPlanet(pvo.getPlanet(),i);
+            i++;
+        }
+
+
+        return new JSONObject(mapper).toMap();
         // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
         // GameDto tmpDTO = restAdapter.fetchCurrentGameState()[0];
         // thkoeln.dungeon.map.Map map = new thkoeln.dungeon.map.Map(tmpDTO);
