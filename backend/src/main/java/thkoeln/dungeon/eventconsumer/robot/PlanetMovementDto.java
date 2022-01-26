@@ -3,8 +3,11 @@ package thkoeln.dungeon.eventconsumer.robot;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import thkoeln.dungeon.planet.domain.PlanetType;
+import thkoeln.dungeon.planet.domain.ResourceType;
 
 import javax.annotation.Generated;
+import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -17,22 +20,22 @@ import javax.annotation.Generated;
 public class PlanetMovementDto {
 
     @JsonProperty("planetId")
-    private String planetId;
+    private UUID planetId;
     @JsonProperty("movementDifficulty")
     private Integer movementDifficulty;
     @JsonProperty("planetType")
-    private String planetType;
+    private PlanetType planetType;
     @JsonProperty("resourceType")
-    private String resourceType;
+    private ResourceType resourceType;
 
     @JsonProperty("planetId")
-    public String getPlanetId() {
+    public UUID getPlanetId() {
         return planetId;
     }
 
     @JsonProperty("planetId")
     public void setPlanetId(String planetId) {
-        this.planetId = planetId;
+        this.planetId = UUID.fromString(planetId);
     }
 
     @JsonProperty("movementDifficulty")
@@ -46,23 +49,23 @@ public class PlanetMovementDto {
     }
 
     @JsonProperty("planetType")
-    public String getPlanetType() {
+    public PlanetType getPlanetType() {
         return planetType;
     }
 
     @JsonProperty("planetType")
     public void setPlanetType(String planetType) {
-        this.planetType = planetType;
+        this.planetType = PlanetType.valueOf(planetType);
     }
 
     @JsonProperty("resourceType")
-    public String getResourceType() {
+    public ResourceType getResourceType() {
         return resourceType;
     }
 
     @JsonProperty("resourceType")
     public void setResourceType(String resourceType) {
-        this.resourceType = resourceType;
+        this.resourceType = ResourceType.valueOf(resourceType);
     }
 
 }
