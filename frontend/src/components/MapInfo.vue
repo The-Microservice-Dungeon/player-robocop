@@ -11,7 +11,7 @@
             class="slider"
             step="8"
             :min="0"
-            :max="calculateMaxHorizontalScroll()"
+            :max="calculateMaxScroll()"
             type="range"
             @input="render"
           >
@@ -22,9 +22,9 @@
             id="yOffset"
             v-model="camera.y"
             class="slider"
-            step="32"
-            :min="calculateMinVerticalScroll()"
-            :max="calculateMaxVerticalScroll()"
+            step="8"
+            :min="0"
+            :max="calculateMaxScroll()"
             type="range"
             @input="render"
           >
@@ -147,9 +147,8 @@ export default {
       this.rows = this.mapSize * 2
       this.mapWidth = this.cols * this.tileResolution / this.zoomLevel
       this.mapHeight = this.rows * this.tileResolution / this.zoomLevel
-      this.calculateMaxHorizontalScroll()
-      this.clampMaxHorizontalScroll()
-      this.clampMaxVerticalScroll()
+      this.calculateMaxScroll()
+      this.clampScroll()
     },
     buildMap () {
       const totalLength = this.cols * this.rows
@@ -257,21 +256,12 @@ export default {
         )
       }
     },
-    calculateMaxHorizontalScroll () {
+    calculateMaxScroll () {
       return this.cols * this.tileResolution - this.mapWidth
     },
-    clampMaxHorizontalScroll () {
-      const maxScroll = this.calculateMaxHorizontalScroll()
+    clampScroll () {
+      const maxScroll = this.calculateMaxScroll()
       if (this.camera.x > maxScroll) this.camera.x = maxScroll
-    },
-    calculateMinVerticalScroll () {
-      return Math.floor(-this.mapHeight / 2)
-    },
-    calculateMaxVerticalScroll () {
-      return Math.floor(this.rows * this.tileResolution - (this.mapHeight / 2))
-    },
-    clampMaxVerticalScroll () {
-      const maxScroll = this.calculateMaxVerticalScroll()
       if (this.camera.y > maxScroll) this.camera.y = maxScroll
     },
     mapOverview () {
