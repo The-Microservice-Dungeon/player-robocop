@@ -7,7 +7,6 @@ import thkoeln.dungeon.robot.domain.Robot;
 
 public class MapJSONWrapper {
 
-
     @Getter
     @Setter
     private Integer[] gravity;
@@ -21,21 +20,21 @@ public class MapJSONWrapper {
     private Integer[] types;
 
 
-    public MapJSONWrapper(int size){
+    public MapJSONWrapper(int size) {
         this.gravity = new Integer[size];
         this.types = new Integer[size];
         this.robots = new Integer[size];
     }
 
-    public void addRobot( Robot robot, int index){
+    public void addRobot(Robot robot, int index) {
         try {
             this.robots[index] = robot != null ? 11 : -1;
-        }catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {
             System.out.println(exception.getMessage());
         }
     }
 
-    public void addPlanetType(Planet planet, int index){
+    public void addPlanetType(Planet planet, int index) {
         try {
             int type = -1;
 
@@ -55,32 +54,25 @@ public class MapJSONWrapper {
             }
 
             this.types[index] = type;
-        }catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {
             System.out.println(exception.getMessage());
         }
 
     }
 
-    public void addGravity( Planet planet, int index){
-      try {
-          int gravity = -1;
-          if (planet != null && planet.getMovementDifficulty() != null) {
-              gravity = planet.getMovementDifficulty();
+    public void addGravity(Planet planet, int index) {
+        try {
+            int gravity = -1;
+            if (planet != null && planet.getMovementDifficulty() != null) {
+                gravity = planet.getMovementDifficulty();
 
-              System.out.println("Movement Difficulty: " + planet.getMovementDifficulty() + " mapped to: " + gravity);
-          }
+                System.out.println("Movement Difficulty: " + planet.getMovementDifficulty() + " mapped to: " + gravity);
+            }
 
-          this.gravity[index] = gravity;
-      }catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {
-          System.out.println(exception.getMessage());
-      }
+            this.gravity[index] = gravity;
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {
+            System.out.println(exception.getMessage());
+        }
 
     }
-
-
-
-
-
-
-
 }
