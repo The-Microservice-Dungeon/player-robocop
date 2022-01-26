@@ -258,39 +258,7 @@ export default {
       }
     },
     calculateMaxHorizontalScroll () {
-      let maxScroll = 0
-      // This is f* ugly. TODO: Figure out a correlation between zoom level and allowed scroll
-      if (this.zoomLevel === 1.1) maxScroll = 192 * 2
-      if (this.zoomLevel === 1.2) maxScroll = 384 * 2
-      if (this.zoomLevel === 1.3) maxScroll = 512 * 2
-      if (this.zoomLevel === 1.4) maxScroll = 640 * 2
-      if (this.zoomLevel === 1.5) maxScroll = 736 * 2
-      if (this.zoomLevel === 1.6) maxScroll = 832 * 2
-      if (this.zoomLevel === 1.7) maxScroll = 928 * 2
-      if (this.zoomLevel === 1.8) maxScroll = 992 * 2
-      if (this.zoomLevel === 1.9) maxScroll = 1056 * 2
-      if (this.zoomLevel === 2) maxScroll = 1120 * 2
-      if (this.zoomLevel === 2.1) maxScroll = 1184 * 2
-      if (this.zoomLevel === 2.2) maxScroll = 1216 * 2
-      if (this.zoomLevel === 2.3) maxScroll = 1280 * 2
-      if (this.zoomLevel === 2.4) maxScroll = 1312 * 2
-      if (this.zoomLevel === 2.5) maxScroll = 1344 * 2
-      if (this.zoomLevel === 2.6) maxScroll = 1376 * 2
-      if (this.zoomLevel === 2.7) maxScroll = 1408 * 2
-      if (this.zoomLevel === 2.8) maxScroll = 1440 * 2
-      if (this.zoomLevel === 2.9) maxScroll = 1472 * 2
-      if (this.zoomLevel === 3) maxScroll = 1504 * 2
-      if (this.zoomLevel === 3.1) maxScroll = 1520 * 2
-      if (this.zoomLevel === 3.2) maxScroll = 1536 * 2
-      if (this.zoomLevel === 3.3) maxScroll = 1560 * 2
-      if (this.zoomLevel === 3.4) maxScroll = 1596 * 2
-      if (this.zoomLevel === 3.5) maxScroll = 1600 * 2
-      if (this.zoomLevel === 3.6) maxScroll = 1616 * 2
-      if (this.zoomLevel === 3.7) maxScroll = 1632 * 2
-      if (this.zoomLevel === 3.8) maxScroll = 1660 * 2
-      if (this.zoomLevel === 3.9) maxScroll = 1664 * 2
-      if (this.zoomLevel === 4) maxScroll = 1678 * 2
-      return maxScroll
+      return this.cols * this.tileResolution - this.mapWidth
     },
     clampMaxHorizontalScroll () {
       const maxScroll = this.calculateMaxHorizontalScroll()
