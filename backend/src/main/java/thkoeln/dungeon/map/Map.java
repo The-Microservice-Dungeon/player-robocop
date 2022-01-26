@@ -1,8 +1,8 @@
 package thkoeln.dungeon.map;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import thkoeln.dungeon.game.domain.game.Game;
-import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.robot.domain.Robot;
 
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
-
+@NoArgsConstructor
 public class Map {
     @Id
     private final UUID id = UUID.randomUUID();
@@ -129,11 +129,6 @@ public class Map {
 
 
         }
-    }
-
-    public Map() {
-
-
     }
 }
 
