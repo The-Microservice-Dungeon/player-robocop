@@ -1,5 +1,6 @@
 package thkoeln.dungeon.robot.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,13 +13,10 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 public class Robot {
     @Id
-    private final UUID id = UUID.randomUUID();
-
-    //todo: not yet implemented
-    private UUID externalId = UUID.randomUUID();
+    private final UUID robotId;
     private int energy;
     private int health;
 
@@ -33,7 +31,14 @@ public class Robot {
     private Map maps;
 
     public Robot(boolean isDummy) {
+        this.robotId = UUID.randomUUID();
         this.dummy = isDummy;
+    }
+    public Robot(UUID robotId){
+        this.robotId = robotId;
+    }
+    protected Robot(){
+        this.robotId = UUID.randomUUID();
     }
 }
 

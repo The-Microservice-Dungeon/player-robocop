@@ -1,13 +1,9 @@
 package thkoeln.dungeon.planet.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import thkoeln.dungeon.map.Map;
 import thkoeln.dungeon.map.PositionVO;
 
 import javax.persistence.*;
@@ -20,14 +16,9 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor
 public class Planet {
     @Id
-    private final UUID id = UUID.randomUUID();
-
-    //todo: not yet implemented
-    @Setter
-    private UUID externalId = UUID.randomUUID();
+    private final UUID planetId;
 
     @Setter
     private String name;
@@ -68,12 +59,17 @@ public class Planet {
         return this.planetType == PlanetType.SPACESTATION;
     }
 
-    public Planet (Boolean isSpaceStation, Boolean isResource) {
+    public Planet (UUID planetId, Boolean isSpaceStation, Boolean isResource) {
+        this.planetId = planetId;
         if (isSpaceStation) {
             this.setPlanetType(PlanetType.SPACESTATION);
         } else if (isResource) {
             this.setResourceType(ResourceType.COAL);
         }
+    }
+
+    protected Planet(){
+        this.planetId = UUID.randomUUID();
     }
 
     /**
@@ -127,16 +123,16 @@ public class Planet {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Planet planet)) return false;
-        return Objects.equals(id, planet.id);
+        return Objects.equals(planetId, planet.planetId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(planetId);
     }
 
     @Override
     public String toString() {
-        return getName() + " (" + getId() + ") Spacestation?: " + isSpaceStation() + " Type: " + getResourceType();
+        return getName() + " (" + getPlanetId() + ") Spacestation?: " + isSpaceStation() + " Type: " + getResourceType();
     }
 }
