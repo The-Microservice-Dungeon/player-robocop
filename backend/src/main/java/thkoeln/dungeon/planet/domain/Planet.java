@@ -30,6 +30,10 @@ public class Planet {
     private String name;
 
     @Setter
+    @Getter
+    private int movementDifficulty;
+
+    @Setter
     @Getter(AccessLevel.NONE)
     private PlanetType planetType = PlanetType.DEFAULT;
 

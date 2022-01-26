@@ -68,13 +68,13 @@ public class Map {
 
     public void addFirstBot(Robot bot){
 
-        this.positions.get(centerIndex).setRobot(bot.getId());
+        this.positions.get(centerIndex).setRobot(bot);
 
     }
 
     public void addFirstPlanet(Planet planet){
 
-        this.positions.get(centerIndex).setPlanet(planet.getId());
+        this.positions.get(centerIndex).setPlanet(planet);
     }
 
 
