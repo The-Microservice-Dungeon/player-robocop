@@ -17,7 +17,7 @@
       <div class="controlInfos">
         <div class="sliders">
           <label for="xOffset">
-            X Offset: {{ camera.x }}
+            X: {{ camera.x }}
             <input
               id="xOffset"
               v-model="camera.x"
@@ -30,7 +30,7 @@
             >
           </label>
           <label for="yOffset">
-            Y Offset: {{ camera.y }}
+            Y: {{ camera.y }}
             <input
               id="yOffset"
               v-model="camera.y"
@@ -62,6 +62,12 @@
             @click="mapOverview"
           >
             View all
+          </button>
+          <button
+            class="button"
+            @click="centerCamera"
+          >
+            Center View
           </button>
           <button
             class="button"
@@ -214,7 +220,7 @@ export default {
       this.ctx.canvas.height = this.mapHeight
     },
     initCamera () {
-      const xyOffset = this.calculateMaxScroll() / 2 + this.tileResolution / 2
+      const xyOffset = Math.floor(this.calculateMaxScroll() / 2 + this.tileResolution / 2)
       this.camera = {
         x: xyOffset,
         y: xyOffset,
@@ -291,6 +297,11 @@ export default {
       this.resetPositionPicker()
       this.render()
     },
+    centerCamera () {
+      this.resetPositionPicker()
+      this.initCamera()
+      this.render()
+    },
     resetCamera () {
       this.zoomLevel = 4
       this.resetPositionPicker()
@@ -346,7 +357,8 @@ export default {
 }
 
 .slider {
-  width: 50%;
+  width: 45%;
+  height: 12px;
 }
 
 .positionPicker {
@@ -360,16 +372,12 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  height: 8rem;
 }
 
 .button {
   height: 2rem;
-}
-
-.button:last-of-type {
-  margin: 1rem 0;
-
 }
 
 .mapCanvas {

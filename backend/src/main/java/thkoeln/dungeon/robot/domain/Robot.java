@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import thkoeln.dungeon.map.Map;
+import thkoeln.dungeon.map.PositionVO;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -24,6 +25,10 @@ public class Robot {
     @Getter
     @Setter
     private boolean dummy = false;
+
+    @Embedded
+    private PositionVO position;
+
 
 
     @ManyToOne(optional = false)
