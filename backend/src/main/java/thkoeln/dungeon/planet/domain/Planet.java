@@ -64,14 +64,6 @@ public class Planet {
     @Transient
     private Logger logger = LoggerFactory.getLogger(Planet.class);
 
-    @ManyToOne
-    @JoinColumn(name = "map_ID")
-    private Map map;
-
-    public void setMap(Map map) {
-        this.map = map;
-    }
-
     public Boolean isSpaceStation() {
         return this.planetType == PlanetType.SPACESTATION;
     }
@@ -134,8 +126,7 @@ public class Planet {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Planet)) return false;
-        Planet planet = (Planet) o;
+        if (!(o instanceof Planet planet)) return false;
         return Objects.equals(id, planet.id);
     }
 

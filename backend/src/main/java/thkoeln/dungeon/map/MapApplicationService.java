@@ -34,6 +34,14 @@ public class MapApplicationService {
         this.currentMap.addPlanet(planet);
     }
 
+    // TODO: call on Robot move
+    public void updateRobotPosition (Robot robot, Planet newPlanet) {
+        PositionVO oldRobotPosition = this.currentMap.findPosition(robot);
+        this.currentMap.removeRobotOnPosition(oldRobotPosition);
+        PositionVO newPlanetPosition = this.currentMap.findPosition(newPlanet);
+        this.currentMap.setRobotOnPosition(newPlanetPosition, robot);
+    }
+
     public MapJSONWrapper getLayerMap () {
         MapJSONWrapper wrapper = new MapJSONWrapper(currentMap.getContentLength());
 
