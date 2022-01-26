@@ -39,6 +39,7 @@ public class MapApplicationService {
         PositionVO oldRobotPosition = this.currentMap.findPosition(robot);
         this.currentMap.removeRobotOnPosition(oldRobotPosition);
         PositionVO newPlanetPosition = this.currentMap.findPosition(newPlanet);
+        // robotApplicationService setRobotPosition(robot, newPlanetPosition)
         this.currentMap.setRobotOnPosition(newPlanetPosition, robot);
     }
 
