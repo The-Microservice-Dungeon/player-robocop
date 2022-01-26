@@ -1,5 +1,6 @@
 package thkoeln.dungeon.robot.domain;
 
+import io.micrometer.core.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,8 @@ public class Robot {
     private boolean dummy = false;
 
     @Embedded
+    @Nullable
     private PositionVO position;
-
-    @ManyToOne(optional = false)
-    private Map maps;
 
     public Robot(boolean isDummy) {
         this.robotId = UUID.randomUUID();

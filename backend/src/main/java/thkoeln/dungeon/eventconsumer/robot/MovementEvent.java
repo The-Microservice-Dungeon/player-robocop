@@ -42,6 +42,7 @@ public class MovementEvent extends AbstractEvent {
     @Embedded
     private PlanetMovementDto planet;
     @JsonProperty("robots")
+    @ElementCollection
     private List<UUID> robots = null;
 
     @JsonProperty("success")

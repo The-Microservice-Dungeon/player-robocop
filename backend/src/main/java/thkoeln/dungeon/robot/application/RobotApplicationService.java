@@ -7,6 +7,8 @@ import thkoeln.dungeon.map.PositionVO;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
+import java.util.UUID;
+
 @Service
 public class RobotApplicationService {
     private final RobotRepository robotRepository;
@@ -18,7 +20,12 @@ public class RobotApplicationService {
         this.robotRepository = robotRepository;
     }
 
-    // implement setRobotPosition with repo save etc
+    // TODO: Call on robot spawned event
+    public Robot createNewRobot (UUID id) {
+        Robot newRobot = new Robot(id);
+        this.robotRepository.save(newRobot);
+        return newRobot;
+    }
 
     /***
      * Set bot Position
@@ -30,6 +37,5 @@ public class RobotApplicationService {
             position.setRobot(bot);
             robotRepository.save(bot);
     }
-
 
 }

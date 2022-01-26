@@ -2,19 +2,27 @@ package thkoeln.dungeon.map;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import thkoeln.dungeon.eventconsumer.robot.NeighboursEvent;
 import thkoeln.dungeon.game.domain.game.Game;
+import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.robot.domain.Robot;
 
 import java.util.UUID;
 
-@NoArgsConstructor
 @Setter
 @Service
 public class MapApplicationService {
+    private final PlanetApplicationService planetApplicationService;
 
     private Map currentMap;
+
+    @Autowired
+    public MapApplicationService (PlanetApplicationService planetApplicationService) {
+        this.planetApplicationService = planetApplicationService;
+    }
 
     public void placeDemoStuff () {
         currentMap.addFirstBot(new Robot(true));
@@ -25,25 +33,27 @@ public class MapApplicationService {
         this.currentMap = new Map(game);
     }
 
-    // TODO: Call on robot spawned event
-    public void placeFirstRobotAndPlanet (Robot robot, Planet planet) {
+    private void placeFirstRobotAndPlanet (Robot robot, Planet planet) {
         this.currentMap.addFirstBot(robot);
         this.currentMap.addFirstPlanet(planet);
     }
 
-    // TODO: call on new planet found
-    // Maybe this should be called and handle new planet, neighbour generation etc?
-    public void addNewPlanet (Planet planet) {
-        // first try to create neighbour connections for new planet
-        // if no neighbours are found save the planet as "floating"
-        // if neighbour exists let map position the new planet on the map based on the position of the existing neighbour
-
-
-        Planet neighbour = null;
-        this.currentMap.addNeighboursOfPlanetToMap(neighbour);
+    // TODO: Call on robot spawned event
+    public void handleNewRobotSpawn (Robot robot, Planet planet) {
+        if (this.planetApplicationService.isFirstPlanet()) this.placeFirstRobotAndPlanet(robot, planet);
     }
 
-    // TODO: call on Robot move
+    public void handleNewPlanetNeighbours (Planet planet, NeighboursEvent[] neighbours) {
+        this.planetApplicationService.generateNeighboursForPlanet(planet, neighbours);
+        planet = this.planetApplicationService.refreshPlanet(planet);
+
+        if (planet.hasNeighbours()) {
+            Planet neighbour = planet.allNeighbours().get(0);
+            this.currentMap.addNeighboursOfPlanetToMap(neighbour);
+        }
+    }
+
+    // call on Robot move
     public void updateRobotPosition (Robot robot, Planet newPlanet) {
         PositionVO oldRobotPosition = this.currentMap.findPosition(robot);
         this.currentMap.removeRobotOnPosition(oldRobotPosition);

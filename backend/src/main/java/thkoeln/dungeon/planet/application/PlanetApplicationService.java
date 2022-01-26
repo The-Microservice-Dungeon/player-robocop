@@ -7,6 +7,7 @@ import thkoeln.dungeon.eventconsumer.robot.PlanetMovementDto;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.planet.domain.PlanetException;
 import thkoeln.dungeon.planet.domain.PlanetRepository;
+import thkoeln.dungeon.robot.domain.Robot;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -21,12 +22,18 @@ public class PlanetApplicationService {
         this.planetRepository = planetRepository;
     }
 
-    public void newPlanet (PlanetMovementDto planetMovementDto) {
-        Planet newPlanet = new Planet(planetMovementDto);
-        newPlanet.setPlanetType(planetMovementDto.getPlanetType());
-        newPlanet.setMovementDifficulty(planetMovementDto.getMovementDifficulty());
-        newPlanet.setResourceType(planetMovementDto.getResourceType());
+    // TODO: Call on robot spawned event
+    public Planet createStartPlanet (UUID id) {
+        Planet newPlanet = new Planet(id, true);
         this.planetRepository.save(newPlanet);
+        return newPlanet;
+    }
+
+    public void fillPlanetInformation (Planet targetPlanet, PlanetMovementDto planetInformation){
+        targetPlanet.setPlanetType(planetInformation.getPlanetType());
+        targetPlanet.setMovementDifficulty(planetInformation.getMovementDifficulty());
+        targetPlanet.setResourceType(planetInformation.getResourceType());
+        this.planetRepository.save(targetPlanet);
     }
 
 
@@ -49,5 +56,13 @@ public class PlanetApplicationService {
                 this.planetRepository.save(newPlanet);
             }
         }
+    }
+
+    public Planet refreshPlanet (Planet planet) {
+        return this.planetRepository.findById(planet.getPlanetId()).get();
+    }
+
+    public Boolean isFirstPlanet () {
+        return this.planetRepository.findAll().size() == 1;
     }
 }

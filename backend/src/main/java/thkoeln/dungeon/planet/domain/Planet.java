@@ -81,6 +81,14 @@ public class Planet {
         }
     }
 
+    public Planet (UUID planetId, Boolean isSpaceStation) {
+        this.planetId = planetId;
+        if (isSpaceStation) {
+            this.setPlanetType(PlanetType.SPACESTATION);
+        }
+        this.setMovementDifficulty(0);
+    }
+
     protected Planet(){
         this.planetId = UUID.randomUUID();
     }
@@ -129,6 +137,10 @@ public class Planet {
         if (getEastNeighbour() != null) allNeighbours.add(getEastNeighbour());
         if (getSouthNeighbour() != null) allNeighbours.add(getSouthNeighbour());
         return allNeighbours;
+    }
+
+    public Boolean hasNeighbours () {
+        return !this.allNeighbours().isEmpty();
     }
 
 

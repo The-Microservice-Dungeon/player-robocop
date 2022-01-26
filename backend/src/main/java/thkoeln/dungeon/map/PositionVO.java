@@ -1,5 +1,6 @@
 package thkoeln.dungeon.map;
 
+import io.micrometer.core.lang.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,31 +15,24 @@ import java.util.UUID;
 
 @Embeddable
 @NoArgsConstructor
+@Getter
+@Setter
 public class PositionVO {
 
-    @Getter
-    @Setter
     @OneToOne
+    @Nullable
     @JoinColumn(name = "planet_ID")
     private Planet planet;
 
-    @Getter
-    @Setter
     @OneToOne
+    @Nullable
     @JoinColumn(name = "robot_ID")
     private Robot robot;
 
-    @Getter
-    @Setter
     private int posIndex;
 
-
-    @Getter
-    @Setter
     private int x;
 
-    @Getter
-    @Setter
     private int y;
 
     public void clearRobot () {
