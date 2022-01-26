@@ -97,17 +97,13 @@ public class Map {
     }
 
     public void addFirstBot(Robot bot) {
-
         this.positions.get(centerIndex).setRobot(bot);
         this.positions.get(centerIndex).setX(anzahlCols / 2);
         this.positions.get(centerIndex).setY(anzahlCols / 2);
         bot.setPosition(this.positions.get(centerIndex));
-
-
     }
 
     public void addFirstPlanet(Planet planet) {
-
         this.positions.get(centerIndex).setPlanet(planet);
         this.positions.get(centerIndex).setX(anzahlCols / 2);
         this.positions.get(centerIndex).setY(anzahlCols / 2);
@@ -126,8 +122,6 @@ public class Map {
                 tmpPos.setY(j);
                 this.positions.add(tmpPos);
             }
-
-
         }
     }
 }
