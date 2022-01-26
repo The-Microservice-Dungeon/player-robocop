@@ -97,7 +97,7 @@ public class UIController {
 
         ArrayList<JSONObject> robotObjects = new ArrayList<>();
 
-        // TODO: Return Actual and Full Data
+        // TODO: Return Stats and Inventory
         for (Robot robot : robots) {
             JSONObject robotJson = new JSONObject()
                     .put("health", robot.getHealth())
