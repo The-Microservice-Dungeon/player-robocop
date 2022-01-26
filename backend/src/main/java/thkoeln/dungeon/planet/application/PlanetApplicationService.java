@@ -62,6 +62,10 @@ public class PlanetApplicationService {
         return this.planetRepository.findById(planet.getPlanetId()).get();
     }
 
+    public Planet getById (UUID id) {
+        return this.planetRepository.findById(id).get();
+    }
+
     public Boolean isFirstPlanet () {
         return this.planetRepository.findAll().size() == 1;
     }

@@ -78,20 +78,20 @@ public class Map {
 
     public PositionVO findPosition(Planet planet) {
         for (PositionVO position : this.positions) {
-            if (position.getPlanet() == planet) return position;
+            if (position.getReferencingPlanetId() == planet.getPlanetId()) return position;
         }
         return null;
     }
 
     public PositionVO findPosition(Robot robot) {
         for (PositionVO position : this.positions) {
-            if (position.getRobot() == robot) return position;
+            if (position.getReferencingRobotId() == robot.getRobotId()) return position;
         }
         return null;
     }
 
     public void setRobotOnPosition (PositionVO position, Robot robot) {
-        this.findPosition(position).setRobot(robot);
+        this.findPosition(position).setReferencingRobotId(robot.getRobotId());
     }
 
     public void removeRobotOnPosition (PositionVO position) {
@@ -104,21 +104,21 @@ public class Map {
         PositionVO position = planet.getPosition();
 
         if (planet.getEastNeighbour() != null) {
-            findPosition(position.getX() - 1, position.getY()).setPlanet(planet.getEastNeighbour());
+            findPosition(position.getX() - 1, position.getY()).setReferencingPlanetId(planet.getEastNeighbour().getPlanetId());
             planet.getEastNeighbour().setPosition(findPosition(position.getX() - 1, position.getY()));
         }
         if (planet.getWestNeighbour() != null) {
-            findPosition(position.getX() + 1, position.getY()).setPlanet(planet.getWestNeighbour());
+            findPosition(position.getX() + 1, position.getY()).setReferencingPlanetId(planet.getWestNeighbour().getPlanetId());
             planet.getWestNeighbour().setPosition(findPosition(position.getX() + 1, position.getY()));
         }
 
 
         if (planet.getNorthNeighbour() != null) {
-            findPosition(position.getX(), position.getY() - 1).setPlanet(planet.getNorthNeighbour());
+            findPosition(position.getX(), position.getY() - 1).setReferencingPlanetId(planet.getNorthNeighbour().getPlanetId());
             planet.getNorthNeighbour().setPosition(findPosition(position.getX(), position.getY() - 1));
         }
         if (planet.getSouthNeighbour() != null) {
-            findPosition(position.getX(), position.getY() + 1).setPlanet(planet.getSouthNeighbour());
+            findPosition(position.getX(), position.getY() + 1).setReferencingPlanetId(planet.getSouthNeighbour().getPlanetId());
             planet.getSouthNeighbour().setPosition(findPosition(position.getX(), position.getY() + 1));
         } else {
             System.out.println("No other Planets here");
@@ -126,14 +126,14 @@ public class Map {
     }
 
     public void addFirstBot(Robot bot) {
-        this.positions.get(centerIndex).setRobot(bot);
+        this.positions.get(centerIndex).setReferencingRobotId(bot.getRobotId());
         this.positions.get(centerIndex).setX(anzahlCols / 2);
         this.positions.get(centerIndex).setY(anzahlCols / 2);
         bot.setPosition(this.positions.get(centerIndex));
     }
 
     public void addFirstPlanet(Planet planet) {
-        this.positions.get(centerIndex).setPlanet(planet);
+        this.positions.get(centerIndex).setReferencingPlanetId(planet.getPlanetId());
         this.positions.get(centerIndex).setX(anzahlCols / 2);
         this.positions.get(centerIndex).setY(anzahlCols / 2);
         planet.setPosition(this.positions.get(centerIndex));
@@ -144,7 +144,7 @@ public class Map {
         this.exploreNeighbours(planet);
         Random rand = new Random();
         //Randomness will be replaced another time
-        this.getPositions().get(rand.nextInt(this.contentLength)).setPlanet(planet);
+        this.getPositions().get(rand.nextInt(this.contentLength)).setReferencingPlanetId(planet.getPlanetId());
     }
 
     public void initMap() {

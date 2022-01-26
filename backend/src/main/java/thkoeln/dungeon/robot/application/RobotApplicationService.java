@@ -27,14 +27,18 @@ public class RobotApplicationService {
         return newRobot;
     }
 
+    public Robot getById (UUID id) {
+        return this.robotRepository.findById(id).get();
+    }
+
     /***
      * Set bot Position
      * @param bot
      * @param position
      */
-    public void setRobotOnPosition(@NotNull Robot bot, PositionVO position){
+    public void setRobotPosition(@NotNull Robot bot, PositionVO position){
             bot.setPosition(position);
-            position.setRobot(bot);
+            position.setReferencingRobotId(bot.getRobotId());
             robotRepository.save(bot);
     }
 

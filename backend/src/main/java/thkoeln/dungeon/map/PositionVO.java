@@ -1,15 +1,10 @@
 package thkoeln.dungeon.map;
 
-import io.micrometer.core.lang.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import thkoeln.dungeon.planet.domain.Planet;
-import thkoeln.dungeon.robot.domain.Robot;
 
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -19,15 +14,9 @@ import java.util.UUID;
 @Setter
 public class PositionVO {
 
-    @OneToOne
-    @Nullable
-    @JoinColumn(name = "planet_ID")
-    private Planet planet;
+    private UUID referencingPlanetId;
 
-    @OneToOne
-    @Nullable
-    @JoinColumn(name = "robot_ID")
-    private Robot robot;
+    private UUID referencingRobotId;
 
     private int posIndex;
 
@@ -36,7 +25,7 @@ public class PositionVO {
     private int y;
 
     public void clearRobot () {
-        this.robot = null;
+        this.referencingRobotId = null;
     }
 
     @Override

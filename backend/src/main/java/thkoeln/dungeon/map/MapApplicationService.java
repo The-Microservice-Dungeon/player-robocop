@@ -1,6 +1,5 @@
 package thkoeln.dungeon.map;
 
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +7,7 @@ import thkoeln.dungeon.eventconsumer.robot.NeighboursEvent;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
+import thkoeln.dungeon.robot.application.RobotApplicationService;
 import thkoeln.dungeon.robot.domain.Robot;
 
 import java.util.UUID;
@@ -16,12 +16,14 @@ import java.util.UUID;
 @Service
 public class MapApplicationService {
     private final PlanetApplicationService planetApplicationService;
+    private final RobotApplicationService robotApplicationService;
 
     private Map currentMap;
 
     @Autowired
-    public MapApplicationService (PlanetApplicationService planetApplicationService) {
+    public MapApplicationService (PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService) {
         this.planetApplicationService = planetApplicationService;
+        this.robotApplicationService = robotApplicationService;
     }
 
     public void placeDemoStuff () {
@@ -67,9 +69,11 @@ public class MapApplicationService {
 
         int i = 0;
         for (PositionVO pvo : currentMap.getPositions()) {
-            wrapper.addGravity(pvo.getPlanet(), i);
-            wrapper.addPlanetType(pvo.getPlanet(), i);
-            wrapper.addRobot(pvo.getRobot(), i);
+            Planet planet = this.planetApplicationService.getById(pvo.getReferencingPlanetId());
+            Robot robot = this.robotApplicationService.getById(pvo.getReferencingPlanetId());
+            wrapper.addGravity(planet, i);
+            wrapper.addPlanetType(planet, i);
+            wrapper.addRobot(robot, i);
             i++;
         }
         return wrapper;
