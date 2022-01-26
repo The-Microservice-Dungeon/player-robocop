@@ -2,8 +2,10 @@ package thkoeln.dungeon.endpoints.web.ui;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.game.domain.game.GameRepository;
@@ -51,8 +53,7 @@ public class UIController {
     Map<String, Object> currentGameInfo(HttpServletResponse response) {
         List<Game> gameList = gameRepo.findAll();
         if (gameList.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return new JSONObject().toMap();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         Game game = gameList.get(0);
@@ -77,7 +78,13 @@ public class UIController {
 
     @GetMapping("/player")
     Map<String, Object> playerInfo() {
-        Player player = playerRepo.findAll().get(0);
+        List<Player> playerList = playerRepo.findAll();
+
+        if (playerList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        Player player = playerList.get(0);
 
         JSONObject playerJson = new JSONObject()
                 .put("name", player.getName())
@@ -92,8 +99,11 @@ public class UIController {
 
     @GetMapping("/robots")
     Map<String, Object> allRobotInfo() {
-
         List<Robot> robots = roboRepo.findAll();
+
+        if (robots.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
         ArrayList<JSONObject> robotObjects = new ArrayList<>();
 
@@ -116,7 +126,7 @@ public class UIController {
         try {
             gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
         } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
-            return new JSONObject().toMap();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
