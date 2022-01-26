@@ -7,6 +7,8 @@ import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.robot.domain.Robot;
 
+import java.util.UUID;
+
 @NoArgsConstructor
 @Setter
 @Service
@@ -16,7 +18,7 @@ public class MapApplicationService {
 
     public void placeDemoStuff () {
         currentMap.addFirstBot(new Robot(true));
-        currentMap.addFirstPlanet(new Planet(true, false));
+        currentMap.addFirstPlanet(new Planet(UUID.randomUUID(),true, false));
     }
 
     public void createMapFromGame (Game game) {

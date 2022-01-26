@@ -57,10 +57,10 @@ public class Command {
         CommandBody commandBody = new CommandBody();
         commandBody.setCommandType(this.getCommandType());
         if (getRobot()!=null) {
-            commandBody.setRobotId(getRobot().getExternalId());
+            commandBody.setRobotId(getRobot().getRobotId());
         }
         if (getTargetPlanet()!=null){
-            commandBody.setTargetId(getTargetPlanet().getExternalId());
+            commandBody.setTargetId(getTargetPlanet().getPlanetId());
         }
         if (getItemType()!=null){
             commandBody.setItemName(getItemType());
@@ -70,7 +70,7 @@ public class Command {
         }
         CommandDto commandDto = new CommandDto(getGame().getGameId(),getPlayer().getBearerToken(),null,getCommandType(),commandBody);
         if (getRobot()!=null) {
-            commandDto.setRobotId(getRobot().getExternalId());
+            commandDto.setRobotId(getRobot().getRobotId());
         }
         return commandDto;
     }

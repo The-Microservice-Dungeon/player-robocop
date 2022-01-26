@@ -98,7 +98,7 @@ public class PlanetTest {
         // then
         for (int i = 0; i <= 2; i++) {
             for (int j = 0; j <= 2; j++) {
-                Planet planet = planetRepository.findById(planetArray[i][j].getId()).get();
+                Planet planet = planetRepository.findById(planetArray[i][j].getPlanetId()).get();
                 assertEquals(numberOfNeighbours[i][j], planet.allNeighbours().size());
             }
         }
