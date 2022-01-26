@@ -357,7 +357,8 @@ export default {
 }
 
 .slider {
-  width: 50%;
+  width: 45%;
+  height: 12px;
 }
 
 .positionPicker {
@@ -371,20 +372,12 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  height: 8rem;
 }
 
 .button {
   height: 2rem;
-  margin-top: 1rem;
-}
-
-.button:first-of-type {
-  margin: 0;
-}
-
-.button:last-of-type {
-  margin: 1rem 0;
 }
 
 .mapCanvas {
