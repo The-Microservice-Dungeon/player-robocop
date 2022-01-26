@@ -17,7 +17,7 @@ public class CommandBody {
     private CommandType commandType;
     private UUID robotId;
     private UUID targetId;
-    private ItemType itemType;
+    private ItemType itemName;
     private Integer itemQuantity;
     // Bodies from https://the-microservice-dungeon.github.io/docs/openapi/robot/#tag/commands/paths/~1commands/post
 }
