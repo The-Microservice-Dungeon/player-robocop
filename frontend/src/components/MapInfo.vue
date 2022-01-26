@@ -281,7 +281,7 @@ export default {
       }
     },
     calculateMaxScroll () {
-      return this.cols * this.tileResolution - this.mapWidth
+      return Math.floor(this.cols * this.tileResolution - this.mapWidth)
     },
     clampScroll () {
       const maxScroll = this.calculateMaxScroll()
@@ -383,5 +383,12 @@ export default {
 .mapCanvas {
   max-height: 100vh;
   width: 95%;
+}
+
+planar-range-thumb {
+  background: url('~@/assets/logo.webp');
+  background-size: contain;
+  border: 1px solid red;
+  background-color: red;
 }
 </style>
