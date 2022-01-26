@@ -10,6 +10,10 @@
 | Oliver Wichmann  | @OliverW21      |
 | Thomas Raser     | @ThmsRa         |
 
+## Access
+Access Robocop on [cides03.gm.fh-koeln.de:8103](http://cides03.gm.fh-koeln.de:8103) if you dare...
+
+
 ## Installation
 
 1. Import `player-robocop` Maven Package
