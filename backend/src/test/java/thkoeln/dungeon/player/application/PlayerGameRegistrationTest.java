@@ -86,9 +86,9 @@ public class PlayerGameRegistrationTest {
         playerApplicationService.registerOnePlayerForGame(player, game);
 
         // then
-        List<Player> readyPlayers = playerRepository.findByGameParticipations_Game(game);
+        List<Player> readyPlayers = playerRepository.findByCurrentGame(game);
         assertEquals(1, readyPlayers.size());
-        assert (readyPlayers.get(0).isParticipantInGame(game));
+        assert (readyPlayers.get(0).getCurrentGame()==game);
     }
 
 

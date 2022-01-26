@@ -10,14 +10,17 @@ import thkoeln.dungeon.command.CommandExecutor;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.player.domain.GameParticipationRepository;
 import thkoeln.dungeon.player.domain.Player;
+import thkoeln.dungeon.player.domain.PlayerDomainException;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.PlayerRegistryDto;
+import thkoeln.dungeon.restadapter.exceptions.RESTAdapterException;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.RESTRequestDeniedException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -35,7 +38,6 @@ public class PlayerApplicationService {
 
     private final CommandExecutor commandExecutor;
     private final PlayerRepository playerRepository;
-    private final GameParticipationRepository gameParticipationRepository;
     private final GameServiceRESTAdapter gameServiceRESTAdapter;
 
     @Value("${dungeon.player.playerName}")
@@ -53,7 +55,6 @@ public class PlayerApplicationService {
             GameServiceRESTAdapter gameServiceRESTAdapter) {
         this.commandExecutor = commandExecutor;
         this.playerRepository = playerRepository;
-        this.gameParticipationRepository = gameParticipationRepository;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
@@ -153,7 +154,7 @@ public class PlayerApplicationService {
         for (Player player : players) registerOnePlayerForGame(player, game);
     }
 
-    public Player retrieveCurrentPlayer(){
+    public Player retrieveCurrentPlayer() {
         return playerRepository.findByNameAndEmail(playerName, playerEmail);
     }
 
@@ -165,24 +166,25 @@ public class PlayerApplicationService {
      * @param game
      */
     public void registerOnePlayerForGame(Player player, Game game) {
+        if (player.getBearerToken() == null) {
+            logger.error("Player" + player + " has no BearerToken!");
+            return;
+        }
         try {
-            if (player.getBearerToken() == null) {
-                obtainBearerTokenForOnePlayer(player);
-            }
-            if (player.getBearerToken() == null) {
-                logger.error("No bearer token for " + player + " also after another attempt - cannot register for game!");
-                return;
-            }
-            boolean success = gameServiceRESTAdapter.registerPlayerForGame(game.getGameId(), player.getBearerToken());
-            if (success) {
-                player.participateInGame(game);
+            UUID transactionId = gameServiceRESTAdapter.registerPlayerForGame(game.getGameId(), player.getBearerToken());
+            if (transactionId != null) {
+                player.registerFor(game, transactionId);
                 playerRepository.save(player);
-                logger.info("Player " + player + " successfully registered for game " + game);
+                logger.info("Player " + player + " successfully registered for game " + game +
+                        " with transactionId " + transactionId);
             }
-        } catch (RESTConnectionFailureException | RESTRequestDeniedException e) {
+        } catch (RESTAdapterException e) {
             // shouldn't happen - cannot do more than logging and retrying later
-            logger.error("Could not be get bearer token for player " + player +
-                    " due to connection problems - try again later.");
+            // todo - err msg wrong
+            logger.error("Could not register " + player + " for " + game +
+                    "\nOriginal Exception:\n" + e.getMessage() + "\n" + e.getStackTrace());
+        } catch (PlayerDomainException e) {
+            logger.error("Whoops.");
         }
     }
 
@@ -198,6 +200,33 @@ public class PlayerApplicationService {
         logger.info("Ending round " + roundNumber);
     }
 
+    public void assignPlayerId(UUID registrationTransactionId, UUID playerId) {
+        logger.info("Assign playerId from game registration");
+        if (registrationTransactionId == null)
+            throw new PlayerRegistryException("registrationTransactionId cannot be null!");
+        if (playerId == null) throw new PlayerRegistryException("PlayerId cannot be null!");
+        List<Player> foundPlayers = playerRepository.findByRegistrationTransactionId(registrationTransactionId);
+        if (foundPlayers.size() != 1) {
+            throw new PlayerRegistryException("Found not exactly 1 game for player registration with " + registrationTransactionId
+                    + ", but " + foundPlayers.size());
+        }
+        Player player = foundPlayers.get(0);
+        player.setPlayerId(playerId);
+        playerRepository.save(player);
+    }
+
+    public void changeMoneyOfPlayer(UUID playerId, Integer moneyChangedByAmount){
+        Optional<Player> found = playerRepository.findByPlayerId(playerId);
+        if (found.isPresent()){
+            logger.info("Adjusting player money by "+moneyChangedByAmount);
+            Player player = found.get();
+            player.addMoney(moneyChangedByAmount);
+            playerRepository.save(player);
+        }
+        else {
+            throw new PlayerRegistryException("Player with playerId "+ playerId+" not found.");
+        }
+    }
 
     public void receiveCommandAnswer(UUID transactionId, String payload) {
 

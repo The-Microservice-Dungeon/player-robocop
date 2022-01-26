@@ -5,7 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.game.application.GameApplicationService;
+import thkoeln.dungeon.game.application.GameStatusException;
+import thkoeln.dungeon.game.application.NoGameAvailableException;
 import thkoeln.dungeon.game.domain.game.Game;
+import thkoeln.dungeon.game.domain.game.GameStatus;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.player.domain.Player;
@@ -28,13 +31,13 @@ public class CommandDispatcherService {
             this.playerApplicationService = playerApplicationService;
         }
 
-        public void init(){
-            Game game = gameApplicationService.retrieveCreatedGame();
+        public void init() throws GameStatusException, NoGameAvailableException {
+            Game game = gameApplicationService.retrieveListedGameWithStatus(GameStatus.CREATED);
             Player player = playerApplicationService.retrieveCurrentPlayer();
             playerApplicationService.registerOnePlayerForGame(player,game);
         }
-        public void buyRobot(){
-            Game game = gameApplicationService.retrieveStartedGame();
+        public void buyRobot() throws GameStatusException, NoGameAvailableException {
+            Game game = gameApplicationService.retrieveListedGameWithStatus(GameStatus.STARTED);
             Player player = playerApplicationService.retrieveCurrentPlayer();
             Command robotCommand = CommandBuilder.buildBuyRobotCommand(game, player,1);
             UUID transactionId = commandExecutionService.executeCommand(robotCommand);
@@ -43,8 +46,8 @@ public class CommandDispatcherService {
             }
         }
 
-        public void moveRobotToPlanet(Robot robot, Planet targetPlanet){
-            Game game = gameApplicationService.retrieveStartedGame();
+        public void moveRobotToPlanet(Robot robot, Planet targetPlanet) throws GameStatusException, NoGameAvailableException {
+            Game game = gameApplicationService.retrieveListedGameWithStatus(GameStatus.STARTED);
             Player player = playerApplicationService.retrieveCurrentPlayer();
             Command moveCommand = CommandBuilder.buildMovementCommand(game, player, robot, targetPlanet);
             UUID transactionId = commandExecutionService.executeCommand(moveCommand);

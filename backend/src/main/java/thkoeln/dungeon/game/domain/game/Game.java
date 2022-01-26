@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import thkoeln.dungeon.game.domain.round.Round;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -33,8 +34,8 @@ public class Game {
     private Integer maxPlayers;
     private Integer maxRounds;
 
-    @ElementCollection
-    private List<UUID> participatingPlayers;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<UUID> participatingPlayers = new LinkedList<>();
 
     @Embedded
     private Round round;

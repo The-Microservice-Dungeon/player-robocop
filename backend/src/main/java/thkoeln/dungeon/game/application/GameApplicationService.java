@@ -5,12 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import thkoeln.dungeon.game.domain.game.Game;
-import thkoeln.dungeon.game.domain.game.GameRepository;
-import thkoeln.dungeon.game.domain.game.GameStatus;
+import thkoeln.dungeon.game.domain.game.*;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
-import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
@@ -32,18 +29,24 @@ public class GameApplicationService {
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
-    public Game retrieveCreatedGame() throws IllegalStateException{
-        List<Game> found = gameRepository.findAllByGameStatusEquals(GameStatus.CREATED);
-        if (found.size()!=1){
-            throw new IllegalStateException("There has to be exactly one created game. Found "+found.size());
+    public Game retrieveListedGameWithStatus(GameStatus gameStatus) throws GameStatusException, NoGameAvailableException{
+        List<Game> found = gameRepository.findAllByGameStatusEquals(gameStatus);
+        List<Game> allGames = gameRepository.findAll();
+        if (allGames.isEmpty()){
+            throw new NoGameAvailableException("No games in DB yet, retry in a bit...");
         }
-        return found.get(0);
-    }
-
-    public Game retrieveStartedGame() throws IllegalStateException{
-        List<Game> found = gameRepository.findAllByGameStatusEquals(GameStatus.STARTED);
+        if (gameStatus==GameStatus.ORPHANED){
+            logger.warn("This method only returns one game. Returning first orphaned game found");
+            if (!found.isEmpty()){
+                return found.get(0);
+            }
+            else {
+                throw new GameStatusException("No Games in orphaned status");
+            }
+        }
         if (found.size()!=1){
-            throw new IllegalStateException("There has to be exactly one started game. Found "+found.size());
+            //"There can be only one" *Glass shatters*
+            throw new GameStatusException("There has to be exactly ONE game with status "+ gameStatus.toString()+" But there are "+found.size()+".");
         }
         return found.get(0);
     }

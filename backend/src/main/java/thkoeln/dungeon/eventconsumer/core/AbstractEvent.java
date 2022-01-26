@@ -27,7 +27,7 @@ import java.util.UUID;
 public abstract class AbstractEvent {
     public static final String TRANSACTION_ID_KEY = "transactionId";
     @Id
-    @Setter(AccessLevel.NONE)
+    @Setter(AccessLevel.PROTECTED)
     protected UUID id = UUID.randomUUID();
     protected UUID eventId;
     protected Date timestamp;

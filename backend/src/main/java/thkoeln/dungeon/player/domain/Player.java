@@ -20,13 +20,15 @@ import java.util.UUID;
 public class Player {
     @Id
     private final UUID id = UUID.randomUUID();
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER)
-    private final List<GameParticipation> gameParticipations = new ArrayList<>();
     private String name;
     private String email;
     private UUID bearerToken;
+    private UUID registrationTransactionId;
+    private UUID playerId;
+    @OneToOne
+    private Game currentGame;
 
-    private Float money = 200F;
+    private Float money = 0F;
 
     // TODO: Fill with data when new Robot gets spawned
     @OneToMany
@@ -45,22 +47,11 @@ public class Player {
         return (bearerToken != null);
     }
 
-
-    public void participateInGame(Game game) {
-        GameParticipation gameParticipation = new GameParticipation(game);
-        gameParticipations.add(gameParticipation);
-    }
-
-
-    public boolean isParticipantInGame(Game game) {
-        return (findParticipationFor(game) != null);
-    }
-
-
-    private GameParticipation findParticipationFor(Game game) {
-        Optional<GameParticipation> found = gameParticipations.stream()
-                .filter(gp -> gp.getGame().equals(game)).findFirst();
-        return found.orElse(null);
+    public void registerFor ( Game game, UUID registrationTransactionId ) throws PlayerDomainException {
+        if ( game == null ) throw new PlayerDomainException( "Game must not be null!" );
+        if ( registrationTransactionId == null ) throw new PlayerDomainException( "registrationTransactionId must not be null!" );
+        this.currentGame = game;
+        this.registrationTransactionId = registrationTransactionId;
     }
 
 
@@ -75,5 +66,9 @@ public class Player {
     @Override
     public String toString() {
         return "Player '" + name + "' (" + email + "), bearerToken: " + bearerToken;
+    }
+
+    public void addMoney(Integer moneyChangedByAmount) {
+        this.money+=moneyChangedByAmount;
     }
 }
