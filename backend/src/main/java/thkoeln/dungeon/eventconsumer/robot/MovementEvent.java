@@ -1,26 +1,19 @@
 package thkoeln.dungeon.eventconsumer.robot;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 import thkoeln.dungeon.eventconsumer.core.AbstractEvent;
 
+import javax.annotation.Generated;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-
-
-import java.util.*;
-import javax.annotation.Generated;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
+import java.util.LinkedList;
 import java.util.List;
-import javax.annotation.Generated;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -31,9 +24,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "robots"
 })
 @Generated("jsonschema2pojo")
+@Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
 @ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor(access = AccessLevel.NONE)
 public class MovementEvent extends AbstractEvent {
 
     @JsonProperty("success")
@@ -43,6 +39,7 @@ public class MovementEvent extends AbstractEvent {
     @JsonProperty("remainingEnergy")
     private Integer remainingEnergy;
     @JsonProperty("planet")
+    @Embedded
     private PlanetMovementDto planet;
     @JsonProperty("robots")
     private List<UUID> robots = null;

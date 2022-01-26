@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface RobotRepository extends CrudRepository<Robot, UUID> {
     List<Robot> findAll();
+    List<Robot> findAllByRobotIdIn(List<UUID> robotIds);
 }

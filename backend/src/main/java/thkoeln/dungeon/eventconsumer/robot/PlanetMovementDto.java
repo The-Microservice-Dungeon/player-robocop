@@ -7,6 +7,7 @@ import thkoeln.dungeon.planet.domain.PlanetType;
 import thkoeln.dungeon.planet.domain.ResourceType;
 
 import javax.annotation.Generated;
+import javax.persistence.Embeddable;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -17,6 +18,7 @@ import java.util.UUID;
         "resourceType"
 })
 @Generated("jsonschema2pojo")
+@Embeddable
 public class PlanetMovementDto {
 
     @JsonProperty("planetId")

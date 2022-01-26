@@ -1,9 +1,14 @@
 package thkoeln.dungeon.eventconsumer.robot;
 
 import javax.annotation.Generated;
+import javax.persistence.Entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.*;
+import thkoeln.dungeon.eventconsumer.core.AbstractEvent;
 import thkoeln.dungeon.planet.domain.CompassDirection;
 
 import java.util.UUID;
@@ -15,7 +20,13 @@ import java.util.UUID;
         "direction"
 })
 @Generated("jsonschema2pojo")
-public class NeighboursEvent {
+@Getter
+@Entity
+@Setter
+@ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor(access = AccessLevel.NONE)
+public class NeighboursEvent extends AbstractEvent {
 
     @JsonProperty("planetId")
     private UUID planetId;

@@ -1,5 +1,6 @@
 package thkoeln.dungeon.command;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.repository.CrudRepository;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.player.domain.Player;
@@ -14,4 +15,7 @@ public interface CommandRepository extends CrudRepository<Command, UUID> {
     List<Command> findAllByCommandTypeEquals(CommandType commandType);
     Optional<Command> findByTransactionId(UUID transactionId);
     List<Command> findByPlayer(Player player);
+
+    Optional<Command> findByRobot_RobotIdInAndTargetPlanet_PlanetId(@NotNull List<UUID> robotIds, @NotNull UUID planetId);
+
 }

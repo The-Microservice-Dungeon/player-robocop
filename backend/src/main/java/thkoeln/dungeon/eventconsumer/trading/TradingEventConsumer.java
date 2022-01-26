@@ -11,8 +11,13 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.Command;
 import thkoeln.dungeon.command.CommandRepository;
+import thkoeln.dungeon.map.MapApplicationService;
+import thkoeln.dungeon.planet.application.PlanetApplicationService;
+import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.player.domain.PlayerRepository;
+import thkoeln.dungeon.robot.application.RobotApplicationService;
+import thkoeln.dungeon.robot.domain.Robot;
 
 import java.util.Optional;
 
@@ -22,17 +27,26 @@ public class TradingEventConsumer {
     private final CommandRepository commandRepository;
     private final BankCreatedEventRepository bankCreatedEventRepository;
     private final TradingEventRepository tradingEventRepository;
+    private final PlanetApplicationService planetApplicationService;
+    private final RobotApplicationService robotApplicationService;
+    private final MapApplicationService mapApplicationService;
     private final Logger logger = LoggerFactory.getLogger(TradingEventConsumer.class);
 
     @Autowired
     public TradingEventConsumer(PlayerApplicationService playerApplicationService,
+                                PlanetApplicationService planetApplicationService,
                                 BankCreatedEventRepository bankCreatedEventRepository,
                                 CommandRepository commandRepository,
-                                TradingEventRepository tradingEventRepository) {
+                                TradingEventRepository tradingEventRepository,
+                                RobotApplicationService robotApplicationService,
+                                MapApplicationService mapApplicationService) {
         this.playerApplicationService = playerApplicationService;
         this.bankCreatedEventRepository = bankCreatedEventRepository;
         this.commandRepository = commandRepository;
+        this.planetApplicationService = planetApplicationService;
         this.tradingEventRepository = tradingEventRepository;
+        this.robotApplicationService = robotApplicationService;
+        this.mapApplicationService = mapApplicationService;
     }
 
     @KafkaListener(topics = "bank-created")
@@ -63,5 +77,10 @@ public class TradingEventConsumer {
         commandOptional.ifPresent(command -> playerApplicationService.changeMoneyOfPlayer(
                 command.getPlayer().getPlayerId(),
                 tradingEvent.getMoneyChangedBy()));
+        if (tradingEvent.getData()!=null && tradingEvent.getData().getPlanet()!=null){
+            Robot robot = this.robotApplicationService.createNewRobot(tradingEvent.getData().getRobotId());
+            Planet planet = this.planetApplicationService.createStartPlanet(tradingEvent.getData().getPlanet());
+            this.mapApplicationService.handleNewRobotSpawn(robot, planet);
+        }
     }
 }
