@@ -38,7 +38,6 @@ public class RobotApplicationService {
      */
     public void setRobotPosition(@NotNull Robot bot, PositionVO position){
             bot.setPosition(position);
-            position.setReferencingRobotId(bot.getRobotId());
             robotRepository.save(bot);
     }
 

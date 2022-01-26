@@ -61,6 +61,12 @@ public class Map {
     }
 
 
+    public void replacePosition (PositionVO oldPos, PositionVO newPos) {
+        for (PositionVO position : this.positions) {
+            if (position == oldPos) this.positions.set(oldPos.getPosIndex(), newPos);
+        }
+    }
+
     public PositionVO findPosition(PositionVO pPosition) {
         for (PositionVO position : this.positions) {
             if (position == pPosition) return position;
@@ -91,11 +97,11 @@ public class Map {
     }
 
     public void setRobotOnPosition (PositionVO position, Robot robot) {
-        this.findPosition(position).setReferencingRobotId(robot.getRobotId());
+        this.replacePosition(position, new PositionVO(position.getReferencingPlanetId(), robot.getRobotId(), position.getPosIndex(), position.getX(), position.getY()));
     }
 
     public void removeRobotOnPosition (PositionVO position) {
-        this.findPosition(position).clearRobot();
+        this.replacePosition(position, new PositionVO(position.getReferencingPlanetId(), null, position.getPosIndex(), position.getX(), position.getY()));
     }
 
 
@@ -104,21 +110,25 @@ public class Map {
         PositionVO position = planet.getPosition();
 
         if (planet.getEastNeighbour() != null) {
-            findPosition(position.getX() - 1, position.getY()).setReferencingPlanetId(planet.getEastNeighbour().getPlanetId());
+            PositionVO pos = findPosition(position.getX() - 1, position.getY());
+            this.replacePosition(pos, new PositionVO(planet.getEastNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
             planet.getEastNeighbour().setPosition(findPosition(position.getX() - 1, position.getY()));
         }
         if (planet.getWestNeighbour() != null) {
-            findPosition(position.getX() + 1, position.getY()).setReferencingPlanetId(planet.getWestNeighbour().getPlanetId());
+            PositionVO pos = findPosition(position.getX() + 1, position.getY());
+            this.replacePosition(pos, new PositionVO(planet.getWestNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
             planet.getWestNeighbour().setPosition(findPosition(position.getX() + 1, position.getY()));
         }
 
 
         if (planet.getNorthNeighbour() != null) {
-            findPosition(position.getX(), position.getY() - 1).setReferencingPlanetId(planet.getNorthNeighbour().getPlanetId());
+            PositionVO pos = findPosition(position.getX(), position.getY() - 1);
+            this.replacePosition(pos, new PositionVO(planet.getNorthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
             planet.getNorthNeighbour().setPosition(findPosition(position.getX(), position.getY() - 1));
         }
         if (planet.getSouthNeighbour() != null) {
-            findPosition(position.getX(), position.getY() + 1).setReferencingPlanetId(planet.getSouthNeighbour().getPlanetId());
+            PositionVO pos = findPosition(position.getX(), position.getY() + 1);
+            this.replacePosition(pos, new PositionVO(planet.getSouthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
             planet.getSouthNeighbour().setPosition(findPosition(position.getX(), position.getY() + 1));
         } else {
             System.out.println("No other Planets here");
@@ -126,25 +136,21 @@ public class Map {
     }
 
     public void addFirstBot(Robot bot) {
-        this.positions.get(centerIndex).setReferencingRobotId(bot.getRobotId());
-        this.positions.get(centerIndex).setX(anzahlCols / 2);
-        this.positions.get(centerIndex).setY(anzahlCols / 2);
+        PositionVO pos = this.positions.get(centerIndex);
+        this.replacePosition(pos, new PositionVO(pos.getReferencingPlanetId(), bot.getRobotId(), pos.getPosIndex(), anzahlCols / 2,anzahlCols / 2));
         bot.setPosition(this.positions.get(centerIndex));
     }
 
     public void addFirstPlanet(Planet planet) {
-        this.positions.get(centerIndex).setReferencingPlanetId(planet.getPlanetId());
-        this.positions.get(centerIndex).setX(anzahlCols / 2);
-        this.positions.get(centerIndex).setY(anzahlCols / 2);
+
+        PositionVO pos = this.positions.get(centerIndex);
+        this.replacePosition(pos, new PositionVO(planet.getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), anzahlCols / 2,anzahlCols / 2));
         planet.setPosition(this.positions.get(centerIndex));
         exploreNeighbours(planet);
     }
 
     public void addNeighboursOfPlanetToMap(Planet planet) {
         this.exploreNeighbours(planet);
-        Random rand = new Random();
-        //Randomness will be replaced another time
-        this.getPositions().get(rand.nextInt(this.contentLength)).setReferencingPlanetId(planet.getPlanetId());
     }
 
     public void initMap() {
@@ -152,9 +158,7 @@ public class Map {
         for (int i = 0; i < this.anzahlCols; i++) {
 
             for (int j = 0; j < this.anzahlCols; j++) {
-                PositionVO tmpPos = new PositionVO();
-                tmpPos.setX(i);
-                tmpPos.setY(j);
+                PositionVO tmpPos = new PositionVO(null, null, i + i, i, j);
                 this.positions.add(tmpPos);
             }
         }
