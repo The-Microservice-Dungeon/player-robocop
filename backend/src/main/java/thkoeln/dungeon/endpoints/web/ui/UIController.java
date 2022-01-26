@@ -7,18 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import thkoeln.dungeon.game.domain.game.Game;
-import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.game.domain.game.GameRepository;
 import thkoeln.dungeon.game.domain.round.Round;
 import thkoeln.dungeon.map.MapJSONWrapper;
-import thkoeln.dungeon.map.MapService;
-import thkoeln.dungeon.map.PositionVO;
-import thkoeln.dungeon.planet.domain.Planet;
+import thkoeln.dungeon.map.MapApplicationService;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
-import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
-import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
@@ -36,7 +31,7 @@ public class UIController {
     private final PlayerRepository playerRepo;
     private final RobotRepository roboRepo;
     private final GameServiceRESTAdapter gameServiceRESTAdapter;
-    private final MapService mapService;
+    private final MapApplicationService mapService;
 
     /**
      * Constructor
@@ -44,7 +39,7 @@ public class UIController {
      * @param gameRepo
      */
     @Autowired
-    UIController(GameServiceRESTAdapter gameServiceRESTAdapter, GameRepository gameRepo, PlayerRepository playerRepo, RobotRepository roboRepo, MapService mapService) {
+    UIController(GameServiceRESTAdapter gameServiceRESTAdapter, GameRepository gameRepo, PlayerRepository playerRepo, RobotRepository roboRepo, MapApplicationService mapService) {
         this.gameRepo = gameRepo;
         this.playerRepo = playerRepo;
         this.roboRepo = roboRepo;

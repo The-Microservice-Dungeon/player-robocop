@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import thkoeln.dungeon.game.domain.game.*;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
-import thkoeln.dungeon.map.MapService;
+import thkoeln.dungeon.map.MapApplicationService;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
@@ -23,13 +23,13 @@ public class GameApplicationService {
     private final GameServiceRESTAdapter gameServiceRESTAdapter;
     private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
     ModelMapper modelMapper = new ModelMapper();
-    private final MapService mapService;
+    private final MapApplicationService mapService;
 
     @Autowired
     public GameApplicationService(GameRepository gameRepository,
                                   GameServiceRESTAdapter gameServiceRESTAdapter,
                                   PlayerApplicationService playerApplicationService,
-                                  MapService mapService) {
+                                  MapApplicationService mapService) {
         this.gameRepository = gameRepository;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
         this.mapService = mapService;

@@ -10,7 +10,7 @@ import thkoeln.dungeon.robot.domain.Robot;
 @NoArgsConstructor
 @Setter
 @Service
-public class MapService {
+public class MapApplicationService {
 
     private Map currentMap;
 
