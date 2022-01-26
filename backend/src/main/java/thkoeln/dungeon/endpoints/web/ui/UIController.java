@@ -130,7 +130,7 @@ public class UIController {
         }
 
 
-      //  System.out.println(gameDtos[0].getParticipatingPlayers());
+        //  System.out.println(gameDtos[0].getParticipatingPlayers());
         thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
 
         tmpMap.addFirstBot(new Robot(false));
@@ -139,11 +139,10 @@ public class UIController {
         MapJSONWrapper mapper = new MapJSONWrapper(tmpMap.getContentLength());
 
         int i = 0;
-        for (PositionVO pvo: tmpMap.getPositions()
-             ) {
-            mapper.addGravity(pvo.getPlanet(),i);
-            mapper.addRobot(pvo.getRobot(),i);
-            mapper.addPlanet(pvo.getPlanet(),i);
+        for (PositionVO pvo : tmpMap.getPositions()) {
+            mapper.addGravity(pvo.getPlanet(), i);
+            mapper.addPlanetType(pvo.getPlanet(), i);
+            mapper.addRobot(pvo.getRobot(), i);
             i++;
         }
 

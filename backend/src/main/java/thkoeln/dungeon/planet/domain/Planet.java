@@ -32,7 +32,7 @@ public class Planet {
 
     @Setter
     @Getter
-    private int movementDifficulty;
+    private Integer movementDifficulty = null;
 
     @Setter
     @Getter
@@ -136,6 +136,6 @@ public class Planet {
 
     @Override
     public String toString() {
-        return getName() + " (" + getId() + ")";
+        return getName() + " (" + getId() + ") Spacestation?: " + isSpaceStation() + " Type: " + getResourceType();
     }
 }
