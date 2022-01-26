@@ -2,60 +2,74 @@
   <div :class="maxWidth ? 'maxWidth infoCard' : 'infoCard'">
     <h3>Map</h3>
     <div class="controls">
-      <div class="sliders">
-        <label for="xOffset">
-          X Offset: {{ camera.x }}
-          <input
-            id="xOffset"
-            v-model="camera.x"
-            class="slider"
-            step="8"
-            :min="0"
-            :max="calculateMaxScroll()"
-            type="range"
-            @input="render"
-          >
-        </label>
-        <label for="yOffset">
-          Y Offset: {{ camera.y }}
-          <input
-            id="yOffset"
-            v-model="camera.y"
-            class="slider"
-            step="8"
-            :min="0"
-            :max="calculateMaxScroll()"
-            type="range"
-            @input="render"
-          >
-        </label>
-        <label for="zoom">
-          Zoom: {{ zoomLevel }}
-          <input
-            id="zoom"
-            v-model="zoomLevel"
-            class="slider"
-            step="0.1"
-            type="range"
-            min="1"
-            max="10"
-            @input="render"
-          >
-        </label>
+      <div class="planar">
+        <planar-range
+          v-if="renderPlanarPosition"
+          class="positionPicker"
+        >
+          <planar-range-thumb
+            x="0.5"
+            y="0.5"
+            @change="updateCameraPosition"
+          />
+        </planar-range>
       </div>
-      <div>
-        <button
-          class="resetButton"
-          @click="mapOverview"
-        >
-          View all
-        </button>
-        <button
-          class="resetButton"
-          @click="resetCamera"
-        >
-          Reset View
-        </button>
+      <div class="controlInfos">
+        <div class="sliders">
+          <label for="xOffset">
+            X Offset: {{ camera.x }}
+            <input
+              id="xOffset"
+              v-model="camera.x"
+              class="slider"
+              step="8"
+              :min="0"
+              :max="calculateMaxScroll()"
+              type="range"
+              @input="render"
+            >
+          </label>
+          <label for="yOffset">
+            Y Offset: {{ camera.y }}
+            <input
+              id="yOffset"
+              v-model="camera.y"
+              class="slider"
+              step="8"
+              :min="0"
+              :max="calculateMaxScroll()"
+              type="range"
+              @input="render"
+            >
+          </label>
+          <label for="zoom">
+            Zoom: {{ zoomLevel }}
+            <input
+              id="zoom"
+              v-model="zoomLevel"
+              class="slider"
+              step="0.1"
+              type="range"
+              min="1"
+              max="10"
+              @input="render"
+            >
+          </label>
+        </div>
+        <div class="buttons">
+          <button
+            class="button"
+            @click="mapOverview"
+          >
+            View all
+          </button>
+          <button
+            class="button"
+            @click="resetCamera"
+          >
+            Reset View
+          </button>
+        </div>
       </div>
     </div>
     <canvas
@@ -67,6 +81,9 @@
 
 <script>
 import mapTiles from '@/assets/mapTiles.png'
+
+// eslint-disable-next-line no-unused-vars
+const planarSlider = require('planar-range')
 
 export default {
   name: 'MapInfo',
@@ -94,6 +111,7 @@ export default {
       ],
       camera: {},
       zoomLevel: 4,
+      renderPlanarPosition: true,
     }
   },
   computed: {
@@ -147,7 +165,6 @@ export default {
       this.rows = this.mapSize * 2
       this.mapWidth = this.cols * this.tileResolution / this.zoomLevel
       this.mapHeight = this.rows * this.tileResolution / this.zoomLevel
-      this.calculateMaxScroll()
       this.clampScroll()
     },
     buildMap () {
@@ -264,18 +281,28 @@ export default {
       const maxScroll = this.calculateMaxScroll()
       if (this.camera.x > maxScroll) this.camera.x = maxScroll
       if (this.camera.y > maxScroll) this.camera.y = maxScroll
+      if (this.camera.x < 0) this.camera.x = 0
+      if (this.camera.y < 0) this.camera.y = 0
     },
     mapOverview () {
       this.camera.y = 0
       this.camera.x = 0
       this.zoomLevel = 1
+      this.resetPositionPicker()
       this.render()
     },
     resetCamera () {
       this.zoomLevel = 4
+      this.resetPositionPicker()
       this.setMapDimensions()
       this.initCamera()
       this.render()
+    },
+    resetPositionPicker () {
+      this.renderPlanarPosition = false
+      this.$nextTick(() => {
+        this.renderPlanarPosition = true
+      })
     },
     getRandomInt (min, max) {
       min = Math.ceil(min)
@@ -285,19 +312,30 @@ export default {
     getCenter () {
       return this.mapSize * this.cols + this.mapSize
     },
+    updateCameraPosition (e) {
+      this.camera.x = Math.floor((this.cols * this.tileResolution * e.detail.x) - this.mapWidth / 2)
+      this.camera.y = Math.floor((this.cols * this.tileResolution * e.detail.y) - this.mapWidth / 2)
+      this.render()
+    },
   },
 }
 </script>
 
 <style scoped>
 .maxWidth {
-  max-height: 100vh;
   width: 55vw;
+  max-width: 65vh;
 }
 
 .controls {
   display: flex;
   justify-content: space-evenly;
+}
+
+.controlInfos {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .sliders {
@@ -311,9 +349,27 @@ export default {
   width: 50%;
 }
 
-.resetButton {
+.positionPicker {
+  background-size: 10px 10px;
+  background-image:
+    linear-gradient(to right, white 1px, transparent 1px),
+    linear-gradient(to bottom, white 1px, transparent 1px);
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.button {
   height: 2rem;
-  margin-top: 1rem;
+}
+
+.button:last-of-type {
+  margin: 1rem 0;
+
 }
 
 .mapCanvas {
