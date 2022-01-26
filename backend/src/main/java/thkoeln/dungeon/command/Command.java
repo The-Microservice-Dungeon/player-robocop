@@ -2,8 +2,6 @@ package thkoeln.dungeon.command;
 
 import com.sun.istack.NotNull;
 import lombok.*;
-import org.modelmapper.Conditions;
-import org.modelmapper.ModelMapper;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.domain.Player;
@@ -65,7 +63,7 @@ public class Command {
             commandBody.setTargetId(getTargetPlanet().getExternalId());
         }
         if (getItemType()!=null){
-            commandBody.setItemType(getItemType());
+            commandBody.setItemName(getItemType());
         }
         if (getItemQuantity()!=null){
             commandBody.setItemQuantity(getItemQuantity());

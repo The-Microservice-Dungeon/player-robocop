@@ -9,20 +9,30 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
+import thkoeln.dungeon.command.Command;
+import thkoeln.dungeon.command.CommandRepository;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 
+import java.util.Optional;
+
 @Service
 public class TradingEventConsumer {
-    private PlayerApplicationService playerApplicationService;
-    private PlayerRepository playerRepository;
-    private BankCreatedEventRepository bankCreatedEventRepository;
+    private final PlayerApplicationService playerApplicationService;
+    private final CommandRepository commandRepository;
+    private final BankCreatedEventRepository bankCreatedEventRepository;
+    private final TradingEventRepository tradingEventRepository;
     private final Logger logger = LoggerFactory.getLogger(TradingEventConsumer.class);
 
     @Autowired
-    public TradingEventConsumer(PlayerApplicationService playerApplicationService, BankCreatedEventRepository bankCreatedEventRepository) {
+    public TradingEventConsumer(PlayerApplicationService playerApplicationService,
+                                BankCreatedEventRepository bankCreatedEventRepository,
+                                CommandRepository commandRepository,
+                                TradingEventRepository tradingEventRepository) {
         this.playerApplicationService = playerApplicationService;
         this.bankCreatedEventRepository = bankCreatedEventRepository;
+        this.commandRepository = commandRepository;
+        this.tradingEventRepository = tradingEventRepository;
     }
 
     @KafkaListener(topics = "bank-created")
@@ -36,8 +46,22 @@ public class TradingEventConsumer {
                 .fillHeader(eventId,timestamp,transactionId);
         logger.info("Saving bankCreatedEvent with money value = "+bankCreatedEvent.getMoney());
         bankCreatedEventRepository.save(bankCreatedEvent);
-        playerApplicationService.changeMoneyOfPlayer(bankCreatedEvent.getPlayerId(), bankCreatedEvent.getMoney());
+        playerApplicationService.setMoneyOfPlayer(bankCreatedEvent.getPlayerId(), bankCreatedEvent.getMoney());
     }
 
-
+    @KafkaListener(topics = "trades")
+    public void consumeTradingEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,
+                                    @Payload String payload){
+        logger.info("Consuming trades event with eventId "+eventId);
+        logger.info("Payload: "+payload);
+        TradingEvent tradingEvent = new TradingEvent()
+                .fillWithPayload(payload)
+                .fillHeader(eventId,timestamp,transactionId);
+        logger.info("Saving trading event with money value = "+tradingEvent.getMoneyChangedBy());
+        tradingEventRepository.save(tradingEvent);
+        Optional<Command> commandOptional = commandRepository.findByTransactionId(tradingEvent.getTransactionId());
+        commandOptional.ifPresent(command -> playerApplicationService.changeMoneyOfPlayer(
+                command.getPlayer().getPlayerId(),
+                tradingEvent.getMoneyChangedBy()));
+    }
 }

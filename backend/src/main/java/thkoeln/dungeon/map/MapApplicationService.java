@@ -23,6 +23,17 @@ public class MapApplicationService {
         this.currentMap = new Map(game);
     }
 
+    // TODO: Call on robot spawned event
+    public void placeFirstRobotAndPlanet (Robot robot, Planet planet) {
+        this.currentMap.addFirstBot(robot);
+        this.currentMap.addFirstPlanet(planet);
+    }
+
+    // TODO: call on new planet found
+    public void addNewPlanet (Planet planet) {
+        this.currentMap.addPlanet(planet);
+    }
+
     public MapJSONWrapper getLayerMap () {
         MapJSONWrapper wrapper = new MapJSONWrapper(currentMap.getContentLength());
 

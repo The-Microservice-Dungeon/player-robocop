@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 @Entity
@@ -97,10 +96,6 @@ public class Map {
         }
     }
 
-    /***
-     * Hinzufügen des Ersten Bots
-     * @param bot
-     */
     public void addFirstBot(Robot bot) {
         this.positions.get(centerIndex).setRobot(bot);
         this.positions.get(centerIndex).setX(anzahlCols / 2);
@@ -108,10 +103,6 @@ public class Map {
         bot.setPosition(this.positions.get(centerIndex));
     }
 
-    /***
-     * Hinzufügen des ersten Planeten
-     * @param planet
-     */
     public void addFirstPlanet(Planet planet) {
         this.positions.get(centerIndex).setPlanet(planet);
         this.positions.get(centerIndex).setX(anzahlCols / 2);
@@ -120,57 +111,11 @@ public class Map {
         exploreNeighbours(planet);
     }
 
-    /***
-     * Robot zur map hinzufügen
-     * TODO: Logik wird noch angepasst
-     * @param robot
-     */
-    public void addRobot(Robot robot, int index){
-
-        this.positions.get(index).setRobot(robot);
-        robot.setPosition(this.positions.get(index));
-
-    }
-
-    /***
-     *  Planet zur map hinzufügen
-     * TODO: Logik wird noch angepasst
-     * @param planet Planet
-     * @param index wo soll eingefügt werden
-     */
-
-    public void addPlanet(Planet planet, int index){
-        this.positions.get(index).setPlanet(planet);
-        planet.setPosition(this.positions.get(index));
-
-    }
-
-    /***
-     * tracks the Movement of a bot to another planet
-     * @param bot Robot
-     * @param planetID Planet ID of the target Planet
-     */
-    public void botMovement(Robot bot,UUID planetID){
-
-        PositionVO tmpPos = bot.getPosition();
-        bot.setPosition(null);
-        tmpPos.setRobot(null);
-
-        for (PositionVO pos: this.getPositions()
-             ) {
-            if(pos.getPlanet().getId() == planetID) {
-                pos.setRobot(bot);
-                bot.setPosition(pos);
-            }
-        }
-
+    public void addPlanet (Planet planet) {
+        // TODO: implement either matching or storing as not connected planet
     }
 
 
-
-    /***
-     * Initialisierung der Map
-     */
     public void initMap() {
         this.positions = new ArrayList<>();
         for (int i = 0; i < this.anzahlCols; i++) {

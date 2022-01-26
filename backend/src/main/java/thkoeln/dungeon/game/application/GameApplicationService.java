@@ -129,6 +129,7 @@ public class GameApplicationService {
      */
     public void gameExternallyCreated(UUID gameId) {
         logger.info("Processing external event that the game has been created");
+
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.isEmpty()){
             logger.info("Synchronizing game state via REST...");

@@ -48,7 +48,7 @@ public class CommandMappingTest {
         assertEquals(robotBuyCommandDto.getCommandType(), CommandType.buying);
         assertEquals(robotBuyCommandDto.getGameId(), game.getGameId());
         assertEquals(robotBuyCommandDto.getPlayerToken(), player.getBearerToken());
-        assertEquals(robotBuyCommandDto.getCommandObject().getItemType(), ItemType.ROBOT);
+        assertEquals(robotBuyCommandDto.getCommandObject().getItemName(), ItemType.ROBOT);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class CommandMappingTest {
         assertEquals(moveCommandDto.getCommandObject().getCommandType(), CommandType.movement);
         assertEquals(moveCommandDto.getCommandObject().getRobotId(), robot.getExternalId());
         assertEquals(moveCommandDto.getCommandObject().getTargetId(), targetPlanet.getExternalId());
-        assertNull(moveCommandDto.getCommandObject().getItemType());
+        assertNull(moveCommandDto.getCommandObject().getItemName());
         assertNull(moveCommandDto.getCommandObject().getItemQuantity());
     }
 
@@ -76,7 +76,7 @@ public class CommandMappingTest {
         assertEquals(miningCommandDto.getCommandType(), CommandType.mining);
         assertEquals(miningCommandDto.getCommandObject().getCommandType(), CommandType.mining);
         assertEquals(miningCommandDto.getCommandObject().getRobotId(), robot.getExternalId());
-        assertNull(miningCommandDto.getCommandObject().getItemType());
+        assertNull(miningCommandDto.getCommandObject().getItemName());
         assertNull(miningCommandDto.getCommandObject().getItemQuantity());
         assertNull(miningCommandDto.getCommandObject().getTargetId());
     }
@@ -91,7 +91,7 @@ public class CommandMappingTest {
         assertEquals(commandDto.getCommandType(), CommandType.regeneration);
         assertEquals(commandDto.getCommandObject().getCommandType(), CommandType.regeneration);
         assertEquals(commandDto.getCommandObject().getRobotId(), robot.getExternalId());
-        assertNull(commandDto.getCommandObject().getItemType());
+        assertNull(commandDto.getCommandObject().getItemName());
         assertNull(commandDto.getCommandObject().getItemQuantity());
         assertNull(commandDto.getCommandObject().getTargetId());
     }
@@ -106,7 +106,7 @@ public class CommandMappingTest {
         assertEquals(commandDto.getCommandType(), CommandType.buying);
         assertEquals(commandDto.getCommandObject().getCommandType(), CommandType.buying);
         assertEquals(commandDto.getCommandObject().getRobotId(), robot.getExternalId());
-        assertEquals(commandDto.getCommandObject().getItemType(), ItemType.LONG_RANGE_BOMBARDMENT);
+        assertEquals(commandDto.getCommandObject().getItemName(), ItemType.LONG_RANGE_BOMBARDMENT);
         assertEquals(commandDto.getCommandObject().getItemQuantity(), command.getItemQuantity());
         assertNull(commandDto.getCommandObject().getTargetId());
     }

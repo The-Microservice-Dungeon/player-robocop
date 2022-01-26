@@ -142,18 +142,6 @@ public class PlayerApplicationService {
         return null;
     }
 
-
-    /**
-     * Once we received the event that a game has been created, this method can be called to register the players
-     * for the game.
-     *
-     * @param game
-     */
-    public void registerPlayersForGame(Game game) {
-        List<Player> players = playerRepository.findAll();
-        for (Player player : players) registerOnePlayerForGame(player, game);
-    }
-
     public Player retrieveCurrentPlayer() {
         return playerRepository.findByNameAndEmail(playerName, playerEmail);
     }
@@ -213,6 +201,19 @@ public class PlayerApplicationService {
         Player player = foundPlayers.get(0);
         player.setPlayerId(playerId);
         playerRepository.save(player);
+    }
+
+    public void setMoneyOfPlayer(UUID playerId, Integer money){
+        Optional<Player> found = playerRepository.findByPlayerId(playerId);
+        if (found.isPresent()){
+            logger.info("Set player money to "+money);
+            Player player = found.get();
+            player.setMoney(money.floatValue());
+            playerRepository.save(player);
+        }
+        else {
+            throw new PlayerRegistryException("Player with playerId "+ playerId+" not found.");
+        }
     }
 
     public void changeMoneyOfPlayer(UUID playerId, Integer moneyChangedByAmount){
