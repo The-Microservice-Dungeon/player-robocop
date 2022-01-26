@@ -140,27 +140,12 @@ public class Map {
         exploreNeighbours(planet);
     }
 
-    public void addPlanet(Planet planet) {
-        // TODO: implement either matching or storing as not connected planet
+    public void addNeighboursOfPlanetToMap(Planet planet) {
+        this.exploreNeighbours(planet);
         Random rand = new Random();
         //Randomness will be replaced another time
         this.getPositions().get(rand.nextInt(this.contentLength)).setPlanet(planet);
     }
-
-    /***
-     * Tracks bot Movement
-     * @param robot
-     * @param targetPlanet
-     */
-    public void trackBotMovement(Robot robot, Planet targetPlanet){
-            PositionVO position = robot.getPosition();
-            robot.setPosition(null);
-            position.setRobot(null);
-
-            targetPlanet.getPosition().setRobot(robot);
-    }
-
-
 
     public void initMap() {
         this.positions = new ArrayList<>();
