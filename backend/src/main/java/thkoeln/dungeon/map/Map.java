@@ -111,6 +111,10 @@ public class Map {
         exploreNeighbours(planet);
     }
 
+    public void addPlanet (Planet planet) {
+        // TODO: implement either matching or storing as not connected planet
+    }
+
 
     public void initMap() {
         this.positions = new ArrayList<>();
