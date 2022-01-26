@@ -49,8 +49,7 @@ public class MapJSONWrapper {
                 }
 
                 if (planet.isSpaceStation()) type = 4;
-
-                System.out.println("Planet Type: " + planet.getResourceType() + " mapped to: " + type);
+                System.out.println("Planet " + planet + " mapped to: " + type);
             }
 
             this.types[index] = type;

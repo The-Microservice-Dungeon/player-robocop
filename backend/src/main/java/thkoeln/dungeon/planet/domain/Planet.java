@@ -2,6 +2,7 @@ package thkoeln.dungeon.planet.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Planet {
     @Id
     private final UUID id = UUID.randomUUID();
@@ -72,6 +74,14 @@ public class Planet {
 
     public Boolean isSpaceStation() {
         return this.planetType == PlanetType.SPACESTATION;
+    }
+
+    public Planet (Boolean isSpaceStation, Boolean isResource) {
+        if (isSpaceStation) {
+            this.setPlanetType(PlanetType.SPACESTATION);
+        } else if (isResource) {
+            this.setResourceType(ResourceType.COAL);
+        }
     }
 
     /**

@@ -134,7 +134,7 @@ public class UIController {
         thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
 
         tmpMap.addFirstBot(new Robot(false));
-        tmpMap.addFirstPlanet(new Planet());
+        tmpMap.addFirstPlanet(new Planet(true, false));
 
         MapJSONWrapper mapper = new MapJSONWrapper(tmpMap.getContentLength());
 
