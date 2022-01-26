@@ -4,9 +4,12 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import thkoeln.dungeon.game.domain.game.*;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
+import thkoeln.dungeon.map.MapService;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
@@ -20,13 +23,16 @@ public class GameApplicationService {
     private final GameServiceRESTAdapter gameServiceRESTAdapter;
     private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
     ModelMapper modelMapper = new ModelMapper();
+    private final MapService mapService;
 
     @Autowired
     public GameApplicationService(GameRepository gameRepository,
                                   GameServiceRESTAdapter gameServiceRESTAdapter,
-                                  PlayerApplicationService playerApplicationService) {
+                                  PlayerApplicationService playerApplicationService,
+                                  MapService mapService) {
         this.gameRepository = gameRepository;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
+        this.mapService = mapService;
     }
 
     public Game retrieveListedGameWithStatus(GameStatus gameStatus) throws GameStatusException, NoGameAvailableException{
@@ -147,8 +153,21 @@ public class GameApplicationService {
             return;
         }
         Game game = foundGames.get(0);
+        game.setCurrentPlayers(getCurrentPlayers());
+        mapService.createMapFromGame(game);
+        mapService.placeDemoStuff(); // TODO: remove once robot moves and we get real planets
         game.start();
         gameRepository.save(game);
+    }
+
+    private Integer getCurrentPlayers () {
+        GameDto[] gameDtos;
+        try {
+            gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
+        } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return gameDtos[0].getParticipatingPlayers().size();
     }
 
     /**

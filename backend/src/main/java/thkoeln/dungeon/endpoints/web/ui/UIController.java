@@ -125,16 +125,15 @@ public class UIController {
 
     @GetMapping("/map")
     Map<String, Object> getMap() {
-        GameDto[] gameDtos;
+        MapJSONWrapper layerMap;
         try {
-            gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
-        } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            layerMap = mapService.getLayerMap();
+        } catch (NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "There is no current game so no map.");
         }
 
-        mapService.setGameDtos(gameDtos);
 
-        return new JSONObject(mapService.getLayerMap())
+        return new JSONObject(layerMap)
                 .toMap();
     }
 

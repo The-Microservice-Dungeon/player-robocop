@@ -34,6 +34,8 @@ public class Game {
     private Integer maxPlayers;
     private Integer maxRounds;
 
+    private Integer currentPlayers;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<UUID> participatingPlayers = new LinkedList<>();
 

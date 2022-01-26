@@ -3,7 +3,7 @@ package thkoeln.dungeon.map;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
-import thkoeln.dungeon.game.domain.game.GameDto;
+import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.robot.domain.Robot;
 
@@ -12,23 +12,22 @@ import thkoeln.dungeon.robot.domain.Robot;
 @Service
 public class MapService {
 
-    private GameDto[] gameDtos = {};
+    private Map currentMap;
 
-    public Map getDemoMap () {
-        Map demoMap = new Map(this.gameDtos[0]);
+    public void placeDemoStuff () {
+        currentMap.addFirstBot(new Robot(true));
+        currentMap.addFirstPlanet(new Planet(true, false));
+    }
 
-        demoMap.addFirstBot(new Robot(true));
-        demoMap.addFirstPlanet(new Planet(true, false));
-
-        return demoMap;
+    public void createMapFromGame (Game game) {
+        this.currentMap = new Map(game);
     }
 
     public MapJSONWrapper getLayerMap () {
-        Map demoMap = this.getDemoMap();
-        MapJSONWrapper wrapper = new MapJSONWrapper(demoMap.getContentLength());
+        MapJSONWrapper wrapper = new MapJSONWrapper(currentMap.getContentLength());
 
         int i = 0;
-        for (PositionVO pvo : demoMap.getPositions()) {
+        for (PositionVO pvo : currentMap.getPositions()) {
             wrapper.addGravity(pvo.getPlanet(), i);
             wrapper.addPlanetType(pvo.getPlanet(), i);
             wrapper.addRobot(pvo.getRobot(), i);

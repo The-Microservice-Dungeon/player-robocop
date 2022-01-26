@@ -1,6 +1,7 @@
 package thkoeln.dungeon.map;
 
 import lombok.Getter;
+import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.robot.domain.Robot;
@@ -40,10 +41,10 @@ public class Map {
 
     /***
      * Creates a Map and calculates the center Position
-     * @param gameDto
+     * @param game
      */
-    public Map(GameDto gameDto) {
-        this.numberPlayers = gameDto.getParticipatingPlayers().size();
+    public Map(Game game) {
+        this.numberPlayers = game.getNumberOfPlayers();
 
         if (numberPlayers < 10) {
             this.mapSize = 15;
@@ -56,8 +57,6 @@ public class Map {
         this.centerIndex = this.mapSize * this.anzahlCols + this.mapSize;
         this.contentLength = (int) Math.pow((mapSize * 2), 2);
         this.initMap();
-        //this.layers = new UUID[contentLength][contentLength];
-
     }
 
 
