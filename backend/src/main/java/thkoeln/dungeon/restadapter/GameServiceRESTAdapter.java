@@ -23,12 +23,12 @@ import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.RESTRequestDeniedException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 
-import static org.springframework.http.HttpMethod.PUT;
-
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.UUID;
+
+import static org.springframework.http.HttpMethod.PUT;
 
 @Component
 public class GameServiceRESTAdapter {
@@ -108,34 +108,31 @@ public class GameServiceRESTAdapter {
      * PUT /games/<gameId>/players/<playerToken>
      * Register a specific player for a specific game via call to GameService endpoint.
      * Caveat: GameService returns somewhat weird error codes (non-standard).
-     * @param gameId of the game
+     *
+     * @param gameId      of the game
      * @param bearerToken of the player
      * @return transactionId if successful
      */
-    public UUID registerPlayerForGame( UUID gameId, UUID bearerToken ) {
+    public UUID registerPlayerForGame(UUID gameId, UUID bearerToken) {
         String urlString = gameServiceUrlString + "/games/" + gameId + "/players/" + bearerToken;
         try {
             TransactionIdResponseDto transactionIdResponseDto =
-                    restTemplate.execute( urlString, PUT, requestCallback(), responseExtractor() );
+                    restTemplate.execute(urlString, PUT, requestCallback(), responseExtractor());
             return transactionIdResponseDto.getTransactionId();
-        }
-        catch ( HttpClientErrorException e ) {
-            if ( e.getStatusCode().equals( HttpStatus.NOT_ACCEPTABLE ) ) {
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_ACCEPTABLE)) {
                 // this is a business logic problem - so let the application service handle this
-                throw new RESTAdapterException( urlString, "Player with bearer token " + bearerToken +
-                        " already registered in game with id " + gameId, e.getStatusCode() );
-            }
-            else if ( e.getStatusCode().equals( HttpStatus.BAD_REQUEST ) ) {
-                throw new RESTAdapterException( urlString, "For player with bearer token " + bearerToken +
+                throw new RESTAdapterException(urlString, "Player with bearer token " + bearerToken +
+                        " already registered in game with id " + gameId, e.getStatusCode());
+            } else if (e.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+                throw new RESTAdapterException(urlString, "For player with bearer token " + bearerToken +
                         " and game with id " + gameId + " the player registration went wrong; original error msg: "
-                        + e.getMessage(), e.getStatusCode() );
+                        + e.getMessage(), e.getStatusCode());
+            } else {
+                throw new RESTAdapterException(urlString, e.getMessage(), e.getStatusCode());
             }
-            else {
-                throw new RESTAdapterException( urlString, e.getMessage(), e.getStatusCode() );
-            }
-        }
-        catch ( RestClientException e ) {
-            throw new RESTAdapterException( urlString, e.getMessage(), null );
+        } catch (RestClientException e) {
+            throw new RESTAdapterException(urlString, e.getMessage(), null);
         }
     }
 
@@ -242,8 +239,7 @@ public class GameServiceRESTAdapter {
         logger.info("Successfully send command of type: " + commandDto.getCommandType());
         if (response != null) {
             return response.getTransactionId();
-        }
-        else {
+        } else {
             throw new UnexpectedRESTException("Response to command is null");
         }
     }
@@ -253,12 +249,12 @@ public class GameServiceRESTAdapter {
      */
     private RequestCallback requestCallback() {
         return clientHttpRequest -> {
-            clientHttpRequest.getHeaders().setContentType( MediaType.APPLICATION_JSON );
+            clientHttpRequest.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         };
     }
 
     private ResponseExtractor<TransactionIdResponseDto> responseExtractor() {
-        return response -> objectMapper.readValue( response.getBody(), TransactionIdResponseDto.class );
+        return response -> objectMapper.readValue(response.getBody(), TransactionIdResponseDto.class);
     }
 
 }
