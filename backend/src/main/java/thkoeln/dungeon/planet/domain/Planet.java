@@ -7,6 +7,7 @@ import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thkoeln.dungeon.map.Map;
+import thkoeln.dungeon.map.PositionVO;
 
 import javax.persistence.*;
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +33,11 @@ public class Planet {
     @Setter
     @Getter
     private int movementDifficulty;
+
+    @Setter
+    @Getter
+    @Embedded
+    private PositionVO position;
 
     @Setter
     @Getter(AccessLevel.NONE)

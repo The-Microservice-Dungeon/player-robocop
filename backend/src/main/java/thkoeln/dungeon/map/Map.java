@@ -66,22 +66,76 @@ public class Map {
     }
 
 
+    public PositionVO findPosition(int x, int y){
+        for (PositionVO position: this.positions
+             ) {
+            if(position.getX() == x && position.getY() == y)
+                return position;
+        }
+        return null;
+    }
+
+
+
+
+    public void exploreNeighbours(Planet planet) {
+
+        PositionVO position = planet.getPosition();
+
+        if (planet.getEastNeighbour() != null) {
+            findPosition(position.getX() - 1, position.getY()).setPlanet(planet.getEastNeighbour());
+            planet.getEastNeighbour().setPosition(findPosition(position.getX() - 1, position.getY()));
+        }
+        if (planet.getWestNeighbour() != null) {
+            findPosition(position.getX() + 1, position.getY()).setPlanet(planet.getWestNeighbour());
+            planet.getWestNeighbour().setPosition(findPosition(position.getX() + 1, position.getY()));
+        }
+
+
+        if (planet.getNorthNeighbour() != null) {
+            findPosition(position.getX(), position.getY() - 1).setPlanet(planet.getNorthNeighbour());
+            planet.getNorthNeighbour().setPosition(findPosition(position.getX(), position.getY() - 1));
+        }
+        if (planet.getSouthNeighbour() != null) {
+            findPosition(position.getX(), position.getY() + 1).setPlanet(planet.getSouthNeighbour());
+            planet.getSouthNeighbour().setPosition(findPosition(position.getX(), position.getY() + 1));
+        } else{
+            System.out.println("No other Planets here");
+        }
+    }
+
     public void addFirstBot(Robot bot){
 
         this.positions.get(centerIndex).setRobot(bot);
+        this.positions.get(centerIndex).setX(anzahlCols/2);
+        this.positions.get(centerIndex).setY(anzahlCols/2);
+        bot.setPosition( this.positions.get(centerIndex));
+
 
     }
 
     public void addFirstPlanet(Planet planet){
 
         this.positions.get(centerIndex).setPlanet(planet);
+        this.positions.get(centerIndex).setX(anzahlCols/2);
+        this.positions.get(centerIndex).setY(anzahlCols/2);
+        planet.setPosition( this.positions.get(centerIndex));
+        exploreNeighbours(planet);
     }
 
 
     public void initMap(){
         this.positions = new ArrayList<>();
-        for (int i = 0; i < this.contentLength ; i++) {
-                this.positions.add(new PositionVO(i));
+        for (int i = 0; i < this.anzahlCols ; i++) {
+
+            for (int j = 0; j < this.anzahlCols; j++) {
+                PositionVO tmpPos = new PositionVO();
+                tmpPos.setX(i);
+                tmpPos.setY(j);
+                this.positions.add(tmpPos);
+            }
+
+
         }
     }
 

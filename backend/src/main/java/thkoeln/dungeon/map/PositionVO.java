@@ -30,6 +30,14 @@ public class PositionVO {
     private int posIndex;
 
 
+    @Getter
+    @Setter
+    private int x;
+
+    @Getter
+    @Setter
+    private int y;
+
 
 
     public PositionVO(int posIndex){
