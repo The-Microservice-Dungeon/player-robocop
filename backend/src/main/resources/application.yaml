@@ -38,6 +38,10 @@ dungeon:
 logging:
   file:
     path: ./backend/logs
+  logback:
+    rollingpolicy:
+      max-file-size: 3MB
+      total-size-cap: 10MB
 
 management:
   endpoint:
