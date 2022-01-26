@@ -131,21 +131,3 @@ public class Map {
         }
     }
 }
-
-class layers {
-    int[][] layers;
-
-    public layers(int size) {
-        this.layers = new int[size][size];
-    }
-
-    public int[][] getLayers() {
-        return layers;
-    }
-
-    public void setLayers(int[][] layers) {
-        this.layers = layers;
-    }
-}
-
-
