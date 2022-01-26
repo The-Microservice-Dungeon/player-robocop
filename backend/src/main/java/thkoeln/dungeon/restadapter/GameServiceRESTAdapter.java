@@ -204,7 +204,7 @@ public class GameServiceRESTAdapter {
         } catch (RestClientException | UnexpectedRESTException e) {
             throw new RESTConnectionFailureException("/players", e.getMessage());
         }
-        logger.info("Got Information for player" + returnedPlayerRegistryDto.getName() + "! Bearer token is: " + returnedPlayerRegistryDto.getBearerToken());
+        logger.info("Got Information for player" + returnedPlayerRegistryDto.getName() + ": " + returnedPlayerRegistryDto);
         return returnedPlayerRegistryDto;
     }
 

@@ -1,73 +1,87 @@
 <template>
   <div class="infoCard">
     <h3>Robot Info</h3>
-    <div
-      v-if="robots.length > 0"
-      class="robots"
-    >
+    <bounce-loader
+      v-if="loading"
+      :color="'red'"
+    />
+    <template v-else-if="noData">
+      <h4>No Robot Data</h4>
+    </template>
+    <template v-else>
       <div
-        v-for="(robot, index) in robots"
-        :key="index"
-        class="robot"
+        v-if="robots.length > 0"
+        class="robots"
       >
-        <div>
-          <h4>General Info Robot {{ index + 1 }}</h4>
-          <span>
-            Health: {{ robot.health }}
-          </span>
-          <span>
-            Energy: {{ robot.energy }}
-          </span>
-        </div>
-        <div>
-          <h4>Inventory</h4>
-          <span>
-            Coal: {{ robot.inventory.coal }} Iron: {{ robot.inventory.iron }}
-          </span>
-          <br>
-          <span>
-            Ruby: {{ robot.inventory.ruby }} Platin: {{ robot.inventory.platin }}
-          </span>
-        </div>
-        <div>
-          <h4>Stats</h4>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Level</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(stat, key) in robot.stats"
-                :key="key"
-              >
-                <td>
-                  {{ key }}
-                </td>
-                <td>
-                  {{ stat.level }}
-                </td>
-                <td>
-                  {{ stat.value }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div
+          v-for="(robot, index) in robots"
+          :key="index"
+          class="robot"
+        >
+          <div>
+            <h4>General Info Robot {{ index + 1 }}</h4>
+            <span>
+              Health: {{ robot.health }}
+            </span>
+            <span>
+              Energy: {{ robot.energy }}
+            </span>
+          </div>
+          <div>
+            <h4>Inventory</h4>
+            <span>
+              Coal: {{ robot.inventory.coal }} Iron: {{ robot.inventory.iron }}
+            </span>
+            <br>
+            <span>
+              Ruby: {{ robot.inventory.ruby }} Platin: {{ robot.inventory.platin }}
+            </span>
+          </div>
+          <div>
+            <h4>Stats</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Level</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(stat, key) in robot.stats"
+                  :key="key"
+                >
+                  <td>
+                    {{ key }}
+                  </td>
+                  <td>
+                    {{ stat.level }}
+                  </td>
+                  <td>
+                    {{ stat.value }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-    <h3 v-else>
-      No Robots
-    </h3>
+      <h3 v-else>
+        No Robots
+      </h3>
+    </template>
   </div>
 </template>
 
 <script>
+import BounceLoader from 'vue-spinner/src/BounceLoader.vue'
+
 export default {
   name: 'RobotInfo',
+  components: {
+    BounceLoader,
+  },
   data () {
     return {
       robots: [
@@ -152,7 +166,12 @@ export default {
             },
         },
       ],
+      loading: true,
+      noData: false,
     }
+  },
+  mounted () {
+    this.loading = false
   },
 }
 </script>

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import thkoeln.dungeon.game.domain.game.Game;
+import thkoeln.dungeon.robot.domain.Robot;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,6 +25,12 @@ public class Player {
     private String name;
     private String email;
     private UUID bearerToken;
+
+    private Float money = 200F;
+
+    // TODO: Fill with data when new Robot gets spawned
+    @OneToMany
+    private List<Robot> robots = new ArrayList<>();
 
     /**
      * Choose a random and unique name and email for the player
@@ -53,12 +60,16 @@ public class Player {
     private GameParticipation findParticipationFor(Game game) {
         Optional<GameParticipation> found = gameParticipations.stream()
                 .filter(gp -> gp.getGame().equals(game)).findFirst();
-        return found.isPresent() ? found.get() : null;
+        return found.orElse(null);
     }
 
 
     public void playRound() {
         // todo
+    }
+
+    public Integer getRobotCount () {
+        return this.robots.size();
     }
 
     @Override

@@ -8,6 +8,7 @@ import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.game.domain.game.GameRepository;
 import thkoeln.dungeon.game.domain.round.Round;
+import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
@@ -16,6 +17,7 @@ import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,25 +46,26 @@ public class UIController {
     }
 
     @GetMapping("/game")
-    Map<String, Object> currentGameInfo() {
-        Game game = gameRepo.findAll().get(0);
-        if (game == null) {
+    Map<String, Object> currentGameInfo(HttpServletResponse response) {
+        List<Game> gameList = gameRepo.findAll();
+        if (gameList.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return new JSONObject().toMap();
         }
+
+        Game game = gameList.get(0);
+
         Round round = game.getRound();
 
         JSONObject roundJson = new JSONObject()
-                // .put("roundNumber", round.getRoundNumber())
-                .put("roundNumber", 1)
+                .put("roundNumber", round.getRoundNumber())
                 .put("roundTime", "SomeTime") // TODO: Return Actual Data
-                //.put("roundStatus", round.getRoundStatus());
-                .put("roundStatus", "Created");
+                .put("roundStatus", round.getRoundStatus());
 
         JSONObject gameJson = new JSONObject()
-                //.put("status", game.getGameStatus())
-                .put("status", "Created")
-                .put("playerCount", 1) // TODO: Return Actual Data
-                .put("maxRounds", 420) // TODO: Return Actual Data
+                .put("status", game.getGameStatus())
+                .put("playerCount", game.getNumberOfPlayers())
+                .put("maxRounds", game.getMaxRounds())
                 .put("currentRound", roundJson);
 
         return new JSONObject()
@@ -77,8 +80,8 @@ public class UIController {
         JSONObject playerJson = new JSONObject()
                 .put("name", player.getName())
                 .put("email", player.getEmail())
-                .put("money", 0) // TODO: Return Actual Data
-                .put("robots", 0); // TODO: Return Actual Data
+                .put("money", player.getMoney())
+                .put("robots", player.getRobotCount());
 
         return new JSONObject()
                 .put("player", playerJson)
@@ -119,7 +122,7 @@ public class UIController {
         thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
 
         tmpMap.addFirstBot(new Robot(false));
-        //   tmpMap.addFirstPlanet(new Planet());
+        tmpMap.addFirstPlanet(new Planet());
 
         return new JSONObject(tmpMap).toMap();
         // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
