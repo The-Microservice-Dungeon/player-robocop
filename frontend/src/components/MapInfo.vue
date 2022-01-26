@@ -38,7 +38,7 @@
             step="0.1"
             type="range"
             min="1"
-            max="4"
+            max="10"
             @input="render"
           >
         </label>
@@ -93,7 +93,7 @@ export default {
         [], // robots
       ],
       camera: {},
-      zoomLevel: 1.5,
+      zoomLevel: 4,
     }
   },
   computed: {
@@ -197,9 +197,10 @@ export default {
       this.ctx.canvas.height = this.mapHeight
     },
     initCamera () {
+      const xyOffset = this.calculateMaxScroll() / 2 + this.tileResolution / 2
       this.camera = {
-        x: 720,
-        y: 720,
+        x: xyOffset,
+        y: xyOffset,
         width: this.mapWidth,
         height: this.mapHeight,
       }
