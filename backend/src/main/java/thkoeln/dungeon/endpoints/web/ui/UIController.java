@@ -11,6 +11,7 @@ import thkoeln.dungeon.game.domain.game.GameDto;
 import thkoeln.dungeon.game.domain.game.GameRepository;
 import thkoeln.dungeon.game.domain.round.Round;
 import thkoeln.dungeon.map.MapJSONWrapper;
+import thkoeln.dungeon.map.MapService;
 import thkoeln.dungeon.map.PositionVO;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.domain.Player;
@@ -35,6 +36,7 @@ public class UIController {
     private final PlayerRepository playerRepo;
     private final RobotRepository roboRepo;
     private final GameServiceRESTAdapter gameServiceRESTAdapter;
+    private final MapService mapService;
 
     /**
      * Constructor
@@ -42,11 +44,12 @@ public class UIController {
      * @param gameRepo
      */
     @Autowired
-    UIController(GameServiceRESTAdapter gameServiceRESTAdapter, GameRepository gameRepo, PlayerRepository playerRepo, RobotRepository roboRepo) {
+    UIController(GameServiceRESTAdapter gameServiceRESTAdapter, GameRepository gameRepo, PlayerRepository playerRepo, RobotRepository roboRepo, MapService mapService) {
         this.gameRepo = gameRepo;
         this.playerRepo = playerRepo;
         this.roboRepo = roboRepo;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
+        this.mapService = mapService;
     }
 
     @GetMapping("/game")
@@ -129,30 +132,10 @@ public class UIController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        mapService.setGameDtos(gameDtos);
 
-        //  System.out.println(gameDtos[0].getParticipatingPlayers());
-        thkoeln.dungeon.map.Map tmpMap = new thkoeln.dungeon.map.Map(gameDtos[0]);
-
-        tmpMap.addFirstBot(new Robot(false));
-        tmpMap.addFirstPlanet(new Planet(true, false));
-
-        MapJSONWrapper mapper = new MapJSONWrapper(tmpMap.getContentLength());
-
-        int i = 0;
-        for (PositionVO pvo : tmpMap.getPositions()) {
-            mapper.addGravity(pvo.getPlanet(), i);
-            mapper.addPlanetType(pvo.getPlanet(), i);
-            mapper.addRobot(pvo.getRobot(), i);
-            i++;
-        }
-
-
-        return new JSONObject(mapper).toMap();
-        // GameServiceRESTAdapter restAdapter = new GameServiceRESTAdapter(new RestTemplate());
-        // GameDto tmpDTO = restAdapter.fetchCurrentGameState()[0];
-        // thkoeln.dungeon.map.Map map = new thkoeln.dungeon.map.Map(tmpDTO);
-        // JSONObject mapJson = new JSONObject().put("numberPlayers", tmpMap.getNumberPlayers());
-        // return new JSONObject().put("map", mapJson).toMap();
+        return new JSONObject(mapService.getLayerMap())
+                .toMap();
     }
 
 }
