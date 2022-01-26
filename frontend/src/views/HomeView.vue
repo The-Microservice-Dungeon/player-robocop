@@ -68,6 +68,10 @@ export default {
   margin: 0 auto;
 }
 
+.infoLeft {
+  min-width: 50%;
+}
+
 .infoRight {
   min-width: 25vw;
 }

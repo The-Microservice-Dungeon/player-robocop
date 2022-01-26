@@ -384,4 +384,11 @@ export default {
   max-height: 100vh;
   width: 95%;
 }
+
+planar-range-thumb {
+  background: url('~@/assets/logo.webp');
+  background-size: contain;
+  border: 1px solid red;
+  background-color: red;
+}
 </style>

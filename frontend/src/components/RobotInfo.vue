@@ -180,6 +180,7 @@ export default {
 .robots {
   overflow-y: auto;
   max-height: 100%;
+  padding: 8px;
 }
 
 .robot {
