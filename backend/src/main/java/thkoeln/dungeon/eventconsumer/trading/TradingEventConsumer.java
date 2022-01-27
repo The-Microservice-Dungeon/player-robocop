@@ -57,14 +57,9 @@ public class TradingEventConsumer {
                 .fillWithPayload(payload)
                 .fillHeader(eventId,timestamp,transactionId);
 
-        if (playerApplicationService.getCurrentPlayer().getPlayerId() == bankCreatedEvent.getPlayerId()) {
-            logger.info("Saving bankCreatedEvent with money value = " + bankCreatedEvent.getMoney());
-            bankCreatedEventRepository.save(bankCreatedEvent);
-
-            playerApplicationService.setMoneyOfPlayer(bankCreatedEvent.getPlayerId(), bankCreatedEvent.getMoney());
-        } else {
-            logger.warn("This bank created Event is not for our player!");
-        }
+        logger.info("Saving bankCreatedEvent with money value = " + bankCreatedEvent.getMoney());
+        bankCreatedEventRepository.save(bankCreatedEvent);
+        playerApplicationService.setMoneyOfPlayer(bankCreatedEvent.getPlayerId(), bankCreatedEvent.getMoney());
     }
 
     @KafkaListener(topics = "trades")
