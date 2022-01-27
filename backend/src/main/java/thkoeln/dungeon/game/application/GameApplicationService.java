@@ -62,7 +62,9 @@ public class GameApplicationService {
     }
 
     public Game retrieveCurrentGame() {
-        return gameRepository.findAllByGameStatusBetween(GameStatus.CREATED, GameStatus.ENDED).get(0);
+        List<Game> games = gameRepository.findAllByGameStatusBetween(GameStatus.CREATED, GameStatus.ENDED);
+        if (games.isEmpty()) return null;
+        return games.get(0);
     }
 
     /**

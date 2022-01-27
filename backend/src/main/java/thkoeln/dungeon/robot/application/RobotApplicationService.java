@@ -7,6 +7,7 @@ import thkoeln.dungeon.map.PositionVO;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,6 +30,10 @@ public class RobotApplicationService {
 
     public Robot getById (UUID id) {
         return this.robotRepository.findById(id).get();
+    }
+
+    public List<Robot> getAllRobots () {
+        return this.robotRepository.findAll();
     }
 
     /***

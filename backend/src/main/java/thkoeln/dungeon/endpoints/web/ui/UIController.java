@@ -10,11 +10,13 @@ import thkoeln.dungeon.game.application.GameApplicationService;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameRepository;
 import thkoeln.dungeon.game.domain.round.Round;
-import thkoeln.dungeon.map.MapJSONWrapper;
 import thkoeln.dungeon.map.MapApplicationService;
+import thkoeln.dungeon.map.MapJSONWrapper;
+import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.player.domain.Player;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
+import thkoeln.dungeon.robot.application.RobotApplicationService;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
@@ -28,25 +30,24 @@ import java.util.Map;
  */
 @RestController
 public class UIController {
-    private final PlayerRepository playerRepo;
-    private final RobotRepository roboRepo;
-    private final GameServiceRESTAdapter gameServiceRESTAdapter;
     private final MapApplicationService mapService;
     private final GameApplicationService gameApplicationService;
+    private final PlayerApplicationService playerApplicationService;
+    private final RobotApplicationService robotApplicationService;
 
     /**
      * Constructor
      *
-     * @param gameRepo
      * @param gameApplicationService
+     * @param playerApplicationService
+     * @param robotApplicationService
      */
     @Autowired
-    UIController(GameServiceRESTAdapter gameServiceRESTAdapter, GameRepository gameRepo, PlayerRepository playerRepo, RobotRepository roboRepo, MapApplicationService mapService, GameApplicationService gameApplicationService) {
+    UIController(MapApplicationService mapService, GameApplicationService gameApplicationService, PlayerApplicationService playerApplicationService, RobotApplicationService robotApplicationService) {
         this.gameApplicationService = gameApplicationService;
-        this.playerRepo = playerRepo;
-        this.roboRepo = roboRepo;
-        this.gameServiceRESTAdapter = gameServiceRESTAdapter;
         this.mapService = mapService;
+        this.playerApplicationService = playerApplicationService;
+        this.robotApplicationService = robotApplicationService;
     }
 
     @GetMapping("/game")
@@ -76,13 +77,11 @@ public class UIController {
 
     @GetMapping("/player")
     Map<String, Object> playerInfo() {
-        List<Player> playerList = playerRepo.findAll();
+        Player player = this.playerApplicationService.getCurrentPlayer();
 
-        if (playerList.isEmpty()) {
+        if (player == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-        Player player = playerList.get(0);
 
         JSONObject playerJson = new JSONObject()
                 .put("name", player.getName())
@@ -97,7 +96,7 @@ public class UIController {
 
     @GetMapping("/robots")
     Map<String, Object> allRobotInfo() {
-        List<Robot> robots = roboRepo.findAll();
+        List<Robot> robots = this.robotApplicationService.getAllRobots();
 
         if (robots.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
