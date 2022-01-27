@@ -18,6 +18,7 @@ import thkoeln.dungeon.restadapter.exceptions.RESTAdapterException;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.RESTRequestDeniedException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
+import thkoeln.dungeon.robot.domain.Robot;
 
 import java.util.List;
 import java.util.Optional;
@@ -227,6 +228,24 @@ public class PlayerApplicationService {
         else {
             throw new PlayerRegistryException("Player with playerId "+ playerId+" not found.");
         }
+    }
+
+    public Player getCurrentPlayer () {
+        return this.playerRepository.findAll().get(0);
+    }
+
+    // TODO: call on Robot Spawned Event
+    public void addRobotToPlayer (Robot robot) {
+        Player player = getCurrentPlayer();
+        player.addRobot(robot);
+        this.playerRepository.save(player);
+    }
+
+    // TODO: call on Robot Destroyed Event
+    public void removeRobotFromPlayer (Robot robot) {
+        Player player = getCurrentPlayer();
+        player.removeRobot(robot);
+        this.playerRepository.save(player);
     }
 
     public void receiveCommandAnswer(UUID transactionId, String payload) {

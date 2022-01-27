@@ -59,6 +59,14 @@ public class Player {
         // todo
     }
 
+    public void addRobot (Robot robot) {
+        this.robots.add(robot);
+    }
+
+    public void removeRobot (Robot robot) {
+        this.robots.remove(robot);
+    }
+
     public Integer getRobotCount () {
         return this.robots.size();
     }
