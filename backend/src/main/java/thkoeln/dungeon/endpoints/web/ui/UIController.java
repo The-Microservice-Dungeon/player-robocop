@@ -122,7 +122,7 @@ public class UIController {
         try {
             layerMap = mapService.getLayerMap();
         } catch (NullPointerException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "There is no current game so no map.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no current game so no map.");
         }
 
         return new JSONObject(layerMap)
