@@ -74,8 +74,9 @@ export default {
           (frame) => {
             if (frame.command === 'CONNECTED') {
               this.connected = true
-              this.stompClient.subscribe('game_events', tick => this.handleGameEvent(tick))
-              this.stompClient.subscribe('player_events', tick => this.handlePlayerEvent(tick))
+              this.stompClient.subscribe('game_events', tick => this.handleEvent(tick))
+              this.stompClient.subscribe('player_events', tick => this.handleEvent(tick))
+              this.stompClient.subscribe('map_events', tick => this.handleEvent(tick))
             }
           },
           error => {
@@ -84,17 +85,10 @@ export default {
           }
       )
     },
-    handleGameEvent (tick) {
-      console.log('Game Event Recieved')
+    handleEvent (tick) {
       let info = tick.body
+      console.log('Event Recieved: ' + info)
       EventBus.$emit(info)
-      console.log(info)
-    },
-    handlePlayerEvent (tick) {
-      console.log('Player Event Recieved')
-      let info = tick.body
-      EventBus.$emit(info)
-      console.log(info)
     },
   },
 }

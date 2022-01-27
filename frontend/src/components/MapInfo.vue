@@ -94,6 +94,7 @@
 import mapTiles from '@/assets/mapTiles.png'
 import { apiGet } from '@/utils'
 import BounceLoader from 'vue-spinner/src/BounceLoader.vue'
+import { EventBus } from '@/event-bus'
 
 // eslint-disable-next-line no-unused-vars
 const planarSlider = require('planar-range')
@@ -138,6 +139,18 @@ export default {
   },
   mounted () {
     this.fetchMapData()
+
+    EventBus.$on('new_map_created', () => {
+      this.fetchMapData()
+    })
+
+    EventBus.$on('planets_changed', () => {
+      this.fetchMapData()
+    })
+
+    EventBus.$on('robot_moved', () => {
+      this.fetchMapData()
+    })
   },
   methods: {
     initializeMapOnLoad () {
