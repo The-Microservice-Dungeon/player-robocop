@@ -4,6 +4,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.eventconsumer.robot.NeighbourData;
 import thkoeln.dungeon.game.domain.game.Game;
@@ -21,6 +22,8 @@ public class MapApplicationService {
     private final PlanetApplicationService planetApplicationService;
     private final RobotApplicationService robotApplicationService;
     private final MapRepository mapRepository;
+    private final SimpMessagingTemplate websocket;
+
 
     private final Logger logger = LoggerFactory.getLogger(MapApplicationService.class);
 
@@ -28,10 +31,11 @@ public class MapApplicationService {
     private Map currentMap;
 
     @Autowired
-    public MapApplicationService(PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService, MapRepository mapRepository) {
+    public MapApplicationService(PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService, MapRepository mapRepository, SimpMessagingTemplate websocket) {
         this.planetApplicationService = planetApplicationService;
         this.robotApplicationService = robotApplicationService;
         this.mapRepository = mapRepository;
+        this.websocket = websocket;
     }
 
     public void createMapFromGame (Game game) {
@@ -100,7 +104,6 @@ public class MapApplicationService {
 
         if (planet.hasNeighbours()) {
             exploreNeighbours(planet);
-            mapRepository.save(currentMap);
         }
     }
 
@@ -112,6 +115,7 @@ public class MapApplicationService {
         robotApplicationService.setRobotPosition(robot, newPlanetPosition);
         this.currentMap.setRobotOnPosition(newPlanetPosition, robot);
         mapRepository.save(currentMap);
+        this.websocket.convertAndSend("map_events", "robot_moved");
     }
 
     public MapJSONWrapper getLayerMap () {
@@ -147,12 +151,15 @@ public class MapApplicationService {
 
         logger.info("Exploring neighbours around planet " + planet);
 
+        boolean neighbourFound = false;
+
         if (planet.getEastNeighbour() != null) {
             PositionVO pos = this.currentMap.findPosition(position.getX() - 1, position.getY());
             PositionVO neighbourPosition = new PositionVO(planet.getEastNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());
             this.currentMap.replacePosition(pos, neighbourPosition);
             Planet updatedNeighbour = planetApplicationService.setPlanetPosition(planet.getEastNeighbour(), neighbourPosition);
             logger.info("Found East Neighbour (" + updatedNeighbour + ")!");
+            neighbourFound = true;
         }
         if (planet.getWestNeighbour() != null) {
             PositionVO pos = this.currentMap.findPosition(position.getX() + 1, position.getY());
@@ -160,6 +167,7 @@ public class MapApplicationService {
             this.currentMap.replacePosition(pos, neighbourPosition);
             Planet updatedNeighbour = planetApplicationService.setPlanetPosition(planet.getWestNeighbour(), neighbourPosition);
             logger.info("Found West Neighbour (" + updatedNeighbour+ ")!");
+            neighbourFound = true;
         }
         if (planet.getNorthNeighbour() != null) {
             PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() - 1);
@@ -167,6 +175,7 @@ public class MapApplicationService {
             this.currentMap.replacePosition(pos, neighbourPosition);
             Planet updatedNeighbour = planetApplicationService.setPlanetPosition(planet.getNorthNeighbour(), neighbourPosition);
             logger.info("Found North Neighbour (" + updatedNeighbour+ ")!");
+            neighbourFound = true;
         }
         if (planet.getSouthNeighbour() != null) {
             PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() + 1);
@@ -174,9 +183,13 @@ public class MapApplicationService {
             this.currentMap.replacePosition(pos, neighbourPosition);
             Planet updatedNeighbour = planetApplicationService.setPlanetPosition(planet.getSouthNeighbour(), neighbourPosition);
             logger.info("Found South Neighbour (" + updatedNeighbour + ")!");
+            neighbourFound = true;
         }
 
         this.mapRepository.save(this.currentMap);
+        if (neighbourFound) {
+            this.websocket.convertAndSend("map_events", "planets_changed");
+        }
     }
 
     public Integer getMapSize () {
