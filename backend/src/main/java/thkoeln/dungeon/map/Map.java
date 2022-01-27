@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thkoeln.dungeon.game.domain.game.Game;
+import thkoeln.dungeon.game.domain.game.GameException;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.robot.domain.Robot;
 
@@ -56,8 +57,7 @@ public class Map {
         this.numberPlayers = game.getNumberOfPlayers();
 
         if (numberPlayers == 0) {
-            logger.warn("Can't create Map for Game with 0 players!");
-            return;
+            throw new GameException("Can't create Map for Game with 0 players!");
         }
 
         if (numberPlayers < 10) {

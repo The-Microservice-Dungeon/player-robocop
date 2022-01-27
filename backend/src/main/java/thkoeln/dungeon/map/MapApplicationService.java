@@ -8,6 +8,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.eventconsumer.robot.NeighbourData;
 import thkoeln.dungeon.game.domain.game.Game;
+import thkoeln.dungeon.game.domain.game.GameException;
 import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.robot.application.RobotApplicationService;
@@ -43,7 +44,12 @@ public class MapApplicationService {
             logger.warn("Map already exists! Don't create another");
             return;
         }
-        this.currentMap = new Map(game);
+        try {
+            this.currentMap = new Map(game);
+        } catch (GameException e) {
+            logger.error("Failed to create map: " + e.getMessage());
+            return;
+        }
         mapRepository.save(currentMap);
         this.websocket.convertAndSend("map_events", "new_map_created");
     }
