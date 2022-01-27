@@ -147,28 +147,33 @@ public class MapApplicationService {
 
         logger.info("Exploring neighbours around planet " + planet);
 
-
         if (planet.getEastNeighbour() != null) {
             PositionVO pos = this.currentMap.findPosition(position.getX() - 1, position.getY());
-            this.currentMap.replacePosition(pos, new PositionVO(planet.getEastNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
-            planetApplicationService.setPlanetPosition(planet.getEastNeighbour(), this.currentMap.findPosition(position.getX() - 1, position.getY()));
+            PositionVO neighbourPosition = new PositionVO(planet.getEastNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());
+            this.currentMap.replacePosition(pos, neighbourPosition);
+            Planet updatedNeighbour = planetApplicationService.setPlanetPosition(planet.getEastNeighbour(), neighbourPosition);
+            logger.info("Found East Neighbour (" + updatedNeighbour + ")!");
         }
         if (planet.getWestNeighbour() != null) {
             PositionVO pos = this.currentMap.findPosition(position.getX() + 1, position.getY());
-            this.currentMap.replacePosition(pos, new PositionVO(planet.getWestNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
-            planetApplicationService.setPlanetPosition(planet.getWestNeighbour(), this.currentMap.findPosition(position.getX() + 1, position.getY()));
+            PositionVO neighbourPosition = new PositionVO(planet.getWestNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());
+            this.currentMap.replacePosition(pos, neighbourPosition);
+            Planet updatedNeighbour = planetApplicationService.setPlanetPosition(planet.getWestNeighbour(), neighbourPosition);
+            logger.info("Found West Neighbour (" + updatedNeighbour+ ")!");
         }
         if (planet.getNorthNeighbour() != null) {
             PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() - 1);
-            this.currentMap.replacePosition(pos, new PositionVO(planet.getNorthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
-            planetApplicationService.setPlanetPosition(planet.getNorthNeighbour(), this.currentMap.findPosition(position.getX(), position.getY() - 1));
+            PositionVO neighbourPosition = new PositionVO(planet.getNorthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());
+            this.currentMap.replacePosition(pos, neighbourPosition);
+            Planet updatedNeighbour = planetApplicationService.setPlanetPosition(planet.getNorthNeighbour(), neighbourPosition);
+            logger.info("Found North Neighbour (" + updatedNeighbour+ ")!");
         }
         if (planet.getSouthNeighbour() != null) {
             PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() + 1);
-            this.currentMap.replacePosition(pos, new PositionVO(planet.getSouthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
-            planetApplicationService.setPlanetPosition(planet.getSouthNeighbour(), this.currentMap.findPosition(position.getX(), position.getY() + 1));
-        } else {
-            logger.info("No other Planets here");
+            PositionVO neighbourPosition = new PositionVO(planet.getSouthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());
+            this.currentMap.replacePosition(pos, neighbourPosition);
+            Planet updatedNeighbour = planetApplicationService.setPlanetPosition(planet.getSouthNeighbour(), neighbourPosition);
+            logger.info("Found South Neighbour (" + updatedNeighbour + ")!");
         }
 
         this.mapRepository.save(this.currentMap);

@@ -158,6 +158,6 @@ public class Planet {
 
     @Override
     public String toString() {
-        return "Position: " + position + " (" + getPlanetId() + ") Spacestation?: " + isSpaceStation() + " Type: " + getResourceType();
+        return "Position: " + position + " (" + getPlanetId() + ") Gravity: " + getMovementDifficulty() + " Type: " + (isSpaceStation() ? "Spacestation" : getResourceType());
     }
 }
