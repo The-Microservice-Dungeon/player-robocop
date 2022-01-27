@@ -51,6 +51,24 @@ public class MapApplicationService {
         this.currentMap.addFirstPlanet(planet);
     }
 
+    public void placeCenterPlanet (Planet planet) {
+        if (this.currentMap == null) {
+            logger.error("Cant Place Robots / Planets. No Map exists.");
+            // TODO: dont let this case happen. Maybe build map on sync or on game data retrieval
+            return;
+        }
+        this.currentMap.addFirstPlanet(planet);
+    }
+
+    public void placeCenterRobot (Robot robot) {
+        if (this.currentMap == null) {
+            logger.error("Cant Place Robots / Planets. No Map exists.");
+            // TODO: dont let this case happen. Maybe build map on sync or on game data retrieval
+            return;
+        }
+        this.currentMap.addFirstBot(robot);
+    }
+
     // TODO: Call on robot spawned event
     public void handleNewRobotSpawn (Robot robot, Planet planet) {
         if (this.planetApplicationService.isFirstPlanet()) this.placeFirstRobotAndPlanet(robot, planet);
