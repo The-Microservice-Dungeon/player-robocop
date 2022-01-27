@@ -77,6 +77,6 @@ public class Player {
     }
 
     public void addMoney(Integer moneyChangedByAmount) {
-        this.money+=moneyChangedByAmount;
+        if (moneyChangedByAmount != null) this.money += moneyChangedByAmount;
     }
 }

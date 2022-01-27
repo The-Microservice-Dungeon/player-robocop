@@ -64,7 +64,7 @@ public class TradingEvent extends AbstractEvent {
 
     @JsonProperty("data")
     public void setData(List<TradingData> dataList) {
-        this.data = dataList.get(0);
+        if (dataList != null) this.data = dataList.get(0);
     }
 
 }
