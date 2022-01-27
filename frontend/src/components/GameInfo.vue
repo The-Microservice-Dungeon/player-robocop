@@ -67,6 +67,7 @@ export default {
   methods: {
     fetchGameData () {
       this.loading = true
+      this.noData = false
       apiGet('/game')
         .then((response) => {
           if (response.status !== 200) throw new Error('Unexpected Response ' + response.status)
