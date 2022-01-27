@@ -36,7 +36,7 @@ public class RobotApplicationService {
      * @param bot
      * @param position
      */
-    public void setRobotPosition(@NotNull Robot bot, PositionVO position){
+    public void setRobotPosition(Robot bot, PositionVO position){
             bot.setPosition(position);
             robotRepository.save(bot);
     }

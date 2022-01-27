@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.eventconsumer.robot.NeighboursEvent;
 import thkoeln.dungeon.eventconsumer.robot.PlanetMovementDto;
+import thkoeln.dungeon.map.PositionVO;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.planet.domain.PlanetException;
 import thkoeln.dungeon.planet.domain.PlanetRepository;
@@ -34,6 +35,11 @@ public class PlanetApplicationService {
         targetPlanet.setMovementDifficulty(planetInformation.getMovementDifficulty());
         targetPlanet.setResourceType(planetInformation.getResourceType());
         this.planetRepository.save(targetPlanet);
+    }
+
+    public void setPlanetPosition (Planet planet, PositionVO positionVO) {
+        planet.setPosition(positionVO);
+        this.planetRepository.save(planet);
     }
 
 

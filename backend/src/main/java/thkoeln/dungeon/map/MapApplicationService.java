@@ -49,6 +49,10 @@ public class MapApplicationService {
         }
         this.currentMap.addFirstBot(robot);
         this.currentMap.addFirstPlanet(planet);
+        PositionVO robotPosition = this.currentMap.findPosition(robot);
+        PositionVO planetPosition = this.currentMap.findPosition(planet);
+        this.robotApplicationService.setRobotPosition(robot, robotPosition);
+        this.planetApplicationService.setPlanetPosition(planet, planetPosition);
     }
 
     // TODO: Call on robot spawned event
