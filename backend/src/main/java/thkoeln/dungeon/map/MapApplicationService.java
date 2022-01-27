@@ -84,7 +84,7 @@ public class MapApplicationService {
         PositionVO centerPos = this.currentMap.getCenterPosition();
         PositionVO centerPosWithPlanet = new PositionVO(planet.getPlanetId(), centerPos.getReferencingRobotId(), centerPos.getPosIndex(), centerPos.getX(), centerPos.getY());
         this.currentMap.replacePosition(centerPos, centerPosWithPlanet);
-        planet.setPosition(centerPosWithPlanet);
+        planetApplicationService.setPlanetPosition(planet, centerPosWithPlanet);
         exploreNeighbours(planet);
     }
 
