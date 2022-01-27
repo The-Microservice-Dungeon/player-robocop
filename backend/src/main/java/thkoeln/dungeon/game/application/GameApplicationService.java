@@ -93,6 +93,7 @@ public class GameApplicationService {
             if (foundDtoOptional.isPresent()) {
                 modelMapper.map(foundDtoOptional.get(), game);
                 gameRepository.save(game);
+                mapService.createMapFromGame(game);
                 logger.info("Updated game " + game);
             } else {
                 game.makeOrphan();

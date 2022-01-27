@@ -1,9 +1,12 @@
 package thkoeln.dungeon.map;
 
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.eventconsumer.robot.NeighboursEvent;
+import thkoeln.dungeon.game.application.GameApplicationService;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
@@ -17,6 +20,9 @@ import java.util.UUID;
 public class MapApplicationService {
     private final PlanetApplicationService planetApplicationService;
     private final RobotApplicationService robotApplicationService;
+
+    private final Logger logger = LoggerFactory.getLogger(MapApplicationService.class);
+
 
     private Map currentMap;
 
@@ -36,6 +42,11 @@ public class MapApplicationService {
     }
 
     private void placeFirstRobotAndPlanet (Robot robot, Planet planet) {
+        if (this.currentMap == null) {
+            logger.error("Cant Place Robots / Planets. No Map exists.");
+            // TODO: dont let this case happen. Maybe build map on sync or on game data retrieval
+            return;
+        }
         this.currentMap.addFirstBot(robot);
         this.currentMap.addFirstPlanet(planet);
     }
