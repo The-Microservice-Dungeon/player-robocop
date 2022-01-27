@@ -101,15 +101,17 @@ public class GameApplicationService {
             }
         }
         for (GameDto gameDto : unknownGameDtos) {
-            this.storeGame(gameDto);
+            Game game = this.storeGame(gameDto);
+            mapService.createMapFromGame(game);
             logger.info("Received game " + gameDto + " for the first time");
         }
         logger.info("Retrieval of new game state finished");
     }
 
-    public void storeGame(GameDto gameDto) {
+    public Game storeGame(GameDto gameDto) {
         Game game = modelMapper.map(gameDto, Game.class);
         gameRepository.save(game);
+        return game;
     }
     /**
      * "Status changed" event published by GameService, esp. after a game has been created
