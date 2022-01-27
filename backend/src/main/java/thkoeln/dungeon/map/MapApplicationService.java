@@ -94,11 +94,18 @@ public class MapApplicationService {
 
         int i = 0;
         for (PositionVO pvo : currentMap.getPositions()) {
-            Planet planet = this.planetApplicationService.getById(pvo.getReferencingPlanetId());
-            Robot robot = this.robotApplicationService.getById(pvo.getReferencingPlanetId());
-            wrapper.addGravity(planet, i);
-            wrapper.addPlanetType(planet, i);
-            wrapper.addRobot(robot, i);
+            UUID planetId = pvo.getReferencingPlanetId();
+            if (planetId != null) {
+                Planet planet = this.planetApplicationService.getById(pvo.getReferencingPlanetId());
+                wrapper.addGravity(planet, i);
+                wrapper.addPlanetType(planet, i);
+            }
+
+            UUID robotId = pvo.getReferencingRobotId();
+            if (robotId != null) {
+                Robot robot = this.robotApplicationService.getById(robotId);
+                wrapper.addRobot(robot, i);
+            }
             i++;
         }
         return wrapper;
