@@ -33,6 +33,7 @@
 <script>
 import { apiGet } from '@/utils'
 import BounceLoader from 'vue-spinner/src/BounceLoader.vue'
+import { EventBus } from '@/event-bus'
 
 export default {
   name: 'PlayerInfo',
@@ -48,6 +49,14 @@ export default {
   },
   mounted () {
     this.fetchPlayerData()
+
+    EventBus.$on('player_money_set', () => {
+      this.fetchPlayerData()
+    })
+
+    EventBus.$on('player_money_changed', () => {
+      this.fetchPlayerData()
+    })
   },
   methods: {
     fetchPlayerData () {

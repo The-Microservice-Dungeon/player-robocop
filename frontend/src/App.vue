@@ -75,6 +75,7 @@ export default {
             if (frame.command === 'CONNECTED') {
               this.connected = true
               this.stompClient.subscribe('game_events', tick => this.handleGameEvent(tick))
+              this.stompClient.subscribe('player_events', tick => this.handlePlayerEvent(tick))
             }
           },
           error => {
@@ -85,6 +86,12 @@ export default {
     },
     handleGameEvent (tick) {
       console.log('Game Event Recieved')
+      let info = tick.body
+      EventBus.$emit(info)
+      console.log(info)
+    },
+    handlePlayerEvent (tick) {
+      console.log('Player Event Recieved')
       let info = tick.body
       EventBus.$emit(info)
       console.log(info)
