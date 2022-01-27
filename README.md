@@ -75,12 +75,12 @@ one type of "tile". The tiles look like this and each one represents a character
 
 - tiles 1, 2, 3 represent "Gravity" or "Movement Difficulty"
 - tiles 4, 5, 6, 7, 8, 9 represent "space station", "coal", "iron", "ruby", "gold" and "platin"
-- tile 10 is currently unused and would represent the next move of a robot
+- tile 10 marks a known planet position where we don't know the movement difficulty
 - tile 11 is a marker for the current robot
 
 The layers each contain a set of these indexes.
 
-- layer[0] = -1, 1, 2, 3 -> Gravity Layer
+- layer[0] = -1, 1, 2, 3, 10 -> Gravity Layer
 - layer[1] = -1, 4, 5, 6, 7, 8, 9 -> Type Layer
 - layer[2] = -1, 11 -> Robot Layer
 

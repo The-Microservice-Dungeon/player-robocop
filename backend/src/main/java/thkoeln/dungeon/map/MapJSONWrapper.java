@@ -49,7 +49,7 @@ public class MapJSONWrapper {
                 }
 
                 if (planet.isSpaceStation()) type = 4;
-                System.out.println("Planet " + planet + " mapped to: " + type);
+                //System.out.println("Planet " + planet + " mapped to: " + type);
             }
 
             this.types[index] = type;
@@ -62,10 +62,15 @@ public class MapJSONWrapper {
     public void addGravity(Planet planet, int index) {
         try {
             int gravity = -1;
-            if (planet != null && planet.getMovementDifficulty() != null) {
-                gravity = planet.getMovementDifficulty();
+            if (planet != null) {
+                Integer movementDifficulty = planet.getMovementDifficulty();
+                if (movementDifficulty == null) {
+                    gravity = 10;
+                } else {
+                    gravity = movementDifficulty;
+                }
 
-                System.out.println("Movement Difficulty: " + planet.getMovementDifficulty() + " mapped to: " + gravity);
+                //System.out.println("Movement Difficulty: " + planet.getMovementDifficulty() + " mapped to: " + gravity);
             }
 
             this.gravity[index] = gravity;
