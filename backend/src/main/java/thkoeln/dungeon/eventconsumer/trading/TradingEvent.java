@@ -29,6 +29,7 @@ public class TradingEvent extends AbstractEvent {
 
     @JsonProperty("success")
     public Boolean getSuccess() {
+        if (this.success == null) return false;
         return success;
     }
 

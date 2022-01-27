@@ -73,9 +73,12 @@ public class TradingEventConsumer {
                 .fillWithPayload(payload)
                 .fillHeader(eventId,timestamp,transactionId);
 
+
         if (!tradingEvent.getSuccess()) {
-            throw new GameException("Unsuccessfully response to trading command! Payload:" + payload);
+            logger.error("Received unsuccessful response to trading command! Payload: " + payload);
+            return;
         }
+
         //This checks our command repo, if we issued this command, then we can save + process this.
         Optional<Command> commandOptional = commandRepository.findByTransactionId(tradingEvent.getTransactionId());
         commandOptional.ifPresent(command -> {
