@@ -61,6 +61,10 @@ public class GameApplicationService {
         return gameRepository.findAllByGameStatusEquals(GameStatus.STARTED);
     }
 
+    public Game retrieveCurrentGame() {
+        return gameRepository.findAllByGameStatusBetween(GameStatus.CREATED, GameStatus.ENDED).get(0);
+    }
+
     /**
      * Makes sure that our own game state is consistent with what GameService says.
      * We take a very simple approach here. We, as a Player, don't manage any game

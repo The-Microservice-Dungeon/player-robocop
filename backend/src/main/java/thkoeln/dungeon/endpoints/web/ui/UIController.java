@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import thkoeln.dungeon.game.application.GameApplicationService;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.game.domain.game.GameRepository;
 import thkoeln.dungeon.game.domain.round.Round;
@@ -27,20 +28,21 @@ import java.util.Map;
  */
 @RestController
 public class UIController {
-    private final GameRepository gameRepo;
     private final PlayerRepository playerRepo;
     private final RobotRepository roboRepo;
     private final GameServiceRESTAdapter gameServiceRESTAdapter;
     private final MapApplicationService mapService;
+    private final GameApplicationService gameApplicationService;
 
     /**
      * Constructor
      *
      * @param gameRepo
+     * @param gameApplicationService
      */
     @Autowired
-    UIController(GameServiceRESTAdapter gameServiceRESTAdapter, GameRepository gameRepo, PlayerRepository playerRepo, RobotRepository roboRepo, MapApplicationService mapService) {
-        this.gameRepo = gameRepo;
+    UIController(GameServiceRESTAdapter gameServiceRESTAdapter, GameRepository gameRepo, PlayerRepository playerRepo, RobotRepository roboRepo, MapApplicationService mapService, GameApplicationService gameApplicationService) {
+        this.gameApplicationService = gameApplicationService;
         this.playerRepo = playerRepo;
         this.roboRepo = roboRepo;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
@@ -49,12 +51,10 @@ public class UIController {
 
     @GetMapping("/game")
     Map<String, Object> currentGameInfo(HttpServletResponse response) {
-        List<Game> gameList = gameRepo.findAll();
-        if (gameList.isEmpty()) {
+        Game game = this.gameApplicationService.retrieveCurrentGame();
+        if (game == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-        Game game = gameList.get(0);
 
         Round round = game.getRound();
 
