@@ -53,21 +53,25 @@ public class RobotEventConsumer {
     @KafkaListener(topics = "movement")
     public void consumeMovementEvent(@Header String eventId, @Header String timestamp,
                                      @Payload String payload){
-        logger.info("Consuming movement Event");
-        MovementEvent movementEvent = new MovementEvent()
-                .fillWithPayload(payload)
-                .fillHeader(eventId,timestamp,"");
-        logger.info("Saving movement event");
-        movementEventRepository.save(movementEvent);
-        List<Robot> affectedRobots = robotRepository.findAllByRobotIdIn(movementEvent.getRobots());
-        Optional<Planet> targetPlanet = planetRepository.findById(movementEvent.getPlanet().getPlanetId());
-        if (targetPlanet.isPresent()){
-            planetApplicationService.fillPlanetInformation(targetPlanet.get(),movementEvent.getPlanet());
-            for (Robot robot: affectedRobots){
-                mapApplicationService.updateRobotPosition(robot, targetPlanet.get());
+        try {
+            logger.info("Consuming movement Event");
+            MovementEvent movementEvent = new MovementEvent()
+                    .fillWithPayload(payload)
+                    .fillHeader(eventId,timestamp,"");
+            logger.info("Saving movement event");
+            movementEventRepository.save(movementEvent);
+            List<Robot> affectedRobots = robotRepository.findAllByRobotIdIn(movementEvent.getRobots());
+            Optional<Planet> targetPlanet = planetRepository.findById(movementEvent.getPlanet().getPlanetId());
+            if (targetPlanet.isPresent()){
+                planetApplicationService.fillPlanetInformation(targetPlanet.get(),movementEvent.getPlanet());
+                for (Robot robot: affectedRobots){
+                    mapApplicationService.updateRobotPosition(robot, targetPlanet.get());
+                }
+            }else {
+                logger.error("Planet for movement not found.");
             }
-        }else {
-            logger.error("Planet for movement not found.");
+        } catch (Exception e) {
+            logger.error("Can't consume Movement Event. " + e.getMessage());
         }
     }
 
