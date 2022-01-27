@@ -77,7 +77,7 @@ public class GameEventConsumer {
                     }catch (GameStatusException e){
                         logger.error("Game Status error: "+ e.getMessage());
                     }catch (NoGameAvailableException e){
-                        logger.error("No game in DB, retrying once in 300ms");
+                        logger.warn("No game in DB, retrying once in 300ms");
                         try {
                             Thread.sleep(300);
                             commandDispatcherService.init();
