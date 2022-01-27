@@ -119,6 +119,7 @@ public class GameApplicationService {
         gameRepository.save(game);
         return game;
     }
+
     /**
      * "Status changed" event published by GameService, esp. after a game has been created
      */
@@ -136,7 +137,7 @@ public class GameApplicationService {
      *
      * @param gameId ID of the new game
      */
-    public void gameExternallyCreated(UUID gameId) {
+    private void gameExternallyCreated(UUID gameId) {
         logger.info("Processing external event that the game has been created");
 
         List<Game> foundGames = gameRepository.findByGameId(gameId);
@@ -155,7 +156,7 @@ public class GameApplicationService {
      * @param gameId
      * The id of the triggering event
      */
-    public void gameExternallyStarted(UUID gameId) {
+    private void gameExternallyStarted(UUID gameId) {
         logger.info("Processing external event that the game with id " + gameId + " has started");
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.size()!=1){
@@ -172,7 +173,7 @@ public class GameApplicationService {
     /**
      * To be called by event consumer listening to GameService event
      */
-    public void gameExternallyEnded(UUID gameId) {
+    private void gameExternallyEnded(UUID gameId) {
         logger.info("Processing external event that the game with id " + gameId + " has ended");
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.size()!=1){

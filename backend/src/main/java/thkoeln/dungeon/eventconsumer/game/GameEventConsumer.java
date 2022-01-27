@@ -18,6 +18,7 @@ import thkoeln.dungeon.eventconsumer.core.KafkaErrorService;
 import thkoeln.dungeon.game.application.GameApplicationService;
 import thkoeln.dungeon.game.application.GameStatusException;
 import thkoeln.dungeon.game.application.NoGameAvailableException;
+import thkoeln.dungeon.game.domain.game.GameStatus;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.player.domain.PlayerRepository;
@@ -70,7 +71,7 @@ public class GameEventConsumer {
             logger.info("saved game event with status " + gameStatusEvent.getStatus().toString());
             switch (gameStatusEvent.getStatus()){
                 case CREATED ->{
-                    gameApplicationService.gameExternallyCreated(gameStatusEvent.getGameId());
+                    gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), GameStatus.CREATED);
                     try {
                         commandDispatcherService.init();
                     }catch (GameStatusException e){
@@ -85,8 +86,7 @@ public class GameEventConsumer {
                         }
                     }
                 }
-                case STARTED -> gameApplicationService.gameExternallyStarted(gameStatusEvent.getGameId());
-                case ENDED -> gameApplicationService.gameExternallyEnded(gameStatusEvent.getGameId());
+                case STARTED, ENDED -> gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), gameStatusEvent.getStatus());
             }
             this.template.convertAndSend("game_events", "game_status_change");
         } catch (KafkaException e) {
