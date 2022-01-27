@@ -93,5 +93,8 @@ export default {
 </script>
 
 <style scoped>
-
+.infoCard {
+  width: 50%;
+  height: 13rem;
+}
 </style>
