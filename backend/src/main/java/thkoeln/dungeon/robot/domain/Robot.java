@@ -1,10 +1,10 @@
 package thkoeln.dungeon.robot.domain;
 
-import io.micrometer.core.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 import thkoeln.dungeon.map.Map;
 import thkoeln.dungeon.map.PositionVO;
 
@@ -24,8 +24,9 @@ public class Robot {
 
     private boolean dummy = false;
 
-    @Transient
+    @Setter
     @Nullable
+    @Embedded
     private PositionVO position;
 
     public Robot(boolean isDummy) {

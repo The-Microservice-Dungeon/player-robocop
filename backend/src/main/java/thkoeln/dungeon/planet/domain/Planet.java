@@ -27,12 +27,11 @@ public class Planet {
     private String name;
 
     @Setter
-    @Getter
     private Integer movementDifficulty = null;
 
     @Setter
-    @Getter
     @Nullable
+    @Embedded
     private PositionVO position;
 
     @Setter
@@ -64,6 +63,7 @@ public class Planet {
 
     public Planet (UUID id) {
         this.planetId = id;
+        this.position = new PositionVO();
     }
 
     public Planet (PlanetMovementDto movementDto) {

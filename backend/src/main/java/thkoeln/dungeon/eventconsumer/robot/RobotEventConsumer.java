@@ -19,9 +19,15 @@ import thkoeln.dungeon.robot.application.RobotApplicationService;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Optional;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class RobotEventConsumer {
@@ -36,7 +42,6 @@ public class RobotEventConsumer {
     private final TradingEventRepository tradingEventRepository;
     private final Logger logger = LoggerFactory.getLogger(RobotEventConsumer.class);
 
-    private final RobotApplicationService robotApplicationService;
 
     @Autowired
     public RobotEventConsumer(SpawnEventRepository spawnEventRepository, MapApplicationService mapApplicationService, PlanetApplicationService planetApplicationService, RobotRepository robotRepository, CommandRepository commandRepository, PlanetRepository planetRepository, MovementEventRepository movementEventRepository, NeighboursEventRepository neighboursEventRepository, TradingEventRepository tradingEventRepository, RobotApplicationService robotApplicationService) {
@@ -49,7 +54,6 @@ public class RobotEventConsumer {
         this.mapApplicationService = mapApplicationService;
         this.spawnEventRepository = spawnEventRepository;
         this.tradingEventRepository = tradingEventRepository;
-        this.robotApplicationService = robotApplicationService;
     }
 
     // THIS DOES NOT HAVE A TRANSACTION ID. AAAAAAAAAAAAAAAAAAAAAAAH
@@ -82,31 +86,36 @@ public class RobotEventConsumer {
     @KafkaListener(topics = "neighbours")
     public void consumeNeighbourEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,
                                       @Payload String payload){
-        logger.info("Consuming neighbour event");
-        logger.info("Payload:" +payload);
-        NeighbourEvent neighboursEvent = new NeighbourEvent()
-                .fillWithPayload(payload)
-                .fillHeader(eventId,timestamp,transactionId);
-        neighboursEventRepository.save(neighboursEvent);
-        Optional<Command> triggeringCommandOptional = commandRepository.findByTransactionId(neighboursEvent.getTransactionId());
-        if (triggeringCommandOptional.isPresent()){
-            Command command = triggeringCommandOptional.get();
-            //movement command triggered this
-            switch (command.getCommandType()){
-                case movement ->  mapApplicationService.handleNewPlanetNeighbours(
-                        command.getTargetPlanet(), neighboursEvent.getNeighbours());
-                case buying -> {
-                    //match transaction ID with trading event and get planet by trading id
-                    Optional<TradingEvent> tradingEvent = tradingEventRepository.findByTransactionId(neighboursEvent.getTransactionId());
-                    if (tradingEvent.isPresent()){
-                        UUID planetId = tradingEvent.get().getData().getPlanet();
-                        Optional<Planet> planetOptional = planetRepository.findById(planetId);
-                        planetOptional.ifPresent(planet -> mapApplicationService.handleNewPlanetNeighbours(planet, neighboursEvent.getNeighbours()));
+
+        logger.info("Neighbour event received. Consuming in 300ms");
+        Timer timer = new Timer(300, arg0 -> {
+            logger.info("Consuming neighbour event");
+            logger.info("Payload:" +payload);
+            NeighbourEvent neighboursEvent = new NeighbourEvent()
+                    .fillWithPayload(payload)
+                    .fillHeader(eventId,timestamp,transactionId);
+            neighboursEventRepository.save(neighboursEvent);
+            Optional<Command> triggeringCommandOptional = commandRepository.findByTransactionId(neighboursEvent.getTransactionId());
+            if (triggeringCommandOptional.isPresent()){
+                Command command = triggeringCommandOptional.get();
+                //movement command triggered this
+                switch (command.getCommandType()){
+                    case movement ->  mapApplicationService.handleNewPlanetNeighbours(
+                            command.getTargetPlanet(), neighboursEvent.getNeighbours());
+                    case buying -> {
+                        //match transaction ID with trading event and get planet by trading id
+                        Optional<TradingEvent> tradingEvent = tradingEventRepository.findByTransactionId(neighboursEvent.getTransactionId());
+                        if (tradingEvent.isPresent()){
+                            UUID planetId = tradingEvent.get().getData().getPlanet();
+                            Optional<Planet> planetOptional = planetRepository.findById(planetId);
+                            planetOptional.ifPresent(planet -> mapApplicationService.handleNewPlanetNeighbours(planet, neighboursEvent.getNeighbours()));
+                        }
                     }
                 }
             }
-        }
-        //TODO make some calls
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 
     @KafkaListener(topics = "spawn-notification")
