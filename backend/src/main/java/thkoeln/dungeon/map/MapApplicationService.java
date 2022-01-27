@@ -178,4 +178,8 @@ public class MapApplicationService {
 
         this.mapRepository.save(this.currentMap);
     }
+
+    public Integer getMapSize () {
+        return this.currentMap.getMapSize();
+    }
 }

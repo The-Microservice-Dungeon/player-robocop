@@ -125,8 +125,8 @@ public class UIController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "There is no current game so no map.");
         }
 
-
         return new JSONObject(layerMap)
+                .put("mapSize", mapService.getMapSize())
                 .toMap();
     }
 
