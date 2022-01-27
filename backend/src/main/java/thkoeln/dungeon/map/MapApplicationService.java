@@ -40,11 +40,12 @@ public class MapApplicationService {
 
     public void createMapFromGame (Game game) {
         if (this.currentMap != null) {
-            logger.error("Map already exists! Don't create another");
+            logger.warn("Map already exists! Don't create another");
             return;
         }
         this.currentMap = new Map(game);
         mapRepository.save(currentMap);
+        this.websocket.convertAndSend("map_events", "new_map_created");
     }
 
     public void deleteMap () {
