@@ -99,13 +99,19 @@ public class MapApplicationService {
                 Planet planet = this.planetApplicationService.getById(pvo.getReferencingPlanetId());
                 wrapper.addGravity(planet, i);
                 wrapper.addPlanetType(planet, i);
+            } else {
+                wrapper.addGravity(null, i);
+                wrapper.addPlanetType(null, i);
             }
 
             UUID robotId = pvo.getReferencingRobotId();
             if (robotId != null) {
                 Robot robot = this.robotApplicationService.getById(robotId);
                 wrapper.addRobot(robot, i);
+            } else {
+                wrapper.addRobot(null, i);
             }
+
             i++;
         }
         return wrapper;
