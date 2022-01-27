@@ -142,7 +142,6 @@ public class Map {
     }
 
     public void addFirstPlanet(Planet planet) {
-
         PositionVO pos = this.positions.get(centerIndex);
         this.replacePosition(pos, new PositionVO(planet.getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), anzahlCols / 2,anzahlCols / 2));
         planet.setPosition(this.positions.get(centerIndex));
