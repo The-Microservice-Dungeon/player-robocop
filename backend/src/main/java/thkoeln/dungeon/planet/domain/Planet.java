@@ -4,6 +4,7 @@ import lombok.*;
 import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
 import thkoeln.dungeon.eventconsumer.robot.PlanetMovementDto;
 import thkoeln.dungeon.map.Map;
 import thkoeln.dungeon.map.PositionVO;
@@ -31,7 +32,7 @@ public class Planet {
 
     @Setter
     @Getter
-    @Transient
+    @Nullable
     private PositionVO position;
 
     @Setter
@@ -86,6 +87,7 @@ public class Planet {
         if (isSpaceStation) {
             this.setPlanetType(PlanetType.SPACESTATION);
         }
+        //this.setPosition(new  PositionVO());
         this.setMovementDifficulty(0);
     }
 

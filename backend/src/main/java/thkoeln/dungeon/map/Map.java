@@ -21,7 +21,6 @@ public class Map {
     @Id
     private final UUID id = UUID.randomUUID();
 
-
     @Getter
     int numberPlayers;
 

@@ -163,17 +163,6 @@ public class GameApplicationService {
         gameRepository.save(game);
     }
 
-    private Integer getCurrentPlayers () {
-        GameDto[] gameDtos;
-        try {
-            gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
-        } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
-            logger.error("Can't fetch current Game State! " + e.getMessage());
-            return 0;
-        }
-        return gameDtos[0].getParticipatingPlayers().size();
-    }
-
     /**
      * To be called by event consumer listening to GameService event
      */
@@ -204,5 +193,17 @@ public class GameApplicationService {
         }
         gameRepository.save(game);
     }
+
+    private Integer getCurrentPlayers () {
+        GameDto[] gameDtos;
+        try {
+            gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
+        } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
+            logger.error("Can't fetch current Game State! " + e.getMessage());
+            return 0;
+        }
+        return gameDtos[0].getParticipatingPlayers().size();
+    }
+
 
 }

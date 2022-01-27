@@ -5,13 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import thkoeln.dungeon.eventconsumer.robot.NeighboursEvent;
-import thkoeln.dungeon.game.application.GameApplicationService;
+import thkoeln.dungeon.eventconsumer.robot.NeighbourData;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.robot.application.RobotApplicationService;
 import thkoeln.dungeon.robot.domain.Robot;
+import java.util.List;
 
 import java.util.UUID;
 
@@ -20,6 +20,7 @@ import java.util.UUID;
 public class MapApplicationService {
     private final PlanetApplicationService planetApplicationService;
     private final RobotApplicationService robotApplicationService;
+    private final MapRepository mapRepository;
 
     private final Logger logger = LoggerFactory.getLogger(MapApplicationService.class);
 
@@ -27,18 +28,15 @@ public class MapApplicationService {
     private Map currentMap;
 
     @Autowired
-    public MapApplicationService (PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService) {
+    public MapApplicationService(PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService, MapRepository mapRepository) {
         this.planetApplicationService = planetApplicationService;
         this.robotApplicationService = robotApplicationService;
-    }
-
-    public void placeDemoStuff () {
-        currentMap.addFirstBot(new Robot(true));
-        currentMap.addFirstPlanet(new Planet(UUID.randomUUID(),true, false));
+        this.mapRepository = mapRepository;
     }
 
     public void createMapFromGame (Game game) {
         this.currentMap = new Map(game);
+        mapRepository.save(currentMap);
     }
 
     private void placeFirstRobotAndPlanet (Robot robot, Planet planet) {
@@ -49,6 +47,7 @@ public class MapApplicationService {
         }
         this.currentMap.addFirstBot(robot);
         this.currentMap.addFirstPlanet(planet);
+        mapRepository.save(currentMap);
         PositionVO robotPosition = this.currentMap.findPosition(robot);
         PositionVO planetPosition = this.currentMap.findPosition(planet);
         this.robotApplicationService.setRobotPosition(robot, robotPosition);
@@ -56,17 +55,27 @@ public class MapApplicationService {
     }
 
     // TODO: Call on robot spawned event
-    public void handleNewRobotSpawn (Robot robot, Planet planet) {
-        if (this.planetApplicationService.isFirstPlanet()) this.placeFirstRobotAndPlanet(robot, planet);
+    public void handleNewRobotSpawn (Robot robot, UUID planetId) {
+        //we need a planet with position 0,0
+        if (currentMap==null){
+            logger.error("Map not initialized yet");
+            return;
+        }
+        PositionVO center = currentMap.getPositions().get(currentMap.getCenterIndex());
+        Planet firstPlanet = planetApplicationService.createStartPlanet(planetId, center);
+        if (this.planetApplicationService.isFirstPlanet()){
+            this.placeFirstRobotAndPlanet(robot, firstPlanet);
+        }
     }
 
-    public void handleNewPlanetNeighbours (Planet planet, NeighboursEvent[] neighbours) {
+    public void handleNewPlanetNeighbours (Planet planet, List<NeighbourData> neighbours) {
         this.planetApplicationService.generateNeighboursForPlanet(planet, neighbours);
         planet = this.planetApplicationService.refreshPlanet(planet);
 
         if (planet.hasNeighbours()) {
             Planet neighbour = planet.allNeighbours().get(0);
             this.currentMap.addNeighboursOfPlanetToMap(neighbour);
+            mapRepository.save(currentMap);
         }
     }
 
@@ -75,8 +84,9 @@ public class MapApplicationService {
         PositionVO oldRobotPosition = this.currentMap.findPosition(robot);
         this.currentMap.removeRobotOnPosition(oldRobotPosition);
         PositionVO newPlanetPosition = this.currentMap.findPosition(newPlanet);
-        // robotApplicationService setRobotPosition(robot, newPlanetPosition)
+        robotApplicationService.setRobotPosition(robot, newPlanetPosition);
         this.currentMap.setRobotOnPosition(newPlanetPosition, robot);
+        mapRepository.save(currentMap);
     }
 
     public MapJSONWrapper getLayerMap () {

@@ -24,7 +24,7 @@ spring:
     password: password
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       dialect: org.hibernate.dialect.H2Dialect
 

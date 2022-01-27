@@ -2,14 +2,13 @@ package thkoeln.dungeon.planet.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import thkoeln.dungeon.eventconsumer.robot.NeighboursEvent;
+import thkoeln.dungeon.eventconsumer.robot.NeighbourData;
 import thkoeln.dungeon.eventconsumer.robot.PlanetMovementDto;
 import thkoeln.dungeon.map.PositionVO;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.planet.domain.PlanetException;
 import thkoeln.dungeon.planet.domain.PlanetRepository;
-import thkoeln.dungeon.robot.domain.Robot;
-
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,8 +23,9 @@ public class PlanetApplicationService {
     }
 
     // TODO: Call on robot spawned event
-    public Planet createStartPlanet (UUID id) {
+    public Planet createStartPlanet (UUID id, PositionVO positionVO) {
         Planet newPlanet = new Planet(id, true);
+        newPlanet.setPosition(positionVO);
         this.planetRepository.save(newPlanet);
         return newPlanet;
     }
@@ -43,12 +43,12 @@ public class PlanetApplicationService {
     }
 
 
-    public void generateNeighboursForPlanet (Planet pPlanet, NeighboursEvent[] neighbours) {
+    public void generateNeighboursForPlanet (Planet pPlanet, List<NeighbourData> neighbours) {
         Optional<Planet> planetOption = this.planetRepository.findById(pPlanet.getPlanetId());
         if (planetOption.isEmpty()) throw new PlanetException("Cant generate Neighbours for unset Planet");
         Planet planet = planetOption.get();
 
-        for (NeighboursEvent neighbour : neighbours) {
+        for (NeighbourData neighbour : neighbours) {
             Optional<Planet> existingPlanetOption = this.planetRepository.findById(neighbour.getPlanetId());
             if (existingPlanetOption.isPresent()) {
                 Planet existingPlanet = existingPlanetOption.get();
@@ -72,6 +72,6 @@ public class PlanetApplicationService {
     }
 
     public Boolean isFirstPlanet () {
-        return this.planetRepository.findAll().size() == 1;
+        return this.planetRepository.findAll().size() == 0;
     }
 }

@@ -71,16 +71,19 @@ public class TradingEventConsumer {
         TradingEvent tradingEvent = new TradingEvent()
                 .fillWithPayload(payload)
                 .fillHeader(eventId,timestamp,transactionId);
-        logger.info("Saving trading event with money value = "+tradingEvent.getMoneyChangedBy());
-        tradingEventRepository.save(tradingEvent);
+        //This checks our command repo, if we issued this command, then we can save + process this.
         Optional<Command> commandOptional = commandRepository.findByTransactionId(tradingEvent.getTransactionId());
-        commandOptional.ifPresent(command -> playerApplicationService.changeMoneyOfPlayer(
+        commandOptional.ifPresent(command -> {
+            logger.info("Saving trading event with money value = "+tradingEvent.getMoneyChangedBy());
+            tradingEventRepository.save(tradingEvent);
+            playerApplicationService.changeMoneyOfPlayer(
                 command.getPlayer().getPlayerId(),
-                tradingEvent.getMoneyChangedBy()));
+                tradingEvent.getMoneyChangedBy());
+
+        });
         if (tradingEvent.getData()!=null && tradingEvent.getData().getPlanet()!=null){
             Robot robot = this.robotApplicationService.createNewRobot(tradingEvent.getData().getRobotId());
-            Planet planet = this.planetApplicationService.createStartPlanet(tradingEvent.getData().getPlanet());
-            this.mapApplicationService.handleNewRobotSpawn(robot, planet);
+            this.mapApplicationService.handleNewRobotSpawn(robot, tradingEvent.getData().getPlanet());
         }
     }
 }

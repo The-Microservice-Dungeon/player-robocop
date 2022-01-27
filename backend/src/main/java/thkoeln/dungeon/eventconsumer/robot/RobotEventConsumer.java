@@ -7,7 +7,10 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import thkoeln.dungeon.command.Command;
 import thkoeln.dungeon.command.CommandRepository;
+import thkoeln.dungeon.eventconsumer.trading.TradingEvent;
+import thkoeln.dungeon.eventconsumer.trading.TradingEventRepository;
 import thkoeln.dungeon.map.MapApplicationService;
 import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
@@ -17,9 +20,8 @@ import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.UUID;
 
 @Service
 public class RobotEventConsumer {
@@ -31,12 +33,13 @@ public class RobotEventConsumer {
     private final PlanetApplicationService planetApplicationService;
     private final MapApplicationService mapApplicationService;
     private final SpawnEventRepository spawnEventRepository;
+    private final TradingEventRepository tradingEventRepository;
     private final Logger logger = LoggerFactory.getLogger(RobotEventConsumer.class);
 
     private final RobotApplicationService robotApplicationService;
 
     @Autowired
-    public RobotEventConsumer(SpawnEventRepository spawnEventRepository, MapApplicationService mapApplicationService,PlanetApplicationService planetApplicationService, RobotRepository robotRepository, CommandRepository commandRepository, PlanetRepository planetRepository, MovementEventRepository movementEventRepository, NeighboursEventRepository neighboursEventRepository, RobotApplicationService robotApplicationService) {
+    public RobotEventConsumer(SpawnEventRepository spawnEventRepository, MapApplicationService mapApplicationService, PlanetApplicationService planetApplicationService, RobotRepository robotRepository, CommandRepository commandRepository, PlanetRepository planetRepository, MovementEventRepository movementEventRepository, NeighboursEventRepository neighboursEventRepository, TradingEventRepository tradingEventRepository, RobotApplicationService robotApplicationService) {
         this.robotRepository = robotRepository;
         this.commandRepository = commandRepository;
         this.planetRepository = planetRepository;
@@ -45,6 +48,7 @@ public class RobotEventConsumer {
         this.planetApplicationService = planetApplicationService;
         this.mapApplicationService = mapApplicationService;
         this.spawnEventRepository = spawnEventRepository;
+        this.tradingEventRepository = tradingEventRepository;
         this.robotApplicationService = robotApplicationService;
     }
 
@@ -80,11 +84,28 @@ public class RobotEventConsumer {
                                       @Payload String payload){
         logger.info("Consuming neighbour event");
         logger.info("Payload:" +payload);
-        NeighboursEvent neighboursEvent = new NeighboursEvent()
+        NeighbourEvent neighboursEvent = new NeighbourEvent()
                 .fillWithPayload(payload)
                 .fillHeader(eventId,timestamp,transactionId);
         neighboursEventRepository.save(neighboursEvent);
-        // TODO: call handleNewPlanetNeighbours -> WORKING MAAAP
+        Optional<Command> triggeringCommandOptional = commandRepository.findByTransactionId(neighboursEvent.getTransactionId());
+        if (triggeringCommandOptional.isPresent()){
+            Command command = triggeringCommandOptional.get();
+            //movement command triggered this
+            switch (command.getCommandType()){
+                case movement ->  mapApplicationService.handleNewPlanetNeighbours(
+                        command.getTargetPlanet(), neighboursEvent.getNeighbours());
+                case buying -> {
+                    //match transaction ID with trading event and get planet by trading id
+                    Optional<TradingEvent> tradingEvent = tradingEventRepository.findByTransactionId(neighboursEvent.getTransactionId());
+                    if (tradingEvent.isPresent()){
+                        UUID planetId = tradingEvent.get().getData().getPlanet();
+                        Optional<Planet> planetOptional = planetRepository.findById(planetId);
+                        planetOptional.ifPresent(planet -> mapApplicationService.handleNewPlanetNeighbours(planet, neighboursEvent.getNeighbours()));
+                    }
+                }
+            }
+        }
         //TODO make some calls
     }
 
