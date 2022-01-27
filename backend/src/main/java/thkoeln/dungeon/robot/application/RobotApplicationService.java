@@ -28,6 +28,10 @@ public class RobotApplicationService {
         return newRobot;
     }
 
+    public void deleteRobots () {
+        robotRepository.deleteAll();
+    }
+
     public Robot getById (UUID id) {
         return this.robotRepository.findById(id).get();
     }
@@ -41,9 +45,10 @@ public class RobotApplicationService {
      * @param bot
      * @param position
      */
-    public void setRobotPosition(Robot bot, PositionVO position){
+    public Robot setRobotPosition(Robot bot, PositionVO position){
             bot.setPosition(position);
             robotRepository.save(bot);
+            return bot;
     }
 
 }

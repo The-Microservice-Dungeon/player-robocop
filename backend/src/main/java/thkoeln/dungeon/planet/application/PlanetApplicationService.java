@@ -1,5 +1,6 @@
 package thkoeln.dungeon.planet.application;
 
+import lombok.extern.flogger.Flogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.eventconsumer.robot.NeighbourData;
@@ -23,11 +24,14 @@ public class PlanetApplicationService {
     }
 
     // TODO: Call on robot spawned event
-    public Planet createStartPlanet (UUID id, PositionVO positionVO) {
+    public Planet createStartPlanet (UUID id) {
         Planet newPlanet = new Planet(id, true);
-        newPlanet.setPosition(positionVO);
         this.planetRepository.save(newPlanet);
         return newPlanet;
+    }
+
+    public void deletePlanets () {
+        planetRepository.deleteAll();
     }
 
     public void fillPlanetInformation (Planet targetPlanet, PlanetMovementDto planetInformation){
@@ -37,9 +41,10 @@ public class PlanetApplicationService {
         this.planetRepository.save(targetPlanet);
     }
 
-    public void setPlanetPosition (Planet planet, PositionVO positionVO) {
+    public Planet setPlanetPosition (Planet planet, PositionVO positionVO) {
         planet.setPosition(positionVO);
         this.planetRepository.save(planet);
+        return planet;
     }
 
 
@@ -72,6 +77,6 @@ public class PlanetApplicationService {
     }
 
     public Boolean isFirstPlanet () {
-        return this.planetRepository.findAll().size() == 0;
+        return this.planetRepository.findAll().size() == 1;
     }
 }

@@ -32,7 +32,7 @@ public class Planet {
     @Setter
     @Nullable
     @Embedded
-    private PositionVO position;
+    private PositionVO position = new PositionVO();
 
     @Setter
     @Getter(AccessLevel.NONE)
@@ -63,7 +63,6 @@ public class Planet {
 
     public Planet (UUID id) {
         this.planetId = id;
-        this.position = new PositionVO();
     }
 
     public Planet (PlanetMovementDto movementDto) {
@@ -145,7 +144,6 @@ public class Planet {
         return !this.allNeighbours().isEmpty();
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -160,6 +158,6 @@ public class Planet {
 
     @Override
     public String toString() {
-        return getName() + " (" + getPlanetId() + ") Spacestation?: " + isSpaceStation() + " Type: " + getResourceType();
+        return "Position: " + position + " (" + getPlanetId() + ") Spacestation?: " + isSpaceStation() + " Type: " + getResourceType();
     }
 }

@@ -35,37 +35,63 @@ public class MapApplicationService {
     }
 
     public void createMapFromGame (Game game) {
+        if (this.currentMap != null) {
+            logger.error("Map already exists! Don't create another");
+            return;
+        }
         this.currentMap = new Map(game);
         mapRepository.save(currentMap);
+    }
+
+    public void deleteMap () {
+        this.currentMap = null;
+        mapRepository.deleteAll();
     }
 
     private void placeFirstRobotAndPlanet (Robot robot, Planet planet) {
         if (this.currentMap == null) {
             logger.error("Cant Place Robots / Planets. No Map exists.");
-            // TODO: dont let this case happen. Maybe build map on sync or on game data retrieval
             return;
         }
-        this.currentMap.addFirstBot(robot);
-        this.currentMap.addFirstPlanet(planet);
+
+        PositionVO center = this.currentMap.getCenterPosition();
+
+        logger.info("Placing first Robot and Planet on " + center);
+
+        planet = this.planetApplicationService.setPlanetPosition(planet, center);
+        robot = this.robotApplicationService.setRobotPosition(robot, center);
+
+        addFirstPlanet(planet);
+        addFirstBot(robot);
+
         mapRepository.save(currentMap);
-        PositionVO robotPosition = this.currentMap.findPosition(robot);
-        PositionVO planetPosition = this.currentMap.findPosition(planet);
-        this.robotApplicationService.setRobotPosition(robot, robotPosition);
-        this.planetApplicationService.setPlanetPosition(planet, planetPosition);
     }
 
     // TODO: Call on robot spawned event
     public void handleNewRobotSpawn (Robot robot, UUID planetId) {
-        //we need a planet with position 0,0
         if (currentMap==null){
             logger.error("Map not initialized yet");
             return;
         }
-        PositionVO center = currentMap.getPositions().get(currentMap.getCenterIndex());
-        Planet firstPlanet = planetApplicationService.createStartPlanet(planetId, center);
+        Planet firstPlanet = planetApplicationService.createStartPlanet(planetId);
+
         if (this.planetApplicationService.isFirstPlanet()){
             this.placeFirstRobotAndPlanet(robot, firstPlanet);
         }
+    }
+
+    public void addFirstPlanet(Planet planet) {
+        PositionVO centerPos = this.currentMap.getCenterPosition();
+        PositionVO centerPosWithPlanet = new PositionVO(planet.getPlanetId(), centerPos.getReferencingRobotId(), centerPos.getPosIndex(), centerPos.getX(), centerPos.getY());
+        this.currentMap.replacePosition(centerPos, centerPosWithPlanet);
+        planet.setPosition(centerPosWithPlanet);
+        exploreNeighbours(planet);
+    }
+
+    public void addFirstBot(Robot bot) {
+        PositionVO centerPos = this.currentMap.getCenterPosition();
+        PositionVO centerPosWithRobot = new PositionVO(centerPos.getReferencingPlanetId(), bot.getRobotId(), centerPos.getPosIndex(), centerPos.getX(), centerPos.getY());
+        this.currentMap.replacePosition(centerPos, centerPosWithRobot);
     }
 
     public void handleNewPlanetNeighbours (Planet planet, List<NeighbourData> neighbours) {
@@ -73,8 +99,7 @@ public class MapApplicationService {
         planet = this.planetApplicationService.refreshPlanet(planet);
 
         if (planet.hasNeighbours()) {
-            Planet neighbour = planet.allNeighbours().get(0);
-            this.currentMap.addNeighboursOfPlanetToMap(neighbour);
+            exploreNeighbours(planet);
             mapRepository.save(currentMap);
         }
     }
@@ -115,5 +140,37 @@ public class MapApplicationService {
             i++;
         }
         return wrapper;
+    }
+
+    public void exploreNeighbours (Planet planet) {
+        PositionVO position = planet.getPosition();
+
+        logger.info("Exploring neighbours around planet " + planet);
+
+
+        if (planet.getEastNeighbour() != null) {
+            PositionVO pos = this.currentMap.findPosition(position.getX() - 1, position.getY());
+            this.currentMap.replacePosition(pos, new PositionVO(planet.getEastNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
+            planetApplicationService.setPlanetPosition(planet.getEastNeighbour(), this.currentMap.findPosition(position.getX() - 1, position.getY()));
+        }
+        if (planet.getWestNeighbour() != null) {
+            PositionVO pos = this.currentMap.findPosition(position.getX() + 1, position.getY());
+            this.currentMap.replacePosition(pos, new PositionVO(planet.getWestNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
+            planetApplicationService.setPlanetPosition(planet.getWestNeighbour(), this.currentMap.findPosition(position.getX() + 1, position.getY()));
+        }
+        if (planet.getNorthNeighbour() != null) {
+            PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() - 1);
+            this.currentMap.replacePosition(pos, new PositionVO(planet.getNorthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
+            planetApplicationService.setPlanetPosition(planet.getNorthNeighbour(), this.currentMap.findPosition(position.getX(), position.getY() - 1));
+        }
+        if (planet.getSouthNeighbour() != null) {
+            PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() + 1);
+            this.currentMap.replacePosition(pos, new PositionVO(planet.getSouthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY()));
+            planetApplicationService.setPlanetPosition(planet.getSouthNeighbour(), this.currentMap.findPosition(position.getX(), position.getY() + 1));
+        } else {
+            logger.info("No other Planets here");
+        }
+
+        this.mapRepository.save(this.currentMap);
     }
 }

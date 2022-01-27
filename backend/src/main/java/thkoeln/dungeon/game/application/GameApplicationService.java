@@ -4,16 +4,16 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import thkoeln.dungeon.game.domain.game.*;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
 import thkoeln.dungeon.map.MapApplicationService;
+import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
+import thkoeln.dungeon.robot.application.RobotApplicationService;
 
 import java.util.*;
 
@@ -24,15 +24,19 @@ public class GameApplicationService {
     private final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
     ModelMapper modelMapper = new ModelMapper();
     private final MapApplicationService mapService;
+    private final PlanetApplicationService planetApplicationService;
+    private final RobotApplicationService robotApplicationService;
 
     @Autowired
     public GameApplicationService(GameRepository gameRepository,
                                   GameServiceRESTAdapter gameServiceRESTAdapter,
                                   PlayerApplicationService playerApplicationService,
-                                  MapApplicationService mapService) {
+                                  MapApplicationService mapService, PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService) {
         this.gameRepository = gameRepository;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
         this.mapService = mapService;
+        this.planetApplicationService = planetApplicationService;
+        this.robotApplicationService = robotApplicationService;
     }
 
     public Game retrieveListedGameWithStatus(GameStatus gameStatus) throws GameStatusException, NoGameAvailableException{
@@ -140,6 +144,8 @@ public class GameApplicationService {
     private void gameExternallyCreated(UUID gameId) {
         logger.info("Processing external event that the game has been created");
 
+        deleteData();
+
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.isEmpty()){
             logger.info("Synchronizing game state via REST...");
@@ -168,6 +174,12 @@ public class GameApplicationService {
         mapService.createMapFromGame(game);
         game.start();
         gameRepository.save(game);
+    }
+
+    public void deleteData () {
+        mapService.deleteMap();
+        planetApplicationService.deletePlanets();
+        robotApplicationService.deleteRobots();
     }
 
     /**

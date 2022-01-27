@@ -36,4 +36,9 @@ public class PositionVO {
     public int hashCode() {
         return Objects.hash(x,y);
     }
+
+    @Override
+    public String toString () {
+        return "Index: " + this.posIndex + " X: " + this.x + " Y: " + this.y;
+    }
 }
