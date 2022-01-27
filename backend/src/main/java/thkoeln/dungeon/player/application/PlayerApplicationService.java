@@ -38,7 +38,7 @@ public class PlayerApplicationService {
     private final Logger logger = LoggerFactory.getLogger(PlayerApplicationService.class);
     private final ModelMapper modelMapper = new ModelMapper();
 
-    private final SimpMessagingTemplate template;
+    private final SimpMessagingTemplate websocket;
 
     private final CommandExecutor commandExecutor;
     private final PlayerRepository playerRepository;
@@ -56,10 +56,10 @@ public class PlayerApplicationService {
             CommandExecutor commandExecutor,
             PlayerRepository playerRepository,
             GameParticipationRepository gameParticipationRepository,
-            SimpMessagingTemplate template, GameServiceRESTAdapter gameServiceRESTAdapter) {
+            SimpMessagingTemplate websocket, GameServiceRESTAdapter gameServiceRESTAdapter) {
         this.commandExecutor = commandExecutor;
         this.playerRepository = playerRepository;
-        this.template = template;
+        this.websocket = websocket;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
@@ -215,7 +215,7 @@ public class PlayerApplicationService {
             Player player = found.get();
             player.setMoney(money.floatValue());
             playerRepository.save(player);
-            this.template.convertAndSend("player_events", "player_money_set");
+            this.websocket.convertAndSend("player_events", "player_money_set");
         }
         else {
             throw new PlayerRegistryException("Player with playerId "+ playerId+" not found.");
@@ -229,7 +229,7 @@ public class PlayerApplicationService {
             Player player = found.get();
             player.addMoney(moneyChangedByAmount);
             playerRepository.save(player);
-            this.template.convertAndSend("player_events", "player_money_changed");
+            this.websocket.convertAndSend("player_events", "player_money_changed");
         }
         else {
             throw new PlayerRegistryException("Player with playerId "+ playerId+" not found.");
@@ -245,7 +245,7 @@ public class PlayerApplicationService {
         Player player = getCurrentPlayer();
         player.addRobot(robot);
         this.playerRepository.save(player);
-        this.template.convertAndSend("player_events", "robot_added");
+        this.websocket.convertAndSend("player_events", "robot_added");
     }
 
     // TODO: call on Robot Destroyed Event
@@ -253,7 +253,7 @@ public class PlayerApplicationService {
         Player player = getCurrentPlayer();
         player.removeRobot(robot);
         this.playerRepository.save(player);
-        this.template.convertAndSend("player_events", "robot_removed");
+        this.websocket.convertAndSend("player_events", "robot_removed");
     }
 
     public void receiveCommandAnswer(UUID transactionId, String payload) {

@@ -30,7 +30,7 @@ public class GameEventConsumer {
     private final KafkaErrorService kafkaErrorService;
     private final RoundStatusEventRepository roundStatusEventRepository;
     private final Logger logger = LoggerFactory.getLogger(GameEventConsumer.class);
-    private final SimpMessagingTemplate template;
+    private final SimpMessagingTemplate websocket;
     private final PlayerApplicationService playerApplicationService;
     private final CommandDispatcherService commandDispatcherService;
     private final PlayerStatusEventRepository playerStatusEventRepository;
@@ -40,7 +40,7 @@ public class GameEventConsumer {
                              GameStatusEventRepository gameStatusEventRepository,
                              KafkaErrorService kafkaErrorService,
                              RoundStatusEventRepository roundStatusEventRepository,
-                             SimpMessagingTemplate template,
+                             SimpMessagingTemplate websocket,
                              CommandDispatcherService commandDispatcherService,
                              PlayerApplicationService playerApplicationService,
                              PlayerStatusEventRepository playerStatusEventRepository) {
@@ -48,7 +48,7 @@ public class GameEventConsumer {
         this.gameStatusEventRepository = gameStatusEventRepository;
         this.kafkaErrorService = kafkaErrorService;
         this.roundStatusEventRepository = roundStatusEventRepository;
-        this.template = template;
+        this.websocket = websocket;
         this.commandDispatcherService = commandDispatcherService;
         this.playerApplicationService = playerApplicationService;
         this.playerStatusEventRepository = playerStatusEventRepository;
@@ -88,7 +88,7 @@ public class GameEventConsumer {
                 }
                 case STARTED, ENDED -> gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), gameStatusEvent.getStatus());
             }
-            this.template.convertAndSend("game_events", "game_status_change");
+            this.websocket.convertAndSend("game_events", "game_status_change");
         } catch (KafkaException e) {
             this.kafkaErrorService.newKafkaError("status", payloadStr, e.getMessage());
         }
@@ -107,7 +107,7 @@ public class GameEventConsumer {
             if (roundStatusEvent.getRoundNumber() == 1 && roundStatusEvent.getRoundStatus()== RoundStatus.STARTED){
                 commandDispatcherService.buyRobot();
             }
-            this.template.convertAndSend("game_events", "round_status_change");
+            this.websocket.convertAndSend("game_events", "round_status_change");
         } catch (KafkaException e) {
             this.kafkaErrorService.newKafkaError("roundStatus", payloadStr, e.getMessage());
         } catch (NoGameAvailableException | GameStatusException e) {
