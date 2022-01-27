@@ -28,7 +28,7 @@ public class MapJSONWrapper {
 
     public void addRobot(Robot robot, int index) {
         try {
-            this.robots[index] = robot != null ? 11 : -1;
+            this.robots[index] = robot != null ? 10 : -1;
         } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {
             System.out.println(exception.getMessage());
         }
@@ -41,14 +41,14 @@ public class MapJSONWrapper {
             if (planet != null) {
                 if (planet.getResourceType() != null) {
                     switch (planet.getResourceType()) {
-                        case COAL -> type = 5;
-                        case IRON -> type = 6;
-                        case GEM -> type = 7;
-                        case PLATIN -> type = 8;
+                        case COAL -> type = 4;
+                        case IRON -> type = 5;
+                        case GEM -> type = 6;
+                        case PLATIN -> type = 7;
                     }
                 }
 
-                if (planet.isSpaceStation()) type = 4;
+                if (planet.isSpaceStation()) type = 3;
                 //System.out.println("Planet " + planet + " mapped to: " + type);
             }
 
@@ -65,7 +65,7 @@ public class MapJSONWrapper {
             if (planet != null) {
                 Integer movementDifficulty = planet.getMovementDifficulty();
                 if (movementDifficulty == null) {
-                    gravity = 10;
+                    gravity = 9;
                 } else {
                     gravity = movementDifficulty;
                 }
