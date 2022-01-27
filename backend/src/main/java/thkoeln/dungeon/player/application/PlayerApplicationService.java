@@ -126,6 +126,18 @@ public class PlayerApplicationService {
         }
     }
 
+    public void reloadBearerToken () {
+        Player player = getCurrentPlayer();
+        UUID bearerTokenFromExistingPlayer = this.retrieveBearerTokenForExistingPlayer(player);
+        if (bearerTokenFromExistingPlayer != null) {
+            player.setBearerToken(bearerTokenFromExistingPlayer);
+            playerRepository.save(player);
+            logger.info("Received Bearer token for existing player: " + player);
+        } else {
+            logger.error("Could not get Bearer Token for existing player: " + player);
+        }
+    }
+
     /**
      * Obtain bearer token from an existing player
      *
