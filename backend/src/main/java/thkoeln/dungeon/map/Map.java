@@ -156,7 +156,7 @@ public class Map {
         for (int i = 0; i < this.anzahlCols; i++) {
 
             for (int j = 0; j < this.anzahlCols; j++) {
-                PositionVO tmpPos = new PositionVO(null, null, i + i, i, j);
+                PositionVO tmpPos = new PositionVO(null, null, i + j, i, j);
                 this.positions.add(tmpPos);
             }
         }

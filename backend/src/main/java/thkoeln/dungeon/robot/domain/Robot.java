@@ -27,7 +27,7 @@ public class Robot {
     @Setter
     @Nullable
     @Embedded
-    private PositionVO position;
+    private PositionVO position = new PositionVO();
 
     public Robot(boolean isDummy) {
         this.robotId = UUID.randomUUID();
