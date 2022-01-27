@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.CommandExecutor;
 import thkoeln.dungeon.game.domain.game.Game;
@@ -37,6 +38,8 @@ public class PlayerApplicationService {
     private final Logger logger = LoggerFactory.getLogger(PlayerApplicationService.class);
     private final ModelMapper modelMapper = new ModelMapper();
 
+    private final SimpMessagingTemplate template;
+
     private final CommandExecutor commandExecutor;
     private final PlayerRepository playerRepository;
     private final GameServiceRESTAdapter gameServiceRESTAdapter;
@@ -53,9 +56,10 @@ public class PlayerApplicationService {
             CommandExecutor commandExecutor,
             PlayerRepository playerRepository,
             GameParticipationRepository gameParticipationRepository,
-            GameServiceRESTAdapter gameServiceRESTAdapter) {
+            SimpMessagingTemplate template, GameServiceRESTAdapter gameServiceRESTAdapter) {
         this.commandExecutor = commandExecutor;
         this.playerRepository = playerRepository;
+        this.template = template;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
     }
 
@@ -211,6 +215,7 @@ public class PlayerApplicationService {
             Player player = found.get();
             player.setMoney(money.floatValue());
             playerRepository.save(player);
+            this.template.convertAndSend("player_events", "player_money_set");
         }
         else {
             throw new PlayerRegistryException("Player with playerId "+ playerId+" not found.");
@@ -224,6 +229,7 @@ public class PlayerApplicationService {
             Player player = found.get();
             player.addMoney(moneyChangedByAmount);
             playerRepository.save(player);
+            this.template.convertAndSend("player_events", "player_money_changed");
         }
         else {
             throw new PlayerRegistryException("Player with playerId "+ playerId+" not found.");
@@ -239,6 +245,7 @@ public class PlayerApplicationService {
         Player player = getCurrentPlayer();
         player.addRobot(robot);
         this.playerRepository.save(player);
+        this.template.convertAndSend("player_events", "robot_added");
     }
 
     // TODO: call on Robot Destroyed Event
@@ -246,6 +253,7 @@ public class PlayerApplicationService {
         Player player = getCurrentPlayer();
         player.removeRobot(robot);
         this.playerRepository.save(player);
+        this.template.convertAndSend("player_events", "robot_removed");
     }
 
     public void receiveCommandAnswer(UUID transactionId, String payload) {
