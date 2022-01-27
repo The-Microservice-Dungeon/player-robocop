@@ -26,17 +26,19 @@ public class GameApplicationService {
     private final MapApplicationService mapService;
     private final PlanetApplicationService planetApplicationService;
     private final RobotApplicationService robotApplicationService;
+    private final PlayerApplicationService playerApplicationService;
 
     @Autowired
     public GameApplicationService(GameRepository gameRepository,
                                   GameServiceRESTAdapter gameServiceRESTAdapter,
                                   PlayerApplicationService playerApplicationService,
-                                  MapApplicationService mapService, PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService) {
+                                  MapApplicationService mapService, PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService, PlayerApplicationService playerApplicationService1) {
         this.gameRepository = gameRepository;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
         this.mapService = mapService;
         this.planetApplicationService = planetApplicationService;
         this.robotApplicationService = robotApplicationService;
+        this.playerApplicationService = playerApplicationService1;
     }
 
     public Game retrieveListedGameWithStatus(GameStatus gameStatus) throws GameStatusException, NoGameAvailableException{
@@ -104,6 +106,7 @@ public class GameApplicationService {
                 modelMapper.map(foundDtoOptional.get(), game);
                 gameRepository.save(game);
                 mapService.createMapFromGame(game);
+                playerApplicationService.reloadBearerToken();
                 logger.info("Updated game " + game);
             } else {
                 game.makeOrphan();
