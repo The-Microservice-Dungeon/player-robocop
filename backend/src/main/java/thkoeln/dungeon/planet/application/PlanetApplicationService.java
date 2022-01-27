@@ -47,14 +47,13 @@ public class PlanetApplicationService {
             if (existingPlanetOption.isPresent()) {
                 Planet existingPlanet = existingPlanetOption.get();
                 planet.defineNeighbour(existingPlanet, neighbour.getDirection());
-                this.planetRepository.save(planet);
                 this.planetRepository.save(existingPlanet);
             }else {
                 Planet newPlanet = new Planet(neighbour.getPlanetId());
                 planet.defineNeighbour(newPlanet, neighbour.getDirection());
-                this.planetRepository.save(planet);
                 this.planetRepository.save(newPlanet);
             }
+            this.planetRepository.save(planet);
         }
     }
 

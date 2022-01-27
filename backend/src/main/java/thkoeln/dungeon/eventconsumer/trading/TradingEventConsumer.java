@@ -78,10 +78,8 @@ public class TradingEventConsumer {
                 command.getPlayer().getPlayerId(),
                 tradingEvent.getMoneyChangedBy()));
         if (tradingEvent.getData()!=null && tradingEvent.getData().getPlanet()!=null){
-            this.robotApplicationService.createNewRobot(tradingEvent.getData().getRobotId());
-            this.planetApplicationService.createStartPlanet(tradingEvent.getData().getPlanet());
-            Robot robot = this.robotApplicationService.getById(tradingEvent.getData().getRobotId());
-            Planet planet = this.planetApplicationService.getById(tradingEvent.getData().getPlanet());
+            Robot robot = this.robotApplicationService.createNewRobot(tradingEvent.getData().getRobotId());
+            Planet planet = this.planetApplicationService.createStartPlanet(tradingEvent.getData().getPlanet());
             this.mapApplicationService.handleNewRobotSpawn(robot, planet);
         }
     }
