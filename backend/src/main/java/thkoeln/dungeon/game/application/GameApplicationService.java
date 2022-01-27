@@ -157,7 +157,6 @@ public class GameApplicationService {
         Game game = foundGames.get(0);
         game.setCurrentPlayers(getCurrentPlayers());
         mapService.createMapFromGame(game);
-        mapService.placeDemoStuff(); // TODO: remove once robot moves and we get real planets
         game.start();
         gameRepository.save(game);
     }
@@ -167,7 +166,8 @@ public class GameApplicationService {
         try {
             gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
         } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Can't fetch current Game State! " + e.getMessage());
+            return 0;
         }
         return gameDtos[0].getParticipatingPlayers().size();
     }
