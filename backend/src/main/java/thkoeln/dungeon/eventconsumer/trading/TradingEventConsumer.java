@@ -11,6 +11,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.Command;
 import thkoeln.dungeon.command.CommandRepository;
+import thkoeln.dungeon.game.domain.game.GameException;
 import thkoeln.dungeon.map.MapApplicationService;
 import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
@@ -71,6 +72,10 @@ public class TradingEventConsumer {
         TradingEvent tradingEvent = new TradingEvent()
                 .fillWithPayload(payload)
                 .fillHeader(eventId,timestamp,transactionId);
+
+        if (!tradingEvent.getSuccess()) {
+            throw new GameException("Unsuccessfully response to trading command! Payload:" + payload);
+        }
         //This checks our command repo, if we issued this command, then we can save + process this.
         Optional<Command> commandOptional = commandRepository.findByTransactionId(tradingEvent.getTransactionId());
         commandOptional.ifPresent(command -> {
