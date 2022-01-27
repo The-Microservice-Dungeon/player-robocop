@@ -28,14 +28,12 @@ public class TradingEventConsumer {
     private final CommandRepository commandRepository;
     private final BankCreatedEventRepository bankCreatedEventRepository;
     private final TradingEventRepository tradingEventRepository;
-    private final PlanetApplicationService planetApplicationService;
     private final RobotApplicationService robotApplicationService;
     private final MapApplicationService mapApplicationService;
     private final Logger logger = LoggerFactory.getLogger(TradingEventConsumer.class);
 
     @Autowired
     public TradingEventConsumer(PlayerApplicationService playerApplicationService,
-                                PlanetApplicationService planetApplicationService,
                                 BankCreatedEventRepository bankCreatedEventRepository,
                                 CommandRepository commandRepository,
                                 TradingEventRepository tradingEventRepository,
@@ -44,7 +42,6 @@ public class TradingEventConsumer {
         this.playerApplicationService = playerApplicationService;
         this.bankCreatedEventRepository = bankCreatedEventRepository;
         this.commandRepository = commandRepository;
-        this.planetApplicationService = planetApplicationService;
         this.tradingEventRepository = tradingEventRepository;
         this.robotApplicationService = robotApplicationService;
         this.mapApplicationService = mapApplicationService;
@@ -59,9 +56,15 @@ public class TradingEventConsumer {
         BankCreatedEvent bankCreatedEvent = new BankCreatedEvent()
                 .fillWithPayload(payload)
                 .fillHeader(eventId,timestamp,transactionId);
-        logger.info("Saving bankCreatedEvent with money value = "+bankCreatedEvent.getMoney());
-        bankCreatedEventRepository.save(bankCreatedEvent);
-        playerApplicationService.setMoneyOfPlayer(bankCreatedEvent.getPlayerId(), bankCreatedEvent.getMoney());
+
+        if (playerApplicationService.getCurrentPlayer().getPlayerId() == bankCreatedEvent.getPlayerId()) {
+            logger.info("Saving bankCreatedEvent with money value = " + bankCreatedEvent.getMoney());
+            bankCreatedEventRepository.save(bankCreatedEvent);
+
+            playerApplicationService.setMoneyOfPlayer(bankCreatedEvent.getPlayerId(), bankCreatedEvent.getMoney());
+        } else {
+            logger.warn("This bank created Event is not for our player!");
+        }
     }
 
     @KafkaListener(topics = "trades")
@@ -81,17 +84,20 @@ public class TradingEventConsumer {
 
         //This checks our command repo, if we issued this command, then we can save + process this.
         Optional<Command> commandOptional = commandRepository.findByTransactionId(tradingEvent.getTransactionId());
-        commandOptional.ifPresent(command -> {
+        if (commandOptional.isPresent()) {
+            Command command = commandOptional.get();
+
             logger.info("Saving trading event with money value = "+tradingEvent.getMoneyChangedBy());
             tradingEventRepository.save(tradingEvent);
             playerApplicationService.changeMoneyOfPlayer(
-                command.getPlayer().getPlayerId(),
-                tradingEvent.getMoneyChangedBy());
+                    command.getPlayer().getPlayerId(),
+                    tradingEvent.getMoneyChangedBy());
 
-        });
-        if (tradingEvent.getData()!=null && tradingEvent.getData().getPlanet()!=null){
-            Robot robot = this.robotApplicationService.createNewRobot(tradingEvent.getData().getRobotId());
-            this.mapApplicationService.handleNewRobotSpawn(robot, tradingEvent.getData().getPlanet());
+            // If this was a robot spawn event we handle it accordingly
+            if (tradingEvent.getData()!=null && tradingEvent.getData().getPlanet()!=null){
+                Robot robot = this.robotApplicationService.createNewRobot(tradingEvent.getData().getRobotId());
+                this.mapApplicationService.handleNewRobotSpawn(robot, tradingEvent.getData().getPlanet());
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import thkoeln.dungeon.command.Command;
 import thkoeln.dungeon.command.CommandRepository;
 import thkoeln.dungeon.eventconsumer.trading.TradingEvent;
 import thkoeln.dungeon.eventconsumer.trading.TradingEventRepository;
+import thkoeln.dungeon.game.domain.game.GameException;
 import thkoeln.dungeon.map.MapApplicationService;
 import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
@@ -67,8 +68,11 @@ public class RobotEventConsumer {
                     .fillWithPayload(payload)
                     .fillHeader(eventId,timestamp,"");
             logger.info("Saving movement event");
-            movementEventRepository.save(movementEvent);
             List<Robot> affectedRobots = robotRepository.findAllByRobotIdIn(movementEvent.getRobots());
+            if (affectedRobots.isEmpty()) {
+                throw new GameException("This movement event does not match any of our robots!");
+            }
+            movementEventRepository.save(movementEvent);
             Optional<Planet> targetPlanet = planetRepository.findById(movementEvent.getPlanet().getPlanetId());
             if (targetPlanet.isPresent()){
                 planetApplicationService.fillPlanetInformation(targetPlanet.get(),movementEvent.getPlanet());
@@ -94,9 +98,10 @@ public class RobotEventConsumer {
             NeighbourEvent neighboursEvent = new NeighbourEvent()
                     .fillWithPayload(payload)
                     .fillHeader(eventId,timestamp,transactionId);
-            neighboursEventRepository.save(neighboursEvent);
+            // If this was triggered by us, we save and process
             Optional<Command> triggeringCommandOptional = commandRepository.findByTransactionId(neighboursEvent.getTransactionId());
             if (triggeringCommandOptional.isPresent()){
+                neighboursEventRepository.save(neighboursEvent);
                 Command command = triggeringCommandOptional.get();
                 //movement command triggered this
                 switch (command.getCommandType()){
