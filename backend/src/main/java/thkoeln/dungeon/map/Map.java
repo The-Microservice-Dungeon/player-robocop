@@ -2,6 +2,8 @@ package thkoeln.dungeon.map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.robot.domain.Robot;
@@ -9,6 +11,7 @@ import thkoeln.dungeon.robot.domain.Robot;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +45,20 @@ public class Map {
     @ElementCollection
     List<PositionVO> positions;
 
+    @Transient
+    private final Logger logger = LoggerFactory.getLogger(Map.class);
+
     /***
      * Creates a Map and calculates the center Position
      * @param game
      */
     public Map(Game game) {
         this.numberPlayers = game.getNumberOfPlayers();
+
+        if (numberPlayers == 0) {
+            logger.warn("Can't create Map for Game with 0 players!");
+            return;
+        }
 
         if (numberPlayers < 10) {
             this.mapSize = 15;
