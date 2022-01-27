@@ -78,7 +78,12 @@
         </div>
       </div>
     </div>
+    <bounce-loader
+      v-if="firstLoad"
+      :color="'red'"
+    />
     <canvas
+      v-else
       ref="mapCanvas"
       class="mapCanvas"
     />
@@ -87,12 +92,17 @@
 
 <script>
 import mapTiles from '@/assets/mapTiles.png'
+import { apiGet } from '@/utils'
+import BounceLoader from 'vue-spinner/src/BounceLoader.vue'
 
 // eslint-disable-next-line no-unused-vars
 const planarSlider = require('planar-range')
 
 export default {
   name: 'MapInfo',
+  components: {
+    BounceLoader,
+  },
   props: {
     isMobile: {
       type: Boolean,
@@ -101,8 +111,9 @@ export default {
   },
   data () {
     return {
+      firstLoad: true,
       maxWidth: !this.isMobile,
-      playerCount: 20,
+      mapSize: 15,
       tileResolution: 64,
       cols: undefined,
       rows: undefined,
@@ -120,29 +131,53 @@ export default {
       renderPlanarPosition: true,
     }
   },
-  computed: {
-    mapSize: function () {
-      if (this.playerCount < 10) return 15
-      if (this.playerCount < 20) return 20
-      return 35
-    },
-  },
   watch: {
     isMobile () {
       this.maxWidth = !this.isMobile
     },
   },
   mounted () {
-    this.loadTiles()
-      .then(() => {
-        this.setMapDimensions()
-        this.buildMap()
-        this.initCanvas()
-        this.initCamera()
-        this.drawMapWithCamera()
-      })
+    this.fetchMapData()
   },
   methods: {
+    initializeMapOnLoad () {
+      this.loadTiles()
+        .then(() => {
+          this.setMapDimensions()
+          // this.buildMap()
+          this.initCanvas()
+          this.initCamera()
+          this.drawMapWithCamera()
+        })
+    },
+    fetchMapData () {
+      apiGet('/map')
+        .then((response) => {
+          if (response.status !== 200) throw new Error('Unexpected Response ' + response.status)
+          return response
+        })
+        .then(response => response.json())
+        .then(response => {
+          if (response) {
+            console.log(response)
+            this.mapSize = response.mapSize
+            this.layers[0] = response.gravity
+            this.layers[1] = response.types
+            this.layers[2] = response.robots
+
+            if (this.firstLoad) {
+              this.firstLoad = false
+              this.initializeMapOnLoad()
+            } else {
+              this.drawMapWithCamera()
+            }
+          }
+        })
+        .catch(e => {
+          this.firstLoad = false
+          console.warn(e)
+        })
+    },
     loadTiles () {
       let img = new Image()
 
