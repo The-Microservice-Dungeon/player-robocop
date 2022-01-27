@@ -30,9 +30,6 @@
         <br>
         <span>
           Round Status: {{ game.currentRound.roundStatus }}
-        </span><br>
-        <span>
-          Round Time: {{ game.currentRound.roundTime }}
         </span>
       </div>
     </template>

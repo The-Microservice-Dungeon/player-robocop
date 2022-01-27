@@ -61,7 +61,6 @@ public class UIController {
 
         JSONObject roundJson = new JSONObject()
                 .put("roundNumber", round.getRoundNumber())
-                .put("roundTime", "SomeTime") // TODO: Return Actual Data
                 .put("roundStatus", round.getRoundStatus());
 
         JSONObject gameJson = new JSONObject()
