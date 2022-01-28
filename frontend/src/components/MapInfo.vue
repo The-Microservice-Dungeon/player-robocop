@@ -153,16 +153,6 @@ export default {
     })
   },
   methods: {
-    initializeMapOnLoad () {
-      this.loadTiles()
-        .then(() => {
-          this.setMapDimensions()
-          // this.buildMap()
-          this.initCanvas()
-          this.initCamera()
-          this.drawMapWithCamera()
-        })
-    },
     fetchMapData () {
       apiGet('/map')
         .then((response) => {
@@ -184,7 +174,7 @@ export default {
               this.initializeMapOnLoad()
             } else {
               console.log('Got new map Data. Rerendering...')
-              this.render()
+              this.renderNewMapData()
             }
           }
         })
@@ -210,6 +200,22 @@ export default {
       img.src = mapTiles
 
       return loadingPromise
+    },
+    initializeMapOnLoad () {
+      this.loadTiles()
+        .then(() => {
+          this.setMapDimensions()
+          // this.buildMap()
+          this.initCanvas()
+          this.initCamera()
+          this.drawMapWithCamera()
+        })
+    },
+    renderNewMapData () {
+      this.setMapDimensions()
+      this.initCanvas()
+      this.initCamera()
+      this.drawMapWithCamera()
     },
     render () {
       this.setMapDimensions()
