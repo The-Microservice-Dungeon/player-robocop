@@ -119,11 +119,13 @@ public class GameEventConsumer {
     @RetryableTopic(attempts = "3", backoff = @Backoff(delay = 500))
     public void consumePlayerStatusEvent( @Header String eventId, @Header String timestamp, @Header String transactionId,
                                           @Payload String payload ) {
+        logger.info("Consuming Player Status event with payload: " + payload);
         PlayerStatusEvent playerStatusEvent = new PlayerStatusEvent()
                 .fillWithPayload( payload )
                 .fillHeader( eventId, timestamp, transactionId );
 
         playerStatusEventRepository.save( playerStatusEvent );
+        // TODO: we consume every single event here. This does not work for multiple player
         if ( playerStatusEvent.isValid() ) {
             playerApplicationService.assignPlayerId(
                     playerStatusEvent.getTransactionId(), playerStatusEvent.getPlayerId() );
