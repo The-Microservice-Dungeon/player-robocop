@@ -227,6 +227,7 @@ public class GameServiceRESTAdapter {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> request = new HttpEntity<>(json, headers);
+            logger.info("Sending Command with payload + " + json + " to " + urlString);
             response = restTemplate.postForObject(urlString, request, CommandAnswer.class);
         } catch (JsonProcessingException e) {
             throw new UnexpectedRESTException(

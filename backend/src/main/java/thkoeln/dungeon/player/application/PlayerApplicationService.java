@@ -172,8 +172,8 @@ public class PlayerApplicationService {
      */
     public void registerOnePlayerForGame(Player player, Game game) {
         if (player.getBearerToken() == null) {
-            logger.error("Player" + player + " has no BearerToken!");
-            return;
+            logger.error("Player" + player + " has no BearerToken! Trying to obtain it.");
+            obtainBearerTokenForOnePlayer(player);
         }
         try {
             UUID transactionId = gameServiceRESTAdapter.registerPlayerForGame(game.getGameId(), player.getBearerToken());
