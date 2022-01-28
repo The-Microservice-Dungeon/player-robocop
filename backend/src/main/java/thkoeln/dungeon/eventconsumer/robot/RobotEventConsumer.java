@@ -94,13 +94,13 @@ public class RobotEventConsumer {
         logger.info("Neighbour event received. Consuming in 300ms");
         Timer timer = new Timer(300, arg0 -> {
             logger.info("Consuming neighbour event");
-            logger.info("Payload:" +payload);
             NeighbourEvent neighboursEvent = new NeighbourEvent()
                     .fillWithPayload(payload)
                     .fillHeader(eventId,timestamp,transactionId);
             // If this was triggered by us, we save and process
             Optional<Command> triggeringCommandOptional = commandRepository.findByTransactionId(neighboursEvent.getTransactionId());
             if (triggeringCommandOptional.isPresent()){
+                logger.info("Consuming own neighbour event with payload:" +payload);
                 neighboursEventRepository.save(neighboursEvent);
                 Command command = triggeringCommandOptional.get();
                 //movement command triggered this

@@ -217,6 +217,7 @@ public class PlayerApplicationService {
         }
         Player player = foundPlayers.get(0);
         player.setPlayerId(playerId);
+        logger.info("Player: " + player);
         playerRepository.save(player);
     }
 
