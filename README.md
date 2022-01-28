@@ -13,6 +13,23 @@
 ## Access
 Access Robocop on [cides03.gm.fh-koeln.de:8103](http://cides03.gm.fh-koeln.de:8103) if you dare...
 
+<details>
+  <summary>Hint</summary>
+
+  ```
+  To access Robocop you must ask nicely.
+  ```
+
+   - <details>
+     <summary>Another Hint</summary>
+
+      ```
+     Tell him 'letMePlay'
+      ```
+   
+   </details>
+
+</details>
 
 ## Installation
 
