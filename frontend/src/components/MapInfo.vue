@@ -209,10 +209,10 @@ export default {
         .then(() => {
           this.setMapDimensions()
           this.initMap()
+          this.renderMap = true
           this.initCanvas()
           this.initCamera()
           this.drawMapWithCamera()
-          this.renderMap = true
         })
     },
     render () {
