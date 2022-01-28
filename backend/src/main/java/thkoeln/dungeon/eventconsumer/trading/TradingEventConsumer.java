@@ -56,29 +56,30 @@ public class TradingEventConsumer {
     public void consumeBankCreatedEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,
                                         @Payload String payload){
 
-        logger.info("Bank Created event " + eventId + " received. Consuming in 300ms");
+        logger.info("Received bankCreatedEvent " + payload);
+        BankCreatedEvent bankCreatedEvent = new BankCreatedEvent()
+                .fillWithPayload(payload)
+                .fillHeader(eventId,timestamp,transactionId);
 
-        Timer timer = new Timer(300, arg0 -> {
-            logger.info("Consuming bankCreatedEvent " + eventId + " Payload: " + payload);
-            BankCreatedEvent bankCreatedEvent = new BankCreatedEvent()
-                    .fillWithPayload(payload)
-                    .fillHeader(eventId,timestamp,transactionId);
+        UUID playerId = bankCreatedEvent.getPlayerId();
 
-            UUID playerId = bankCreatedEvent.getPlayerId();
-            if (playerApplicationService.bankEventRelevantForUs(playerId)) {
+        if (playerApplicationService.bankEventRelevantForUs(playerId)) {
+            logger.info("Bank Created event " + payload + " relevant for us. Consuming in 500ms");
+
+            Timer timer = new Timer(500, arg0 -> {
                 logger.info("Bank Created Event is for us. Consuming!");
                 logger.info("Saving bankCreatedEvent: " + payload);
 
                 bankCreatedEventRepository.save(bankCreatedEvent);
                 playerApplicationService.setMoneyOfPlayer(playerId, bankCreatedEvent.getMoney());
-            } else {
-                String errorMessage = "Bank Created Event for Player with playerId "+ playerId +" is not for us.";
-                logger.error(errorMessage);
-                throw new PlayerRegistryException(errorMessage);
-            }
-        });
-        timer.setRepeats(false);
-        timer.start();
+            });
+            timer.setRepeats(false);
+            timer.start();
+        } else {
+            String errorMessage = "Bank Created Event for Player with playerId "+ playerId +" is not for us.";
+            logger.error(errorMessage);
+            throw new PlayerRegistryException(errorMessage);
+        }
     }
 
     @KafkaListener(topics = "trades")
