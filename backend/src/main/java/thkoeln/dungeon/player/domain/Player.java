@@ -73,7 +73,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player '" + name + "' (" + email + "), bearerToken: " + bearerToken;
+        return "Player '" + name + "' (" + email + "), bearerToken: " + bearerToken + " playerId: " + playerId + " Id: " + id;
     }
 
     public void addMoney(Integer moneyChangedByAmount) {
