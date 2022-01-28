@@ -6,6 +6,10 @@
 
     <template v-else>
       <div id="nav">
+        <a
+          class="logout"
+          @click="end"
+        >logout</a>
         <router-link to="/">
           Home
         </router-link>
@@ -23,10 +27,6 @@
         >
           Actuator
         </router-link>
-        <a
-          class="logout"
-          @click="end"
-        >logout</a>
       </div>
       <router-view class="view"/>
     </template>
@@ -40,6 +40,7 @@ import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
 import { apiLink } from '@/utils'
 import { EventBus } from '@/event-bus'
+import Vue from 'vue'
 
 export default {
   name: 'App',
@@ -87,7 +88,8 @@ export default {
     },
     handleEvent (tick) {
       let info = tick.body
-      console.log('Event Recieved: ' + info)
+      console.log('Event Received: ' + info)
+      Vue.$toast.open('Received ' + info + ' Event!')
       EventBus.$emit(info)
     },
   },
@@ -146,7 +148,7 @@ html, body {
   }
 
   .logout {
-    float: right;
+    float: left;
   }
 }
 </style>
