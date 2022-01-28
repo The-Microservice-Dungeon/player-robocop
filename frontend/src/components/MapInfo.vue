@@ -1,92 +1,94 @@
 <template>
   <div :class="maxWidth ? 'maxWidth infoCard' : 'infoCard'">
     <h3>Map</h3>
-    <div class="controls">
-      <div class="planar">
-        <planar-range
-          v-if="renderPlanarPosition"
-          class="positionPicker"
-        >
-          <planar-range-thumb
-            x="0.5"
-            y="0.5"
-            @change="updateCameraPosition"
-          />
-        </planar-range>
-      </div>
-      <div class="controlInfos">
-        <div class="sliders">
-          <label for="xOffset">
-            X: {{ camera.x }}
-            <input
-              id="xOffset"
-              v-model="camera.x"
-              class="slider"
-              step="8"
-              :min="0"
-              :max="calculateMaxScroll()"
-              type="range"
-              @input="render"
-            >
-          </label>
-          <label for="yOffset">
-            Y: {{ camera.y }}
-            <input
-              id="yOffset"
-              v-model="camera.y"
-              class="slider"
-              step="8"
-              :min="0"
-              :max="calculateMaxScroll()"
-              type="range"
-              @input="render"
-            >
-          </label>
-          <label for="zoom">
-            Zoom: {{ zoomLevel }}
-            <input
-              id="zoom"
-              v-model="zoomLevel"
-              class="slider"
-              step="0.1"
-              type="range"
-              min="1"
-              max="10"
-              @input="render"
-            >
-          </label>
+    <template v-if="renderMap">
+      <div class="controls">
+        <div class="planar">
+          <planar-range
+            v-if="renderPlanarPosition"
+            class="positionPicker"
+          >
+            <planar-range-thumb
+              x="0.5"
+              y="0.5"
+              @change="updateCameraPosition"
+            />
+          </planar-range>
         </div>
-        <div class="buttons">
-          <button
-            class="button"
-            @click="mapOverview"
-          >
-            View all
-          </button>
-          <button
-            class="button"
-            @click="centerCamera"
-          >
-            Center View
-          </button>
-          <button
-            class="button"
-            @click="resetCamera"
-          >
-            Reset View
-          </button>
+        <div class="controlInfos">
+          <div class="sliders">
+            <label for="xOffset">
+              X: {{ camera.x }}
+              <input
+                id="xOffset"
+                v-model="camera.x"
+                class="slider"
+                step="8"
+                :min="0"
+                :max="calculateMaxScroll()"
+                type="range"
+                @input="render"
+              >
+            </label>
+            <label for="yOffset">
+              Y: {{ camera.y }}
+              <input
+                id="yOffset"
+                v-model="camera.y"
+                class="slider"
+                step="8"
+                :min="0"
+                :max="calculateMaxScroll()"
+                type="range"
+                @input="render"
+              >
+            </label>
+            <label for="zoom">
+              Zoom: {{ zoomLevel }}
+              <input
+                id="zoom"
+                v-model="zoomLevel"
+                class="slider"
+                step="0.1"
+                type="range"
+                min="1"
+                max="10"
+                @input="render"
+              >
+            </label>
+          </div>
+          <div class="buttons">
+            <button
+              class="button"
+              @click="mapOverview"
+            >
+              View all
+            </button>
+            <button
+              class="button"
+              @click="centerCamera"
+            >
+              Center View
+            </button>
+            <button
+              class="button"
+              @click="resetCamera"
+            >
+              Reset View
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <bounce-loader
-      v-if="firstLoad"
-      :color="'red'"
-    />
-    <canvas
-      v-else
-      ref="mapCanvas"
-      class="mapCanvas"
-    />
+      <bounce-loader
+        v-if="firstLoad"
+        :color="'red'"
+      />
+      <canvas
+        v-else
+        ref="mapCanvas"
+        class="mapCanvas"
+      />
+    </template>
   </div>
 </template>
 
@@ -112,6 +114,7 @@ export default {
   },
   data () {
     return {
+      renderMap: false,
       firstLoad: true,
       maxWidth: !this.isMobile,
       mapSize: 15,
@@ -209,12 +212,18 @@ export default {
           this.initCanvas()
           this.initCamera()
           this.drawMapWithCamera()
+          this.renderMap = true
         })
     },
     render () {
+      this.renderMap = false
       this.setMapDimensions()
-      this.updateCanvas()
-      this.drawMapWithCamera()
+      this.$nextTick()
+      .then(() => {
+        this.renderMap = true
+        this.updateCanvas()
+        this.drawMapWithCamera()
+      })
     },
     setMapDimensions () {
       this.cols = this.mapSize * 2
