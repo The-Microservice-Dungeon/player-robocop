@@ -21,6 +21,7 @@ import thkoeln.dungeon.game.application.NoGameAvailableException;
 import thkoeln.dungeon.game.domain.game.GameStatus;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
+import thkoeln.dungeon.player.application.PlayerRegistryException;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 
 @Service
@@ -124,10 +125,20 @@ public class GameEventConsumer {
                 .fillWithPayload( payload )
                 .fillHeader( eventId, timestamp, transactionId );
 
-        playerStatusEventRepository.save( playerStatusEvent );
         if ( playerStatusEvent.isValid() ) {
             logger.info("Player Status Event was valid, processing");
-            playerApplicationService.handlePlayerRegistrationEvent(playerStatusEvent.getTransactionId(), playerStatusEvent.getPlayerId(), playerStatusEvent.getName() );
+
+            if (playerApplicationService.registrationEventRelevantForUs(playerStatusEvent.getName())) {
+                logger.info("Player Status Event is for us. Consuming!");
+                logger.info("Saving playerStatusEvent: " + payload);
+                playerStatusEventRepository.save( playerStatusEvent );
+                playerApplicationService.handlePlayerRegistrationEvent(playerStatusEvent.getTransactionId(), playerStatusEvent.getPlayerId());
+            } else {
+                String errorMessage = "This event is not for us! It is for " + playerStatusEvent.getName();
+
+                logger.error(errorMessage);
+                throw new PlayerRegistryException(errorMessage);
+            }
         }
         else {
             logger.warn( "Caught invalid PlayerStatusEvent " + playerStatusEvent );

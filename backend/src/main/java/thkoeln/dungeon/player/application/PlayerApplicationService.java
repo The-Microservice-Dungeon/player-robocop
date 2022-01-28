@@ -205,14 +205,11 @@ public class PlayerApplicationService {
         logger.info("Ending round " + roundNumber);
     }
 
-    public void handlePlayerRegistrationEvent (UUID registrationTransactionId, UUID playerId, String name) {
-        if (!playerName.equals(name)) {
-            String errorMessage = "This event is not for us! It is for " + name;
+    public Boolean registrationEventRelevantForUs (String name) {
+        return !playerName.equals(name);
+    }
 
-            logger.error(errorMessage);
-            throw new PlayerRegistryException(errorMessage);
-        }
-
+    public void handlePlayerRegistrationEvent (UUID registrationTransactionId, UUID playerId) {
         if (registrationTransactionId == null) {
             String errorMessage = "registrationTransactionId cannot be null!";
 
