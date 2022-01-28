@@ -91,7 +91,7 @@ public class Game {
     }
 
     public Integer getNumberOfPlayers () {
-        return this.participatingPlayers.size();
+        return this.getCurrentPlayers() != null ? this.getCurrentPlayers() : this.participatingPlayers.size();
     }
 
     @Override

@@ -116,13 +116,14 @@ public class GameApplicationService {
         for (GameDto gameDto : unknownGameDtos) {
             Game game = this.storeGame(gameDto);
             mapService.createMapFromGame(game);
-            logger.info("Received game " + gameDto + " for the first time");
+            logger.info("Received game " + game + " for the first time");
         }
         logger.info("Retrieval of new game state finished");
     }
 
     public Game storeGame(GameDto gameDto) {
         Game game = modelMapper.map(gameDto, Game.class);
+        game.setCurrentPlayers(getCurrentPlayers());
         gameRepository.save(game);
         return game;
     }
@@ -172,8 +173,10 @@ public class GameApplicationService {
             logger.warn("Found "+ foundGames.size() + " matching games with gameId. Expected 1"+ gameId);
             return;
         }
+
         Game game = foundGames.get(0);
         game.setCurrentPlayers(getCurrentPlayers());
+
         mapService.createMapFromGame(game);
         game.start();
         gameRepository.save(game);
@@ -222,7 +225,7 @@ public class GameApplicationService {
             gameDtos = this.gameServiceRESTAdapter.fetchCurrentGameState();
         } catch (UnexpectedRESTException | RESTConnectionFailureException e) {
             logger.error("Can't fetch current Game State! " + e.getMessage());
-            return 0;
+            return null;
         }
         return gameDtos[0].getParticipatingPlayers().size();
     }
