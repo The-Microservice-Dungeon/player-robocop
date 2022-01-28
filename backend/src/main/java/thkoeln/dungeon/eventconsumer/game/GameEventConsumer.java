@@ -125,10 +125,9 @@ public class GameEventConsumer {
                 .fillHeader( eventId, timestamp, transactionId );
 
         playerStatusEventRepository.save( playerStatusEvent );
-        // TODO: we consume every single event here. This does not work for multiple player
         if ( playerStatusEvent.isValid() ) {
-            playerApplicationService.assignPlayerId(
-                    playerStatusEvent.getTransactionId(), playerStatusEvent.getPlayerId() );
+            logger.info("Player Status Event was valid, processing");
+            playerApplicationService.handlePlayerRegistrationEvent(playerStatusEvent.getTransactionId(), playerStatusEvent.getPlayerId(), playerStatusEvent.getName() );
         }
         else {
             logger.warn( "Caught invalid PlayerStatusEvent " + playerStatusEvent );

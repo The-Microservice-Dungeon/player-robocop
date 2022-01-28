@@ -59,7 +59,7 @@ public class TradingEventConsumer {
 
         logger.info("Saving bankCreatedEvent with money value = " + bankCreatedEvent.getMoney());
         bankCreatedEventRepository.save(bankCreatedEvent);
-        playerApplicationService.setMoneyOfPlayer(bankCreatedEvent.getPlayerId(), bankCreatedEvent.getMoney());
+        playerApplicationService.handleBankCreatedEvent(bankCreatedEvent.getPlayerId(), bankCreatedEvent.getMoney());
     }
 
     @KafkaListener(topics = "trades")

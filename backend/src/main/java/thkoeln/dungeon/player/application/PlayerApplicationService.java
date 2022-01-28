@@ -205,34 +205,66 @@ public class PlayerApplicationService {
         logger.info("Ending round " + roundNumber);
     }
 
+    public void handlePlayerRegistrationEvent (UUID registrationTransactionId, UUID playerId, String name) {
+        if (!playerName.equals(name)) {
+            String errorMessage = "This event is not for us! It is for " + name;
+
+            logger.error(errorMessage);
+            throw new PlayerRegistryException(errorMessage);
+        }
+
+        if (registrationTransactionId == null) {
+            String errorMessage = "registrationTransactionId cannot be null!";
+
+            logger.error(errorMessage);
+            throw new PlayerRegistryException(errorMessage);
+        }
+
+        if (playerId == null) {
+            String errorMessage = "PlayerId cannot be null!";
+            logger.error(errorMessage);
+            throw new PlayerRegistryException(errorMessage);
+        }
+
+        this.assignPlayerId(registrationTransactionId, playerId);
+    }
+
     public void assignPlayerId(UUID registrationTransactionId, UUID playerId) {
         logger.info("Assign playerId from game registration");
-        if (registrationTransactionId == null)
-            throw new PlayerRegistryException("registrationTransactionId cannot be null!");
-        if (playerId == null) throw new PlayerRegistryException("PlayerId cannot be null!");
+
         List<Player> foundPlayers = playerRepository.findByRegistrationTransactionId(registrationTransactionId);
         if (foundPlayers.size() != 1) {
-            throw new PlayerRegistryException("Found not exactly 1 game for player registration with " + registrationTransactionId
-                    + ", but " + foundPlayers.size());
+            String errorMessage = "Found not exactly 1 game for player registration with " + registrationTransactionId + ", but " + foundPlayers.size();
+            logger.error(errorMessage);
+            throw new PlayerRegistryException(errorMessage);
         }
+
         Player player = foundPlayers.get(0);
         player.setPlayerId(playerId);
-        logger.info("Player: " + player);
+
+        logger.info("Updated Player " + player);
+
         playerRepository.save(player);
     }
 
-    public void setMoneyOfPlayer(UUID playerId, Integer money){
+    public void handleBankCreatedEvent(UUID playerId, Integer money){
         Optional<Player> found = playerRepository.findByPlayerId(playerId);
+
         if (found.isPresent()){
-            logger.info("Set player money to "+money);
             Player player = found.get();
-            player.setMoney(money.floatValue());
-            playerRepository.save(player);
-            this.websocket.convertAndSend("player_events", "player_money_set");
+            this.setMoneyOfPlayer(player, money);
+        } else {
+            String errorMessage = "Player with playerId "+ playerId +" not found.";
+            logger.error(errorMessage);
+            throw new PlayerRegistryException(errorMessage);
         }
-        else {
-            throw new PlayerRegistryException("Player with playerId "+ playerId+" not found.");
-        }
+    }
+
+    public void setMoneyOfPlayer(Player player, Integer money){
+        logger.info("Set player money to "+money);
+        player.setMoney(money.floatValue());
+        playerRepository.save(player);
+        this.websocket.convertAndSend("player_events", "player_money_set");
     }
 
     public void changeMoneyOfPlayer(UUID playerId, Integer moneyChangedByAmount){
