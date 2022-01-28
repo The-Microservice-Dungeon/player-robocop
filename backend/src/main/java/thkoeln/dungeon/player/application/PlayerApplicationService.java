@@ -206,7 +206,7 @@ public class PlayerApplicationService {
     }
 
     public Boolean registrationEventRelevantForUs (String name) {
-        return !playerName.equals(name);
+        return playerName.equals(name);
     }
 
     public void handlePlayerRegistrationEvent (UUID registrationTransactionId, UUID playerId) {
