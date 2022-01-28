@@ -179,10 +179,12 @@ export default {
             this.layers[2] = response.robots
 
             if (this.firstLoad) {
+              console.log('First Map Load')
               this.firstLoad = false
               this.initializeMapOnLoad()
             } else {
-              this.drawMapWithCamera()
+              console.log('Got new map Data. Rerendering...')
+              this.render()
             }
           }
         })
