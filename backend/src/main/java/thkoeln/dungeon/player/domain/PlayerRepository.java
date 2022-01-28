@@ -17,4 +17,6 @@ public interface PlayerRepository extends CrudRepository<Player, UUID> {
     List<Player> findByRegistrationTransactionId(UUID registrationTransactonId);
 
     Optional<Player> findByPlayerId(UUID playerId);
+
+    Player getPlayerByPlayerId(UUID playerId);
 }

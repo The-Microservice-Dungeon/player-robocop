@@ -232,7 +232,7 @@ public class PlayerApplicationService {
     }
 
     public void assignPlayerId(UUID registrationTransactionId, UUID playerId) {
-        logger.info("Assign playerId from game registration");
+        logger.info("Assign playerId " + playerId + " from game registration");
 
         List<Player> foundPlayers = playerRepository.findByRegistrationTransactionId(registrationTransactionId);
         if (foundPlayers.size() != 1) {
@@ -249,20 +249,16 @@ public class PlayerApplicationService {
         playerRepository.save(player);
     }
 
-    public void handleBankCreatedEvent(UUID playerId, Integer money){
+    public Boolean bankEventRelevantForUs (UUID playerId) {
         Optional<Player> found = playerRepository.findByPlayerId(playerId);
 
-        if (found.isPresent()){
-            Player player = found.get();
-            this.setMoneyOfPlayer(player, money);
-        } else {
-            String errorMessage = "Player with playerId "+ playerId +" not found.";
-            logger.error(errorMessage);
-            throw new PlayerRegistryException(errorMessage);
-        }
+        return found.isPresent();
     }
 
-    public void setMoneyOfPlayer(Player player, Integer money){
+
+    public void setMoneyOfPlayer(UUID playerId, Integer money){
+        Player player = playerRepository.getPlayerByPlayerId(playerId);
+
         logger.info("Set player money to "+money);
         player.setMoney(money.floatValue());
         playerRepository.save(player);

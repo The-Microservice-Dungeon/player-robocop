@@ -11,16 +11,20 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.Command;
 import thkoeln.dungeon.command.CommandRepository;
+import thkoeln.dungeon.eventconsumer.robot.NeighbourEvent;
 import thkoeln.dungeon.game.domain.game.GameException;
 import thkoeln.dungeon.map.MapApplicationService;
 import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
+import thkoeln.dungeon.player.application.PlayerRegistryException;
 import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.robot.application.RobotApplicationService;
 import thkoeln.dungeon.robot.domain.Robot;
 
+import javax.swing.*;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TradingEventConsumer {
@@ -51,15 +55,30 @@ public class TradingEventConsumer {
     @RetryableTopic(attempts = "3", backoff = @Backoff(delay = 500))
     public void consumeBankCreatedEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,
                                         @Payload String payload){
-        logger.info("Consuming bankCreatedEvent with eventId:"+eventId);
-        logger.info("Payload: "+payload);
-        BankCreatedEvent bankCreatedEvent = new BankCreatedEvent()
-                .fillWithPayload(payload)
-                .fillHeader(eventId,timestamp,transactionId);
 
-        logger.info("Saving bankCreatedEvent with money value = " + bankCreatedEvent.getMoney());
-        bankCreatedEventRepository.save(bankCreatedEvent);
-        playerApplicationService.handleBankCreatedEvent(bankCreatedEvent.getPlayerId(), bankCreatedEvent.getMoney());
+        logger.info("Bank Created event " + eventId + " received. Consuming in 300ms");
+
+        Timer timer = new Timer(300, arg0 -> {
+            logger.info("Consuming bankCreatedEvent " + eventId + " Payload: " + payload);
+            BankCreatedEvent bankCreatedEvent = new BankCreatedEvent()
+                    .fillWithPayload(payload)
+                    .fillHeader(eventId,timestamp,transactionId);
+
+            UUID playerId = bankCreatedEvent.getPlayerId();
+            if (playerApplicationService.bankEventRelevantForUs(playerId)) {
+                logger.info("Bank Created Event is for us. Consuming!");
+                logger.info("Saving bankCreatedEvent: " + payload);
+
+                bankCreatedEventRepository.save(bankCreatedEvent);
+                playerApplicationService.setMoneyOfPlayer(playerId, bankCreatedEvent.getMoney());
+            } else {
+                String errorMessage = "Bank Created Event for Player with playerId "+ playerId +" is not for us.";
+                logger.error(errorMessage);
+                throw new PlayerRegistryException(errorMessage);
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 
     @KafkaListener(topics = "trades")
