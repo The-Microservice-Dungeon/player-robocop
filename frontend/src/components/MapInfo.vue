@@ -174,7 +174,7 @@ export default {
               this.initializeMapOnLoad()
             } else {
               console.log('Got new map Data. Rerendering...')
-              this.renderNewMapData()
+              this.render()
             }
           }
         })
@@ -205,17 +205,11 @@ export default {
       this.loadTiles()
         .then(() => {
           this.setMapDimensions()
-          // this.buildMap()
+          this.initMap()
           this.initCanvas()
           this.initCamera()
           this.drawMapWithCamera()
         })
-    },
-    renderNewMapData () {
-      this.setMapDimensions()
-      this.initCanvas()
-      this.initCamera()
-      this.drawMapWithCamera()
     },
     render () {
       this.setMapDimensions()
@@ -229,33 +223,12 @@ export default {
       this.mapHeight = this.rows * this.tileResolution / this.zoomLevel
       this.clampScroll()
     },
-    buildMap () {
+    initMap () {
       const totalLength = this.cols * this.rows
-      // random Gravity Map
-      this.layers[0] = Array.from({ length: totalLength }, (x, i) => {
-        // borders
-        if (this.tileIsBorder(totalLength, i)) return 1
-        if (this.getCenter() === i) return 2
-        // center of map
-        return i % 3 === 0 ? 1 : 0
-      })
-      // random Station/Resources Map
-      this.layers[1] = Array.from({ length: totalLength }, (x, i) => {
-        if (!this.tileIsBorder(totalLength, i)) {
-          let shouldDraw = this.getRandomInt(1, 4)
-          if (shouldDraw === 1) return this.getRandomInt(3, 8)
-        }
-        return -1
-      })
-      // random robots
-      this.layers[2] = Array.from({ length: totalLength }, (x, i) => {
-        if (!this.tileIsBorder(totalLength, i)) {
-          let shouldDraw = this.getRandomInt(1, 25)
-          if (shouldDraw === 1) return 10
-        }
-        return -1
-      })
-      console.log(this.layers)
+
+      for (let layer in this.layers) {
+        this.layers[layer] = Array.from({ length: totalLength }, () => -1)
+      }
     },
     getTile (layer, col, row) {
       return this.layers[layer][row * this.cols + col]
@@ -383,6 +356,34 @@ export default {
       this.camera.x = Math.floor((this.cols * this.tileResolution * e.detail.x) - this.mapWidth / 2)
       this.camera.y = Math.floor((this.cols * this.tileResolution * e.detail.y) - this.mapWidth / 2)
       this.render()
+    },
+    buildMap () {
+      const totalLength = this.cols * this.rows
+      // random Gravity Map
+      this.layers[0] = Array.from({ length: totalLength }, (x, i) => {
+        // borders
+        if (this.tileIsBorder(totalLength, i)) return 1
+        if (this.getCenter() === i) return 2
+        // center of map
+        return i % 3 === 0 ? 1 : 0
+      })
+      // random Station/Resources Map
+      this.layers[1] = Array.from({ length: totalLength }, (x, i) => {
+        if (!this.tileIsBorder(totalLength, i)) {
+          let shouldDraw = this.getRandomInt(1, 4)
+          if (shouldDraw === 1) return this.getRandomInt(3, 8)
+        }
+        return -1
+      })
+      // random robots
+      this.layers[2] = Array.from({ length: totalLength }, (x, i) => {
+        if (!this.tileIsBorder(totalLength, i)) {
+          let shouldDraw = this.getRandomInt(1, 25)
+          if (shouldDraw === 1) return 10
+        }
+        return -1
+      })
+      console.log(this.layers)
     },
   },
 }
