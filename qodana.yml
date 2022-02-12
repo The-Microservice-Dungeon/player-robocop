@@ -1,9 +1,0 @@
-version: 1.0
-exclude:
-  - name: All
-    paths:
-      - frontend
-      - .idea
-      - .run
-      - .github
-      - .assets
