@@ -1,0 +1,16 @@
+{
+  "modules": [
+    {
+      "name": "player-robocop",
+      "languageLevel": 17
+    },
+    {
+      "name": "frontend",
+      "languageLevel": 17
+    },
+    {
+      "name": "backend",
+      "languageLevel": 17
+    }
+  ]
+}
