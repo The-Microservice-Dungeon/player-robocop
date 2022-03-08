@@ -1,10 +1,10 @@
 {
   "modules": [
     {
-      "name": "player-robocop",
+      "name": "frontend",
       "contentEntries": [
         {
-          "path": "file://$PROJECT_DIR$",
+          "path": "file://$PROJECT_DIR$/frontend",
           "sourceFolders": []
         }
       ],
@@ -20,10 +20,10 @@
       ]
     },
     {
-      "name": "frontend",
+      "name": "player-robocop",
       "contentEntries": [
         {
-          "path": "file://$PROJECT_DIR$/frontend",
+          "path": "file://$PROJECT_DIR$",
           "sourceFolders": []
         }
       ],

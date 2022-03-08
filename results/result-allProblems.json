@@ -31,34 +31,6 @@
   "category": "Control flow issues",
   "type": "Enum 'switch' statement that misses case",
   "severity": "High",
-  "comment": "`switch (gameStatus) { case CREATED -> gameExternallyCreated(gameId); case ST...` statement on enum type 'thkoeln.dungeon.game.domain.game.GameStatus' misses case 'ORPHANED'",
-  "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
-      "language": "JAVA",
-      "line": 136,
-      "offset": 9,
-      "length": 204,
-      "code": {
-        "startLine": 134,
-        "length": 204,
-        "offset": 159,
-        "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "EnumSwitchStatementWhichMissesCases"
-  },
-  "hash": "846c0eef992085155bef551a6c42cf1a64d889fe5494f6dff796ac3a18f825bd"
-},{
-  "tool": "Code Inspection",
-  "category": "Control flow issues",
-  "type": "Enum 'switch' statement that misses case",
-  "severity": "High",
   "comment": "`switch (roundStatus){ case STARTED -> game.startRound(roundNumber); case COM...` statement on enum type 'thkoeln.dungeon.game.domain.round.RoundStatus' misses case 'BEFORE_FIRST_ROUND'",
   "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
   "sources": [
@@ -82,6 +54,34 @@
     "inspectionName": "EnumSwitchStatementWhichMissesCases"
   },
   "hash": "e23c03ee04fbc3c3dfc2fe16a01cda54084a754d3e555a882633c8440c41e662"
+},{
+  "tool": "Code Inspection",
+  "category": "Control flow issues",
+  "type": "Enum 'switch' statement that misses case",
+  "severity": "High",
+  "comment": "`switch (gameStatus) { case CREATED -> gameExternallyCreated(gameId); case ST...` statement on enum type 'thkoeln.dungeon.game.domain.game.GameStatus' misses case 'ORPHANED'",
+  "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
+      "language": "JAVA",
+      "line": 136,
+      "offset": 9,
+      "length": 204,
+      "code": {
+        "startLine": 134,
+        "length": 204,
+        "offset": 159,
+        "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "EnumSwitchStatementWhichMissesCases"
+  },
+  "hash": "846c0eef992085155bef551a6c42cf1a64d889fe5494f6dff796ac3a18f825bd"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -710,34 +710,6 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 136,
-      "offset": 9,
-      "length": 6,
-      "code": {
-        "startLine": 134,
-        "length": 6,
-        "offset": 159,
-        "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "SwitchStatementsWithoutDefault"
-  },
-  "hash": "ded2be7fb4dc632cb1dff31c2a8c115852af042132a088753a3300b4fb1ab0d0"
-},{
-  "tool": "Code Inspection",
-  "category": "Control flow issues",
-  "type": "'switch' statement without 'default' branch",
-  "severity": "High",
-  "comment": "`switch` statement without 'default' branch",
-  "detailsInfo": "Reports `switch` statements that do not contain `default` labels.\n\nAdding the `default` label guarantees that all possible scenarios are covered, and it becomes\neasier to make assumptions about the current state of the program.\n\n\nNote that by default, the inspection does not report `switch` statements if all cases for enums or `sealed` classes are covered.\nUse the **Ignore exhaustive switch statements** option if you want to change this behavior.",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
-      "language": "JAVA",
       "line": 214,
       "offset": 9,
       "length": 6,
@@ -754,6 +726,34 @@
     "inspectionName": "SwitchStatementsWithoutDefault"
   },
   "hash": "3bf66cccdfb687db32c3be293a70b17bb5175719fab006737ceda3b75d4376e7"
+},{
+  "tool": "Code Inspection",
+  "category": "Control flow issues",
+  "type": "'switch' statement without 'default' branch",
+  "severity": "High",
+  "comment": "`switch` statement without 'default' branch",
+  "detailsInfo": "Reports `switch` statements that do not contain `default` labels.\n\nAdding the `default` label guarantees that all possible scenarios are covered, and it becomes\neasier to make assumptions about the current state of the program.\n\n\nNote that by default, the inspection does not report `switch` statements if all cases for enums or `sealed` classes are covered.\nUse the **Ignore exhaustive switch statements** option if you want to change this behavior.",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
+      "language": "JAVA",
+      "line": 136,
+      "offset": 9,
+      "length": 6,
+      "code": {
+        "startLine": 134,
+        "length": 6,
+        "offset": 159,
+        "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "SwitchStatementsWithoutDefault"
+  },
+  "hash": "ded2be7fb4dc632cb1dff31c2a8c115852af042132a088753a3300b4fb1ab0d0"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
