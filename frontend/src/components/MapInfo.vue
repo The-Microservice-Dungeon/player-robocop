@@ -174,7 +174,10 @@ export default {
             if (this.firstLoad) {
               console.log('First Map Load')
               this.firstLoad = false
-              this.initializeMapOnLoad()
+              this.$nextTick()
+                .then(() => {
+                  this.initializeMapOnLoad()
+                })
             } else {
               console.log('Got new map Data. Rerendering...')
               this.render()
