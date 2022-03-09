@@ -18,7 +18,7 @@ spring:
     actuator:
       enabled: true
   datasource:
-    url: jdbc:h2:file:./backend/db/robocop;AUTO_SERVER=TRUE
+    url: jdbc:h2:file:./db/robocop;AUTO_SERVER=TRUE
     driver-class-name: org.h2.Driver
     username: robocop
     password: password
@@ -37,7 +37,7 @@ dungeon:
 
 logging:
   file:
-    path: ./backend/logs
+    path: ./logs
   logback:
     rollingpolicy:
       max-file-size: 3MB
