@@ -174,10 +174,7 @@ export default {
             if (this.firstLoad) {
               console.log('First Map Load')
               this.firstLoad = false
-              this.$nextTick()
-                .then(() => {
-                  this.initializeMapOnLoad()
-                })
+              this.initializeMapOnLoad()
             } else {
               console.log('Got new map Data. Rerendering...')
               this.render()
@@ -212,20 +209,22 @@ export default {
         .then(() => {
           this.setMapDimensions()
           this.initMap()
+
           this.renderMap = true
-          this.initCanvas()
-          this.initCamera()
-          this.drawMapWithCamera()
+          this.$nextTick()
+           .then(() => {
+             this.initCanvas()
+             this.initCamera()
+             this.drawMapWithCamera()
+           })
         })
     },
     render () {
       this.renderMap = false
+      this.$forceUpdate()
       this.setMapDimensions()
+      this.renderMap = true
       this.$nextTick()
-        .then(() => {
-          this.renderMap = true
-        })
-        .then(this.$nextTick)
         .then(() => {
           this.updateCanvas()
           this.drawMapWithCamera()
