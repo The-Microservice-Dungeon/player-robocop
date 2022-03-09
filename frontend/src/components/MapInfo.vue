@@ -222,11 +222,14 @@ export default {
       this.renderMap = false
       this.setMapDimensions()
       this.$nextTick()
-      .then(() => {
-        this.renderMap = true
-        this.updateCanvas()
-        this.drawMapWithCamera()
-      })
+        .then(() => {
+          this.renderMap = true
+        })
+        .then(this.$nextTick)
+        .then(() => {
+          this.updateCanvas()
+          this.drawMapWithCamera()
+        })
     },
     setMapDimensions () {
       this.cols = this.mapSize * 2
