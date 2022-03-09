@@ -282,7 +282,12 @@ export default {
         }
       }
     },
+    clearCanvas () {
+      this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
+    },
     drawMapWithCamera () {
+      this.clearCanvas()
+
       let startCol = Math.floor(this.camera.x / this.tileResolution)
       let endCol = startCol + (this.camera.width / this.tileResolution)
       let startRow = Math.floor(this.camera.y / this.tileResolution)
