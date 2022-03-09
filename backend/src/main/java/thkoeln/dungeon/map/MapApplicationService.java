@@ -76,6 +76,8 @@ public class MapApplicationService {
         addFirstBot(robot);
 
         mapRepository.save(currentMap);
+
+        this.websocket.convertAndSend("map_events", "planets_changed");
     }
 
     // TODO: Call on robot spawned event
