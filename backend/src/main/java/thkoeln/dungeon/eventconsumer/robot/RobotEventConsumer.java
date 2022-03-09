@@ -4,14 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.Command;
 import thkoeln.dungeon.command.CommandRepository;
 import thkoeln.dungeon.eventconsumer.trading.TradingEvent;
 import thkoeln.dungeon.eventconsumer.trading.TradingEventRepository;
-import thkoeln.dungeon.game.domain.game.GameException;
 import thkoeln.dungeon.map.MapApplicationService;
 import thkoeln.dungeon.planet.application.PlanetApplicationService;
 import thkoeln.dungeon.planet.domain.Planet;
@@ -20,15 +21,8 @@ import thkoeln.dungeon.robot.application.RobotApplicationService;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Optional;
-import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class RobotEventConsumer {
@@ -60,14 +54,14 @@ public class RobotEventConsumer {
     // THIS DOES NOT HAVE A TRANSACTION ID. AAAAAAAAAAAAAAAAAAAAAAAH
     // "SAKE OF OBSCURITY?????????????????"
     @KafkaListener(topics = "movement")
-    public void consumeMovementEvent(@Header String eventId, @Header String timestamp,
+    public void consumeMovementEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,
                                      @Payload String payload){
         try {
             logger.info("Consuming movement Event");
             MovementEvent movementEvent = new MovementEvent()
                     .fillWithPayload(payload)
-                    .fillHeader(eventId,timestamp,"");
-            logger.info("Saving movement event");
+                    .fillHeader(eventId,timestamp,transactionId);
+            /*
             List<Robot> affectedRobots = robotRepository.findAllByRobotIdIn(movementEvent.getRobots());
             if (affectedRobots.isEmpty()) {
                 throw new GameException("This movement event does not match any of our robots!");
@@ -82,17 +76,30 @@ public class RobotEventConsumer {
             }else {
                 logger.error("Planet for movement not found.");
             }
+             */
+            Optional<Command> found = commandRepository.findByTransactionId(movementEvent.getTransactionId());
+            if (found.isPresent()){
+                logger.info("Saving movement event with transaction id "+transactionId);
+                movementEventRepository.save(movementEvent);
+                Robot originRobot = found.get().getRobot();
+                UUID targetPlanet = movementEvent.getPlanet().getPlanetId();
+                logger.info("Robot with ID "+originRobot.getRobotId()+" moved to planet with ID "+targetPlanet);
+                //Move robot on map / domain
+            }
+            else {
+                logger.info("Movement event isn't relevant. Skipping.");
+            }
+
         } catch (Exception e) {
             logger.error("Can't consume Movement Event. " + e.getMessage());
         }
     }
 
     @KafkaListener(topics = "neighbours")
+    @RetryableTopic(attempts = "3", backoff = @Backoff(delay = 100))
     public void consumeNeighbourEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,
                                       @Payload String payload){
 
-        logger.info("Neighbour event received. Consuming in 300ms");
-        Timer timer = new Timer(300, arg0 -> {
             logger.info("Consuming neighbour event");
             NeighbourEvent neighboursEvent = new NeighbourEvent()
                     .fillWithPayload(payload)
@@ -118,9 +125,6 @@ public class RobotEventConsumer {
                     }
                 }
             }
-        });
-        timer.setRepeats(false);
-        timer.start();
     }
 
     @KafkaListener(topics = "spawn-notification")
@@ -130,7 +134,16 @@ public class RobotEventConsumer {
         SpawnEvent spawnEvent = new SpawnEvent()
                 .fillWithPayload(payload)
                 .fillHeader(eventId,timestamp,transactionId);
-        spawnEventRepository.save(spawnEvent);
-        //TODO make some calls
+        Optional<Command> found = commandRepository.findByTransactionId(spawnEvent.getTransactionId());
+        if (found.isPresent()){
+            logger.info("Saving spawn event");
+            spawnEventRepository.save(spawnEvent);
+            UUID robotId = spawnEvent.getRobotId();
+            logger.info("robot with id "+robotId+" spawned");
+            //TODO handle this
+        }
+        else {
+            logger.info("spawn event wasn't for us.");
+        }
     }
 }

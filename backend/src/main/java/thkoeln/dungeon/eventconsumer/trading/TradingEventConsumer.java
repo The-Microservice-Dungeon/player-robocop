@@ -91,15 +91,15 @@ public class TradingEventConsumer {
                 .fillWithPayload(payload)
                 .fillHeader(eventId,timestamp,transactionId);
 
-
-        if (!tradingEvent.getSuccess()) {
-            logger.error("Received unsuccessful response to trading command! Payload: " + payload);
-            return;
-        }
-
-        //This checks our command repo, if we issued this command, then we can save + process this.
         Optional<Command> commandOptional = commandRepository.findByTransactionId(tradingEvent.getTransactionId());
         if (commandOptional.isPresent()) {
+            if (!tradingEvent.getSuccess()) {
+                logger.error("Received unsuccessful response to trading command! Payload: " + payload);
+                return;
+            }
+
+            //This checks our command repo, if we issued this command, then we can save + process this.
+
             Command command = commandOptional.get();
 
             logger.info("Saving trading event with money value = "+tradingEvent.getMoneyChangedBy());
@@ -113,6 +113,9 @@ public class TradingEventConsumer {
                 Robot robot = this.robotApplicationService.createNewRobot(tradingEvent.getData().getRobotId());
                 this.mapApplicationService.handleNewRobotSpawn(robot, tradingEvent.getData().getPlanet());
             }
+        }
+        else {
+            logger.info("Trading event is not relevant. Skipping.");
         }
     }
 }
