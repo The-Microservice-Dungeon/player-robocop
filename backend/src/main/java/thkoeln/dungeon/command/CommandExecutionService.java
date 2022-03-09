@@ -8,6 +8,7 @@ import thkoeln.dungeon.restadapter.GameServiceRESTAdapter;
 import thkoeln.dungeon.restadapter.exceptions.RESTConnectionFailureException;
 import thkoeln.dungeon.restadapter.exceptions.UnexpectedRESTException;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 
@@ -38,7 +39,7 @@ public class CommandExecutionService implements thkoeln.dungeon.command.CommandE
         }catch (UnexpectedRESTException e){
             logger.error("Encountered unexpected REST exception while sending command. "+ e.getMessage());
         }catch (RESTConnectionFailureException e){
-            logger.error("Rest connection failed. while sending command. "+ e.getMessage() + e.getStackTrace());
+            logger.error("Rest connection failed. while sending command. "+ e.getMessage() + Arrays.toString(e.getStackTrace()));
         }
         logger.debug("got transactionId "+ transactionId + " for command "+ command.getId() + ".");
         command.setTransactionId(transactionId);
