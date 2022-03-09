@@ -70,7 +70,7 @@ export default {
       this.noData = false
       apiGet('/game')
         .then((response) => {
-          if (response.status !== 200) throw new Error('Unexpected Response ' + response.status)
+          if (response.status !== 200) throw new Error('No game found' + response.status)
           return response
         })
         .then(response => response.json())

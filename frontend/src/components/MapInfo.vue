@@ -160,7 +160,7 @@ export default {
     fetchMapData () {
       apiGet('/map')
         .then((response) => {
-          if (response.status !== 200) throw new Error('Unexpected Response ' + response.status)
+          if (response.status !== 200) throw new Error('No Map found ' + response.status)
           return response
         })
         .then(response => response.json())
@@ -183,7 +183,6 @@ export default {
           }
         })
         .catch(e => {
-          this.firstLoad = false
           console.warn(e)
         })
     },
