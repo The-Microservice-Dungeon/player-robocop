@@ -220,15 +220,9 @@ export default {
         })
     },
     render () {
-      this.renderMap = false
-      this.$forceUpdate()
       this.setMapDimensions()
-      this.renderMap = true
-      this.$nextTick()
-        .then(() => {
-          this.updateCanvas()
-          this.drawMapWithCamera()
-        })
+      this.updateCanvas()
+      this.drawMapWithCamera()
     },
     setMapDimensions () {
       this.cols = this.mapSize * 2
