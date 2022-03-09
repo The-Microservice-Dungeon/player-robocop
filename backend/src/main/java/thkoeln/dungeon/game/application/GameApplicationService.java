@@ -152,6 +152,11 @@ public class GameApplicationService {
 
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.isEmpty()){
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             logger.info("Synchronizing game state via REST...");
             synchronizeGameState();
         }
