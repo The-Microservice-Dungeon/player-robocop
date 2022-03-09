@@ -1,0 +1,32 @@
+{"version":"3","listProblem":[{
+  "tool": "Code Inspection",
+  "category": "Java 14",
+  "type": "Statement can be replaced with enhanced 'switch'",
+  "tags": [
+    "JAVA"
+  ],
+  "severity": "High",
+  "comment": "Switch statement can be replaced with enhanced 'switch'",
+  "detailsInfo": "Reports `switch` statements that can be automatically replaced with enhanced `switch` statements or expressions.\n\n**Example:**\n\n\n      double getPrice(String fruit) {\n        // Switch statement can be replaced with enhanced 'switch'\n        switch (fruit) {\n          case \"Apple\":\n            return 1.0;\n          case \"Orange\":\n            return 1.5;\n          case \"Mango\":\n            return 2.0;\n          default:\n            throw new IllegalArgumentException();\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      double getPrice(String fruit) {\n        return switch (fruit) {\n          case \"Apple\" -> 1.0;\n          case \"Orange\" -> 1.5;\n          case \"Mango\" -> 2.0;\n          default -> throw new IllegalArgumentException();\n        };\n      }\n      \nThis inspection only applies to language level 14 or higher\n\nNew in 2019.1",
+  "sources": [
+    {
+      "type": "method",
+      "path": "backend/src/main/java/thkoeln/dungeon/planet/domain/CompassDirection.java",
+      "language": "JAVA",
+      "line": 7,
+      "offset": 8,
+      "length": 6,
+      "code": {
+        "startLine": 5,
+        "length": 6,
+        "offset": 62,
+        "surroundingCode": "\n    public CompassDirection getOppositeDirection() {\n        switch (this) {\n            case north:\n                return south;"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "EnhancedSwitchMigration"
+  },
+  "hash": "3658821553698268505"
+}]}
