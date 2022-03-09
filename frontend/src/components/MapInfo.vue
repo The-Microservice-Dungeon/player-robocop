@@ -133,6 +133,7 @@ export default {
       camera: {},
       zoomLevel: 4,
       renderPlanarPosition: true,
+      retryFirstRender: true,
     }
   },
   watch: {
@@ -218,6 +219,14 @@ export default {
              this.drawMapWithCamera()
            })
         })
+      .catch(e => {
+        console.warn(e)
+        if (this.retryFirstRender) {
+          console.log('Retrying first render once...')
+          this.retryFirstRender = false
+          this.initializeMapOnLoad()
+        }
+      })
     },
     render () {
       this.setMapDimensions()
@@ -286,6 +295,8 @@ export default {
       this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
     },
     drawMapWithCamera () {
+      console.log('Drawing Map')
+
       this.clearCanvas()
 
       let startCol = Math.floor(this.camera.x / this.tileResolution)
@@ -295,6 +306,8 @@ export default {
 
       let offsetX = -this.camera.x + startCol * this.tileResolution
       let offsetY = -this.camera.y + startRow * this.tileResolution
+
+      console.log(this.tileAtlas)
 
       for (let layer in this.layers) {
         for (let col = startCol; col <= endCol; col++) {
