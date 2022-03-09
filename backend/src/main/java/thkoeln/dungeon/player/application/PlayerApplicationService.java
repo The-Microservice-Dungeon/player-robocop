@@ -223,8 +223,6 @@ public class PlayerApplicationService {
             throw new PlayerRegistryException(errorMessage);
         }
 
-        logger.info("This Player Registration Event was for us!");
-
         this.assignPlayerId(registrationTransactionId, playerId);
     }
 
@@ -237,7 +235,7 @@ public class PlayerApplicationService {
             logger.error(errorMessage);
             throw new PlayerRegistryException(errorMessage);
         }
-
+        logger.info("This Player Registration Event was for us!");
         Player player = foundPlayers.get(0);
         player.setPlayerId(playerId);
 
