@@ -172,7 +172,7 @@ export default {
             this.layers[1] = response.types
             this.layers[2] = response.robots
 
-            if (this.firstLoad) {
+            if (this.firstLoad || !this.ctx || !this.ctx.canvas) {
               console.log('First Map Load')
               this.firstLoad = false
               this.initializeMapOnLoad()
