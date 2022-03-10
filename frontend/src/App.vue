@@ -28,7 +28,10 @@
           Actuator
         </router-link>
       </div>
-      <router-view class="view"/>
+      <router-view
+        :key="viewKey"
+        class="view"
+      />
     </template>
   </div>
 </template>
@@ -49,6 +52,7 @@ export default {
     return {
       stompClient: undefined,
       connected: false,
+      viewKey: 0,
     }
   },
   computed: {
@@ -58,6 +62,11 @@ export default {
   },
   mounted () {
     this.connectToWebsocket()
+
+    EventBus.$on('game_created', () => {
+      // force rerender the entire application
+      this.viewKey++
+    })
   },
   methods: {
     ...mapMutations([

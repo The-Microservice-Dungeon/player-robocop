@@ -63,6 +63,10 @@ export default {
     EventBus.$on('game_status_change', () => {
       this.fetchGameData()
     })
+
+    EventBus.$on('game_created', () => {
+      this.fetchGameData()
+    })
   },
   methods: {
     fetchGameData () {
