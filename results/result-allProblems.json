@@ -934,34 +934,6 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/planet/application/PlanetApplicationService.java",
       "language": "JAVA",
-      "line": 72,
-      "offset": 69,
-      "length": 3,
-      "code": {
-        "startLine": 70,
-        "length": 3,
-        "offset": 119,
-        "surroundingCode": "\n    public Planet refreshPlanet (Planet planet) {\n        return this.planetRepository.findById(planet.getPlanetId()).get();\n    }\n"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "OptionalGetWithoutIsPresent"
-  },
-  "hash": "86f1114b232f1f9a93fbd3fd83a75fd77513d44c0f5821b62cf3ac0e0b2e360f"
-},{
-  "tool": "Code Inspection",
-  "category": "Probable bugs",
-  "type": "Optional.get() is called without isPresent() check",
-  "severity": "High",
-  "comment": "`Optional.get()` without 'isPresent()' check",
-  "detailsInfo": "Reports calls to `get()` on an `Optional` without checking that it has a value.\n\nCalling `Optional.get()` on an empty `Optional` instance will throw an exception.\n\n**Example:**\n\n\n      void x(List<Integer> list) {\n        final Optional<Integer> optional =\n          list.stream().filter(x -> x > 10).findFirst();\n        final Integer result = optional.get(); // problem here\n      }\n",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/planet/application/PlanetApplicationService.java",
-      "language": "JAVA",
       "line": 76,
       "offset": 51,
       "length": 3,
@@ -978,4 +950,32 @@
     "inspectionName": "OptionalGetWithoutIsPresent"
   },
   "hash": "54a0c9c2505b2e01ab88702a15fe91964e2f4034217be1b50902f80a4866ccf1"
+},{
+  "tool": "Code Inspection",
+  "category": "Probable bugs",
+  "type": "Optional.get() is called without isPresent() check",
+  "severity": "High",
+  "comment": "`Optional.get()` without 'isPresent()' check",
+  "detailsInfo": "Reports calls to `get()` on an `Optional` without checking that it has a value.\n\nCalling `Optional.get()` on an empty `Optional` instance will throw an exception.\n\n**Example:**\n\n\n      void x(List<Integer> list) {\n        final Optional<Integer> optional =\n          list.stream().filter(x -> x > 10).findFirst();\n        final Integer result = optional.get(); // problem here\n      }\n",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/planet/application/PlanetApplicationService.java",
+      "language": "JAVA",
+      "line": 72,
+      "offset": 69,
+      "length": 3,
+      "code": {
+        "startLine": 70,
+        "length": 3,
+        "offset": 119,
+        "surroundingCode": "\n    public Planet refreshPlanet (Planet planet) {\n        return this.planetRepository.findById(planet.getPlanetId()).get();\n    }\n"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "OptionalGetWithoutIsPresent"
+  },
+  "hash": "86f1114b232f1f9a93fbd3fd83a75fd77513d44c0f5821b62cf3ac0e0b2e360f"
 }]}
