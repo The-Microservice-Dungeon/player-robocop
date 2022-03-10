@@ -21,6 +21,7 @@ import thkoeln.dungeon.robot.application.RobotApplicationService;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
+import javax.swing.*;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -107,23 +108,31 @@ public class RobotEventConsumer {
             // If this was triggered by us, we save and process
             Optional<Command> triggeringCommandOptional = commandRepository.findByTransactionId(neighboursEvent.getTransactionId());
             if (triggeringCommandOptional.isPresent()){
-                logger.info("Consuming own neighbour event with payload:" +payload);
-                neighboursEventRepository.save(neighboursEvent);
-                Command command = triggeringCommandOptional.get();
-                //movement command triggered this
-                switch (command.getCommandType()){
-                    case movement ->  mapApplicationService.handleNewPlanetNeighbours(
-                            command.getTargetPlanet(), neighboursEvent.getNeighbours());
-                    case buying -> {
-                        //match transaction ID with trading event and get planet by trading id
-                        Optional<TradingEvent> tradingEvent = tradingEventRepository.findByTransactionId(neighboursEvent.getTransactionId());
-                        if (tradingEvent.isPresent()){
-                            UUID planetId = tradingEvent.get().getData().getPlanet();
-                            Optional<Planet> planetOptional = planetRepository.findById(planetId);
-                            planetOptional.ifPresent(planet -> mapApplicationService.handleNewPlanetNeighbours(planet, neighboursEvent.getNeighbours()));
+                logger.info("Neighbour event with payload " + payload + " was for us. Consuming in 300ms");
+
+                Timer timer = new Timer(300, arg0 -> {
+                    logger.info("Consuming own neighbour event with payload:" +payload);
+
+                    neighboursEventRepository.save(neighboursEvent);
+                    Command command = triggeringCommandOptional.get();
+                    //movement command triggered this
+                    switch (command.getCommandType()){
+                        case movement ->  mapApplicationService.handleNewPlanetNeighbours(
+                                command.getTargetPlanet(), neighboursEvent.getNeighbours());
+                        case buying -> {
+                            //match transaction ID with trading event and get planet by trading id
+                            Optional<TradingEvent> tradingEvent = tradingEventRepository.findByTransactionId(neighboursEvent.getTransactionId());
+                            if (tradingEvent.isPresent()){
+                                UUID planetId = tradingEvent.get().getData().getPlanet();
+                                Optional<Planet> planetOptional = planetRepository.findById(planetId);
+                                planetOptional.ifPresent(planet -> mapApplicationService.handleNewPlanetNeighbours(planet, neighboursEvent.getNeighbours()));
+                            }
                         }
                     }
-                }
+                });
+
+                timer.setRepeats(false);
+                timer.start();
             }
     }
 
