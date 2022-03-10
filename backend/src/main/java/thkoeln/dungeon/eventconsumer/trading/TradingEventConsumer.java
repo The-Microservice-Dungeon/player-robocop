@@ -7,18 +7,14 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.command.Command;
 import thkoeln.dungeon.command.CommandRepository;
-import thkoeln.dungeon.eventconsumer.robot.NeighbourEvent;
-import thkoeln.dungeon.game.domain.game.GameException;
 import thkoeln.dungeon.map.MapApplicationService;
-import thkoeln.dungeon.planet.application.PlanetApplicationService;
-import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.player.application.PlayerRegistryException;
-import thkoeln.dungeon.player.domain.PlayerRepository;
 import thkoeln.dungeon.robot.application.RobotApplicationService;
 import thkoeln.dungeon.robot.domain.Robot;
 
@@ -35,6 +31,7 @@ public class TradingEventConsumer {
     private final RobotApplicationService robotApplicationService;
     private final MapApplicationService mapApplicationService;
     private final Logger logger = LoggerFactory.getLogger(TradingEventConsumer.class);
+    private final SimpMessagingTemplate websocket;
 
     @Autowired
     public TradingEventConsumer(PlayerApplicationService playerApplicationService,
@@ -42,13 +39,14 @@ public class TradingEventConsumer {
                                 CommandRepository commandRepository,
                                 TradingEventRepository tradingEventRepository,
                                 RobotApplicationService robotApplicationService,
-                                MapApplicationService mapApplicationService) {
+                                MapApplicationService mapApplicationService, SimpMessagingTemplate websocket) {
         this.playerApplicationService = playerApplicationService;
         this.bankCreatedEventRepository = bankCreatedEventRepository;
         this.commandRepository = commandRepository;
         this.tradingEventRepository = tradingEventRepository;
         this.robotApplicationService = robotApplicationService;
         this.mapApplicationService = mapApplicationService;
+        this.websocket = websocket;
     }
 
     @KafkaListener(topics = "bank-created")
@@ -95,6 +93,7 @@ public class TradingEventConsumer {
         if (commandOptional.isPresent()) {
             if (!tradingEvent.getSuccess()) {
                 logger.error("Received unsuccessful response to trading command! Payload: " + payload);
+                this.websocket.convertAndSend("errors", "trading_event|" + payload);
                 return;
             }
 
