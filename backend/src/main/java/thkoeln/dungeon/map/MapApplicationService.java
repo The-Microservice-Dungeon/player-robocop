@@ -80,7 +80,6 @@ public class MapApplicationService {
         this.websocket.convertAndSend("map_events", "planets_changed");
     }
 
-    // TODO: Call on robot spawned event
     public void handleNewRobotSpawn (Robot robot, UUID planetId) {
         if (currentMap==null){
             logger.error("Map not initialized yet");
