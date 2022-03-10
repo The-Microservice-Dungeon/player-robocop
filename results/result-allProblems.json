@@ -31,34 +31,6 @@
   "category": "Control flow issues",
   "type": "Enum 'switch' statement that misses case",
   "severity": "High",
-  "comment": "`switch (roundStatus){ case STARTED -> game.startRound(roundNumber); case COM...` statement on enum type 'thkoeln.dungeon.game.domain.round.RoundStatus' misses case 'BEFORE_FIRST_ROUND'",
-  "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
-      "language": "JAVA",
-      "line": 233,
-      "offset": 9,
-      "length": 222,
-      "code": {
-        "startLine": 231,
-        "length": 222,
-        "offset": 57,
-        "surroundingCode": "        }\n        Game game = foundGames.get(0);\n        switch (roundStatus){\n            case STARTED -> game.startRound(roundNumber);\n            case COMMAND_INPUT_ENDED -> game.getRound().commandInputEnded();"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "EnumSwitchStatementWhichMissesCases"
-  },
-  "hash": "e1161cbe98f028170fc91b37d21314134a483559172538bc7af5128174c74e05"
-},{
-  "tool": "Code Inspection",
-  "category": "Control flow issues",
-  "type": "Enum 'switch' statement that misses case",
-  "severity": "High",
   "comment": "`switch (gameStatus) { case CREATED -> gameExternallyCreated(gameId); case ST...` statement on enum type 'thkoeln.dungeon.game.domain.game.GameStatus' misses case 'ORPHANED'",
   "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
   "sources": [
@@ -82,6 +54,34 @@
     "inspectionName": "EnumSwitchStatementWhichMissesCases"
   },
   "hash": "1ee4bfcf608b89d51c4a63cd260a1a125c012cc62841ac4162be6a1d5ad9c36a"
+},{
+  "tool": "Code Inspection",
+  "category": "Control flow issues",
+  "type": "Enum 'switch' statement that misses case",
+  "severity": "High",
+  "comment": "`switch (roundStatus){ case STARTED -> game.startRound(roundNumber); case COM...` statement on enum type 'thkoeln.dungeon.game.domain.round.RoundStatus' misses case 'BEFORE_FIRST_ROUND'",
+  "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
+      "language": "JAVA",
+      "line": 233,
+      "offset": 9,
+      "length": 222,
+      "code": {
+        "startLine": 231,
+        "length": 222,
+        "offset": 57,
+        "surroundingCode": "        }\n        Game game = foundGames.get(0);\n        switch (roundStatus){\n            case STARTED -> game.startRound(roundNumber);\n            case COMMAND_INPUT_ENDED -> game.getRound().commandInputEnded();"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "EnumSwitchStatementWhichMissesCases"
+  },
+  "hash": "e1161cbe98f028170fc91b37d21314134a483559172538bc7af5128174c74e05"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -417,7 +417,7 @@
     "module": "backend",
     "inspectionName": "ObjectToString"
   },
-  "hash": "7a1215c488f061e77969fe4f1da31c2cbad7af27d2f87cd790130eb63083c259"
+  "hash": "22df4e98f1c90ae71e6a3e1225d7e71924dac581986dd32345f3606e168c732e"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -585,7 +585,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "29760dd2341a0785c4dde123433d1a6f583dd771c510a2662836e67ec3c6b955"
+  "hash": "2e3866e79d89d3edc32d04efcd74c9fbec50e47cdb0c73398541a73ee4e0958a"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -613,7 +613,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "207e076421fabf4ceced77c3489ce9f65aa00888bfc051f0d49b2ef7c0e8ee6e"
+  "hash": "12db36d65717d6c5c3d4d304ff6ca047cabce40732c8d6ebc6e3d8d15833789a"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -641,7 +641,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "5a3d32fe3b8bf62477e280d28e16e2c1ba56bb6e9ad56611efecc17e4c098935"
+  "hash": "a94d09630c1d7a513a98353d7f00d24c47d21174fb3f17c9630a2f8a1b8c1517"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -669,7 +669,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "5413bdc71e4a7bbd9f6b5d72abd48c4bde80a5567a9d69717447461043f0d0ab"
+  "hash": "e8046d3a604d76c49b82bc729838c39366e8b29e55c42081b90b6c1ecb7822ec"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -766,34 +766,6 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 233,
-      "offset": 9,
-      "length": 6,
-      "code": {
-        "startLine": 231,
-        "length": 6,
-        "offset": 57,
-        "surroundingCode": "        }\n        Game game = foundGames.get(0);\n        switch (roundStatus){\n            case STARTED -> game.startRound(roundNumber);\n            case COMMAND_INPUT_ENDED -> game.getRound().commandInputEnded();"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "SwitchStatementsWithoutDefault"
-  },
-  "hash": "df6822666ee9c4a3a2b15cb9bb842d717f25d5dd4939e9d4bbb89276b0ba58cc"
-},{
-  "tool": "Code Inspection",
-  "category": "Control flow issues",
-  "type": "'switch' statement without 'default' branch",
-  "severity": "High",
-  "comment": "`switch` statement without 'default' branch",
-  "detailsInfo": "Reports `switch` statements that do not contain `default` labels.\n\nAdding the `default` label guarantees that all possible scenarios are covered, and it becomes\neasier to make assumptions about the current state of the program.\n\n\nNote that by default, the inspection does not report `switch` statements if all cases for enums or `sealed` classes are covered.\nUse the **Ignore exhaustive switch statements** option if you want to change this behavior.",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
-      "language": "JAVA",
       "line": 139,
       "offset": 9,
       "length": 6,
@@ -810,6 +782,34 @@
     "inspectionName": "SwitchStatementsWithoutDefault"
   },
   "hash": "644d79413f3302ca2894fbe239c1dfacca1f80700eb35acae41b60ead1bde337"
+},{
+  "tool": "Code Inspection",
+  "category": "Control flow issues",
+  "type": "'switch' statement without 'default' branch",
+  "severity": "High",
+  "comment": "`switch` statement without 'default' branch",
+  "detailsInfo": "Reports `switch` statements that do not contain `default` labels.\n\nAdding the `default` label guarantees that all possible scenarios are covered, and it becomes\neasier to make assumptions about the current state of the program.\n\n\nNote that by default, the inspection does not report `switch` statements if all cases for enums or `sealed` classes are covered.\nUse the **Ignore exhaustive switch statements** option if you want to change this behavior.",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
+      "language": "JAVA",
+      "line": 233,
+      "offset": 9,
+      "length": 6,
+      "code": {
+        "startLine": 231,
+        "length": 6,
+        "offset": 57,
+        "surroundingCode": "        }\n        Game game = foundGames.get(0);\n        switch (roundStatus){\n            case STARTED -> game.startRound(roundNumber);\n            case COMMAND_INPUT_ENDED -> game.getRound().commandInputEnded();"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "SwitchStatementsWithoutDefault"
+  },
+  "hash": "df6822666ee9c4a3a2b15cb9bb842d717f25d5dd4939e9d4bbb89276b0ba58cc"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
