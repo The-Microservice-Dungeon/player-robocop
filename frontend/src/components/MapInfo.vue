@@ -168,7 +168,6 @@ export default {
         .then(response => response.json())
         .then(response => {
           if (response) {
-            console.log(response)
             this.mapSize = response.mapSize
             this.layers[0] = response.gravity
             this.layers[1] = response.types
