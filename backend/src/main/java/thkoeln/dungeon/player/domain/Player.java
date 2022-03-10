@@ -4,6 +4,8 @@ package thkoeln.dungeon.player.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import thkoeln.dungeon.game.domain.game.Game;
 import thkoeln.dungeon.robot.domain.Robot;
 
@@ -30,8 +32,8 @@ public class Player {
 
     private Float money = 0F;
 
-    // TODO: Fill with data when new Robot gets spawned
     @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Robot> robots = new ArrayList<>();
 
     /**
