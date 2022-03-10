@@ -126,6 +126,43 @@ public class MapApplicationService {
         this.websocket.convertAndSend("map_events", "robot_moved");
     }
 
+    public Planet getPlanetForRobot (Robot robot) {
+        PositionVO robotPosition = this.currentMap.findPosition(robot);
+        if (robotPosition == null) {
+            logger.warn("Robot " + robot + " has no position on the current map! Can't get planet");
+            return null;
+        }
+
+        return planetApplicationService.getById(robotPosition.getReferencingPlanetId());
+    }
+
+    public List<Planet> getNeighboursForPlanet(Planet planet) {
+        Planet refreshedPlanet = this.planetApplicationService.getById(planet.getPlanetId());
+        return refreshedPlanet.allNeighbours();
+    }
+
+    public List<Planet> getNeighboursForPosition (PositionVO positionVO) {
+        PositionVO planetPosition = this.currentMap.findPosition(positionVO);
+        if (planetPosition == null) {
+            logger.warn("Position " + positionVO + " is not on this map!");
+            return null;
+        }
+
+        UUID planetId = planetPosition.getReferencingPlanetId();
+        if (planetId == null) {
+            logger.warn("There is no Planet on position " + positionVO);
+            return null;
+        }
+
+        Planet planet = this.planetApplicationService.getById(planetId);
+        if (planet == null) {
+            logger.warn("Planet with Id " + planetId + " not found!");
+            return null;
+        }
+
+        return planet.allNeighbours();
+    }
+
     public MapJSONWrapper getLayerMap () {
         MapJSONWrapper wrapper = new MapJSONWrapper(currentMap.getContentLength());
 
