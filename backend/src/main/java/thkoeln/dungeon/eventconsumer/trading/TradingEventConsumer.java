@@ -111,6 +111,7 @@ public class TradingEventConsumer {
             if (tradingEvent.getData()!=null && tradingEvent.getData().getPlanet()!=null){
                 Robot robot = this.robotApplicationService.createNewRobot(tradingEvent.getData().getRobotId());
                 this.mapApplicationService.handleNewRobotSpawn(robot, tradingEvent.getData().getPlanet());
+                this.playerApplicationService.addRobotToPlayer(robot);
             }
         }
         else {
