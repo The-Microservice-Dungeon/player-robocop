@@ -142,6 +142,8 @@ export default {
     },
   },
   mounted () {
+    this.initEmptyMap()
+
     this.fetchMapData()
 
     EventBus.$on('new_map_created', () => {
@@ -208,7 +210,6 @@ export default {
       this.loadTiles()
         .then(() => {
           this.setMapDimensions()
-          this.initMap()
 
           this.renderMap = true
           this.$nextTick()
@@ -239,7 +240,7 @@ export default {
       this.mapHeight = this.rows * this.tileResolution / this.zoomLevel
       this.clampScroll()
     },
-    initMap () {
+    initEmptyMap () {
       const totalLength = this.cols * this.rows
 
       for (let layer in this.layers) {
@@ -305,8 +306,6 @@ export default {
 
       let offsetX = -this.camera.x + startCol * this.tileResolution
       let offsetY = -this.camera.y + startRow * this.tileResolution
-
-      console.log(this.tileAtlas)
 
       for (let layer in this.layers) {
         for (let col = startCol; col <= endCol; col++) {
