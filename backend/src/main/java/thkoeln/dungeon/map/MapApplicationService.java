@@ -92,7 +92,7 @@ public class MapApplicationService {
         }
     }
 
-    public void addFirstPlanet(Planet planet) {
+    private void addFirstPlanet(Planet planet) {
         PositionVO centerPos = this.currentMap.getCenterPosition();
         PositionVO centerPosWithPlanet = new PositionVO(planet.getPlanetId(), centerPos.getReferencingRobotId(), centerPos.getPosIndex(), centerPos.getX(), centerPos.getY());
         this.currentMap.replacePosition(centerPos, centerPosWithPlanet);
@@ -100,7 +100,7 @@ public class MapApplicationService {
         exploreNeighbours(planet);
     }
 
-    public void addFirstBot(Robot bot) {
+    private void addFirstBot(Robot bot) {
         PositionVO centerPos = this.currentMap.getCenterPosition();
         PositionVO centerPosWithRobot = new PositionVO(centerPos.getReferencingPlanetId(), bot.getRobotId(), centerPos.getPosIndex(), centerPos.getX(), centerPos.getY());
         this.currentMap.replacePosition(centerPos, centerPosWithRobot);
@@ -191,7 +191,7 @@ public class MapApplicationService {
         return wrapper;
     }
 
-    public void exploreNeighbours (Planet planet) {
+    private void exploreNeighbours (Planet planet) {
         PositionVO position = planet.getPosition();
 
         logger.info("Exploring neighbours around planet " + planet);
