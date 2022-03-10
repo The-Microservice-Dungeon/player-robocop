@@ -392,6 +392,62 @@
   "hash": "28b748d88271b600ff3586c7c0baad334ff4bb847bdd796e0d11f8d1aa6f5c61"
 },{
   "tool": "Code Inspection",
+  "category": "Probable bugs",
+  "type": "Call to default 'toString()'",
+  "severity": "High",
+  "comment": "Call to default 'toString()' on `robot`",
+  "detailsInfo": "Reports calls to `toString()` that use the default implementation from `java.lang.Object`.\n\nThe default implementation is rarely intended but may be used by accident.\n\n\nCalls to `toString()` on objects with `java.lang.Object`,\ninterface or abstract class type are ignored by this inspection.\n\n**Example:**\n\n\n      class Bar {\n          void foo1(Bar bar) {\n              String s = bar.toString(); // warning\n              /* ... */\n          }\n\n          void foo2(Object obj) {\n              String s = obj.toString(); // no warning here\n              /* ... */\n          }\n      }\n",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
+      "language": "JAVA",
+      "line": 132,
+      "offset": 36,
+      "length": 5,
+      "code": {
+        "startLine": 130,
+        "length": 5,
+        "offset": 144,
+        "surroundingCode": "        PositionVO robotPosition = this.currentMap.findPosition(robot);\n        if (robotPosition == null) {\n            logger.warn(\"Robot \" + robot + \" has no position on the current map! Can't get planet\");\n            return null;\n        }"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "ObjectToString"
+  },
+  "hash": "7a1215c488f061e77969fe4f1da31c2cbad7af27d2f87cd790130eb63083c259"
+},{
+  "tool": "Code Inspection",
+  "category": "Probable bugs",
+  "type": "Call to default 'toString()'",
+  "severity": "High",
+  "comment": "Call to default 'toString()' on `playerStatusEvent`",
+  "detailsInfo": "Reports calls to `toString()` that use the default implementation from `java.lang.Object`.\n\nThe default implementation is rarely intended but may be used by accident.\n\n\nCalls to `toString()` on objects with `java.lang.Object`,\ninterface or abstract class type are ignored by this inspection.\n\n**Example:**\n\n\n      class Bar {\n          void foo1(Bar bar) {\n              String s = bar.toString(); // warning\n              /* ... */\n          }\n\n          void foo2(Object obj) {\n              String s = obj.toString(); // no warning here\n              /* ... */\n          }\n      }\n",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
+      "language": "JAVA",
+      "line": 139,
+      "offset": 64,
+      "length": 17,
+      "code": {
+        "startLine": 137,
+        "length": 17,
+        "offset": 88,
+        "surroundingCode": "        }\n        else {\n            logger.warn( \"Caught invalid PlayerStatusEvent \" + playerStatusEvent );\n        }\n    }"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "ObjectToString"
+  },
+  "hash": "938448f1e5a4eafbc827be97469205c8872ea6a1014986efac481344cb973315"
+},{
+  "tool": "Code Inspection",
   "category": "Setup",
   "type": "Incorrect @Configuration class setup in Spring facet",
   "severity": "High",
@@ -505,34 +561,6 @@
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
-  "type": "Call to default 'toString()'",
-  "severity": "High",
-  "comment": "Call to default 'toString()' on `playerStatusEvent`",
-  "detailsInfo": "Reports calls to `toString()` that use the default implementation from `java.lang.Object`.\n\nThe default implementation is rarely intended but may be used by accident.\n\n\nCalls to `toString()` on objects with `java.lang.Object`,\ninterface or abstract class type are ignored by this inspection.\n\n**Example:**\n\n\n      class Bar {\n          void foo1(Bar bar) {\n              String s = bar.toString(); // warning\n              /* ... */\n          }\n\n          void foo2(Object obj) {\n              String s = obj.toString(); // no warning here\n              /* ... */\n          }\n      }\n",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
-      "language": "JAVA",
-      "line": 139,
-      "offset": 64,
-      "length": 17,
-      "code": {
-        "startLine": 137,
-        "length": 17,
-        "offset": 88,
-        "surroundingCode": "        }\n        else {\n            logger.warn( \"Caught invalid PlayerStatusEvent \" + playerStatusEvent );\n        }\n    }"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "ObjectToString"
-  },
-  "hash": "938448f1e5a4eafbc827be97469205c8872ea6a1014986efac481344cb973315"
-},{
-  "tool": "Code Inspection",
-  "category": "Probable bugs",
   "type": "Constant conditions & exceptions",
   "severity": "High",
   "comment": "Method invocation `getX` may produce `NullPointerException`",
@@ -542,11 +570,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
       "language": "JAVA",
-      "line": 166,
+      "line": 202,
       "offset": 68,
       "length": 4,
       "code": {
-        "startLine": 164,
+        "startLine": 200,
         "length": 4,
         "offset": 117,
         "surroundingCode": "\n        if (planet.getEastNeighbour() != null) {\n            PositionVO pos = this.currentMap.findPosition(position.getX() - 1, position.getY());\n            PositionVO neighbourPosition = new PositionVO(planet.getEastNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());\n            this.currentMap.replacePosition(pos, neighbourPosition);"
@@ -557,7 +585,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "0a596fc64e72ec2158c52e5afefbcc7d819d23182af60127da7b6dd81d315349"
+  "hash": "29760dd2341a0785c4dde123433d1a6f583dd771c510a2662836e67ec3c6b955"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -570,11 +598,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
       "language": "JAVA",
-      "line": 174,
+      "line": 210,
       "offset": 68,
       "length": 4,
       "code": {
-        "startLine": 172,
+        "startLine": 208,
         "length": 4,
         "offset": 126,
         "surroundingCode": "        }\n        if (planet.getWestNeighbour() != null) {\n            PositionVO pos = this.currentMap.findPosition(position.getX() + 1, position.getY());\n            PositionVO neighbourPosition = new PositionVO(planet.getWestNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());\n            this.currentMap.replacePosition(pos, neighbourPosition);"
@@ -585,7 +613,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "880c351ff44d810c6f2a7492a952508105822310738b68079c0c5c7e7aa87bde"
+  "hash": "207e076421fabf4ceced77c3489ce9f65aa00888bfc051f0d49b2ef7c0e8ee6e"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -598,11 +626,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
       "language": "JAVA",
-      "line": 182,
+      "line": 218,
       "offset": 68,
       "length": 4,
       "code": {
-        "startLine": 180,
+        "startLine": 216,
         "length": 4,
         "offset": 127,
         "surroundingCode": "        }\n        if (planet.getNorthNeighbour() != null) {\n            PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() - 1);\n            PositionVO neighbourPosition = new PositionVO(planet.getNorthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());\n            this.currentMap.replacePosition(pos, neighbourPosition);"
@@ -613,7 +641,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "f1b1419f2dad1c2b10499caad0ac14e4d1afff6934a32e32af675645a7946a89"
+  "hash": "5a3d32fe3b8bf62477e280d28e16e2c1ba56bb6e9ad56611efecc17e4c098935"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -626,11 +654,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
       "language": "JAVA",
-      "line": 190,
+      "line": 226,
       "offset": 68,
       "length": 4,
       "code": {
-        "startLine": 188,
+        "startLine": 224,
         "length": 4,
         "offset": 127,
         "surroundingCode": "        }\n        if (planet.getSouthNeighbour() != null) {\n            PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() + 1);\n            PositionVO neighbourPosition = new PositionVO(planet.getSouthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());\n            this.currentMap.replacePosition(pos, neighbourPosition);"
@@ -641,35 +669,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "b006fc0b07ed2accfcae842d764e587bd6f78eaeb16b5bb1a2e231f330c6b020"
-},{
-  "tool": "Code Inspection",
-  "category": "Probable bugs",
-  "type": "Constant conditions & exceptions",
-  "severity": "High",
-  "comment": "Method invocation `getBearerToken` may produce `NullPointerException`",
-  "detailsInfo": "Reports code constructs that always produce the same result, may throw exceptions, or violates nullability contracts.\n\nExamples:\n\n    if (array.length < index) {\n      System.out.println(array[index]);\n    } // Array index is always out of bounds\n\n    if (str == null) System.out.println(\"str is null\");\n    System.out.println(str.trim());\n    // the last statement may throw an NPE\n\n    @NotNull\n    Integer square(@Nullable Integer input) {\n        // the method contract is violated\n        return input == null ? null : input * input;\n    }\n\n\nThe inspection behavior may be controlled by a number of annotations, such as\n[nullability](https://www.jetbrains.com/help/idea/nullable-and-notnull-annotations.html) annotations,\n[@Contract](https://www.jetbrains.com/help/idea/contract-annotations.html) annotation,\n`@Range` annotation and so on.\n\nConfigure the inspection:\n\n* Use the **Suggest @Nullable annotation for methods/fields/parameters where nullable values are used** option to warn when a nullable value is passed as an argument to a method with a non-annotated parameter, stored into non-annotated field, or returned from a non-annotated method. In this case, the inspection will suggest propagating the `@Nullable` annotation. You can also configure nullability annotations using the **Configure Annotations** button.\n* Use the **Treat non-annotated members and parameters as @Nullable** option to assume that non-annotated members can be null, so they must not be used in non-null context.\n* Use the **Report not-null required parameter with null-literal argument usages** option to report method parameters that cannot be null (e.g. immediately dereferenced in the method body), but there are call sites where a `null` literal is passed.\n* Use the **Report nullable methods that always return a non-null value** option to report methods that are annotated as `@Nullable`, but always return non-null value. In this case, it's suggested that you change the annotation to `@NotNull`.\n* Use the **Don't report assertions with condition statically proven to be always true** option to avoid reporting assertions that were statically proven to be always true. This also includes conditions like `if (alwaysFalseCondition) throw new IllegalArgumentException();`.\n* Use the **Ignore assert statements** option to control how the inspection treats `assert` statements. By default, the option is disabled, which means that the assertions are assumed to be executed (-ea mode). If the option is enabled, the assertions will be completely ignored (-da mode).\n* Use the **Warn when reading a value guaranteed to be constant** option to add warnings on reading variables that contain some constant values, for example: `true`, `false`, or `null`.\n* Use the **Report problems that happen only on some code paths** option to control whether to report problems that may happen only on some code path. If this option is disabled, warnings like *exception is possible* will not be reported. The inspection will report only warnings like *exception will definitely occur*. This mode may greatly reduce the number of false-positives, especially if the code is not consistently annotated with nullability and contract annotations. That is why it can be useful for finding the most important problems in legacy code bases.",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/restadapter/GameServiceRESTAdapter.java",
-      "language": "JAVA",
-      "line": 175,
-      "offset": 98,
-      "length": 14,
-      "code": {
-        "startLine": 173,
-        "length": 14,
-        "offset": 189,
-        "surroundingCode": "            throw new RESTConnectionFailureException(\"/players\", e.getMessage());\n        }\n        logger.info(\"Registered player via REST, got bearer token: \" + returnedPlayerRegistryDto.getBearerToken());\n        return returnedPlayerRegistryDto;\n    }"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "ConstantConditions"
-  },
-  "hash": "e7eae70f7ba23b7361ff89361933d62c686a89d2cdd63d9babbc568335a76158"
+  "hash": "5413bdc71e4a7bbd9f6b5d72abd48c4bde80a5567a9d69717447461043f0d0ab"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -698,6 +698,34 @@
     "inspectionName": "ConstantConditions"
   },
   "hash": "5f7ad89ff0ef311a94e9ee1565533ee7f5226158be6f8020f4dcec1c403c7a5e"
+},{
+  "tool": "Code Inspection",
+  "category": "Probable bugs",
+  "type": "Constant conditions & exceptions",
+  "severity": "High",
+  "comment": "Method invocation `getBearerToken` may produce `NullPointerException`",
+  "detailsInfo": "Reports code constructs that always produce the same result, may throw exceptions, or violates nullability contracts.\n\nExamples:\n\n    if (array.length < index) {\n      System.out.println(array[index]);\n    } // Array index is always out of bounds\n\n    if (str == null) System.out.println(\"str is null\");\n    System.out.println(str.trim());\n    // the last statement may throw an NPE\n\n    @NotNull\n    Integer square(@Nullable Integer input) {\n        // the method contract is violated\n        return input == null ? null : input * input;\n    }\n\n\nThe inspection behavior may be controlled by a number of annotations, such as\n[nullability](https://www.jetbrains.com/help/idea/nullable-and-notnull-annotations.html) annotations,\n[@Contract](https://www.jetbrains.com/help/idea/contract-annotations.html) annotation,\n`@Range` annotation and so on.\n\nConfigure the inspection:\n\n* Use the **Suggest @Nullable annotation for methods/fields/parameters where nullable values are used** option to warn when a nullable value is passed as an argument to a method with a non-annotated parameter, stored into non-annotated field, or returned from a non-annotated method. In this case, the inspection will suggest propagating the `@Nullable` annotation. You can also configure nullability annotations using the **Configure Annotations** button.\n* Use the **Treat non-annotated members and parameters as @Nullable** option to assume that non-annotated members can be null, so they must not be used in non-null context.\n* Use the **Report not-null required parameter with null-literal argument usages** option to report method parameters that cannot be null (e.g. immediately dereferenced in the method body), but there are call sites where a `null` literal is passed.\n* Use the **Report nullable methods that always return a non-null value** option to report methods that are annotated as `@Nullable`, but always return non-null value. In this case, it's suggested that you change the annotation to `@NotNull`.\n* Use the **Don't report assertions with condition statically proven to be always true** option to avoid reporting assertions that were statically proven to be always true. This also includes conditions like `if (alwaysFalseCondition) throw new IllegalArgumentException();`.\n* Use the **Ignore assert statements** option to control how the inspection treats `assert` statements. By default, the option is disabled, which means that the assertions are assumed to be executed (-ea mode). If the option is enabled, the assertions will be completely ignored (-da mode).\n* Use the **Warn when reading a value guaranteed to be constant** option to add warnings on reading variables that contain some constant values, for example: `true`, `false`, or `null`.\n* Use the **Report problems that happen only on some code paths** option to control whether to report problems that may happen only on some code path. If this option is disabled, warnings like *exception is possible* will not be reported. The inspection will report only warnings like *exception will definitely occur*. This mode may greatly reduce the number of false-positives, especially if the code is not consistently annotated with nullability and contract annotations. That is why it can be useful for finding the most important problems in legacy code bases.",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/restadapter/GameServiceRESTAdapter.java",
+      "language": "JAVA",
+      "line": 175,
+      "offset": 98,
+      "length": 14,
+      "code": {
+        "startLine": 173,
+        "length": 14,
+        "offset": 189,
+        "surroundingCode": "            throw new RESTConnectionFailureException(\"/players\", e.getMessage());\n        }\n        logger.info(\"Registered player via REST, got bearer token: \" + returnedPlayerRegistryDto.getBearerToken());\n        return returnedPlayerRegistryDto;\n    }"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "ConstantConditions"
+  },
+  "hash": "e7eae70f7ba23b7361ff89361933d62c686a89d2cdd63d9babbc568335a76158"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",

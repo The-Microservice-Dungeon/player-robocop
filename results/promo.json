@@ -1,94 +1,32 @@
 {"version":"3","listProblem":[{
   "tool": "Code Inspection",
-  "category": "Code maturity",
-  "type": "Use of System.out or System.err",
+  "category": "Java 15",
+  "type": "Class can be a record",
   "tags": [
     "JAVA"
   ],
-  "severity": "High",
-  "comment": "Uses of <code>System.out</code> should probably be replaced with more robust logging",
-  "detailsInfo": "Reports usages of `System.out` or `System.err`.\n\nSuch statements are often used for temporary debugging and should be either removed from the production code, or replaced by a more robust\nlogging facility.",
+  "severity": "Moderate",
+  "comment": "Class can be a record",
+  "detailsInfo": "Suggests replacing classes with records.\n\nThe inspection can be useful if you need to focus on modeling immutable data rather than extensible behavior.\nAutomatic implementation of data-driven methods, such as equals and accessors, helps to get rid of boilerplate.\n\n\nNote that not every class can be a record. Here are some of the restrictions:\n\n* A class must contain no inheritors and must be a top-level class.\n* All the non-static fields in class must be final.\n* Class must contain no instance initializers, generic constructors, nor native methods.\n\nTo get a full list of the restrictions, refer to the\n[Oracle documentation](https://docs.oracle.com/javase/specs/jls/se15/preview/specs/records-jls.html).\n\nExample:\n\n\n      class Point {\n        private final double x;\n        private final double y;\n\n        Point(double x, double y) {\n          this.x = x;\n          this.y = y;\n        }\n\n        double getX() {\n          return x;\n        }\n\n        double getY() {\n          return y;\n        }\n      }\n\nThis record will be converted to:\n\n\n      record Point(int x, int y) {\n      }\n\nThis inspection only reports if the language level of the project or module is 15 preview or higher.\n\nNew in 2020.3",
   "sources": [
     {
-      "type": "method",
-      "path": "backend/src/main/java/thkoeln/dungeon/map/MapJSONWrapper.java",
+      "type": "class",
+      "path": "backend/src/main/java/thkoeln/dungeon/robot/application/RobotApplicationService.java",
       "language": "JAVA",
-      "line": 57,
-      "offset": 12,
-      "length": 10,
+      "line": 14,
+      "offset": 13,
+      "length": 23,
       "code": {
-        "startLine": 55,
-        "length": 10,
-        "offset": 134,
-        "surroundingCode": "            this.types[index] = type;\n        } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {\n            System.out.println(exception.getMessage());\n        }\n"
+        "startLine": 12,
+        "length": 23,
+        "offset": 23,
+        "surroundingCode": "\n@Service\npublic class RobotApplicationService {\n    private final RobotRepository robotRepository;\n"
       }
     }
   ],
   "attributes": {
     "module": "backend",
-    "inspectionName": "SystemOutErr"
+    "inspectionName": "ClassCanBeRecord"
   },
-  "hash": "1358482245588304377"
-},{
-  "tool": "Code Inspection",
-  "category": "Code maturity",
-  "type": "Use of System.out or System.err",
-  "tags": [
-    "JAVA"
-  ],
-  "severity": "High",
-  "comment": "Uses of <code>System.out</code> should probably be replaced with more robust logging",
-  "detailsInfo": "Reports usages of `System.out` or `System.err`.\n\nSuch statements are often used for temporary debugging and should be either removed from the production code, or replaced by a more robust\nlogging facility.",
-  "sources": [
-    {
-      "type": "method",
-      "path": "backend/src/main/java/thkoeln/dungeon/map/MapJSONWrapper.java",
-      "language": "JAVA",
-      "line": 78,
-      "offset": 12,
-      "length": 10,
-      "code": {
-        "startLine": 76,
-        "length": 10,
-        "offset": 139,
-        "surroundingCode": "            this.gravity[index] = gravity;\n        } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {\n            System.out.println(exception.getMessage());\n        }\n"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "SystemOutErr"
-  },
-  "hash": "-6563741044409719776"
-},{
-  "tool": "Code Inspection",
-  "category": "Code maturity",
-  "type": "Use of System.out or System.err",
-  "tags": [
-    "JAVA"
-  ],
-  "severity": "High",
-  "comment": "Uses of <code>System.out</code> should probably be replaced with more robust logging",
-  "detailsInfo": "Reports usages of `System.out` or `System.err`.\n\nSuch statements are often used for temporary debugging and should be either removed from the production code, or replaced by a more robust\nlogging facility.",
-  "sources": [
-    {
-      "type": "method",
-      "path": "backend/src/main/java/thkoeln/dungeon/map/MapJSONWrapper.java",
-      "language": "JAVA",
-      "line": 33,
-      "offset": 12,
-      "length": 10,
-      "code": {
-        "startLine": 31,
-        "length": 10,
-        "offset": 154,
-        "surroundingCode": "            this.robots[index] = robot != null ? 10 : -1;\n        } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {\n            System.out.println(exception.getMessage());\n        }\n    }"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "SystemOutErr"
-  },
-  "hash": "7881604186779566837"
+  "hash": "-2750317132486277189"
 }]}
