@@ -11,16 +11,16 @@
   "sources": [
     {
       "type": "class",
-      "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/core/KafkaErrorService.java",
+      "path": "backend/src/main/java/thkoeln/dungeon/endpoints/web/game/management/GameManagementController.java",
       "language": "JAVA",
-      "line": 9,
+      "line": 18,
       "offset": 13,
-      "length": 17,
+      "length": 24,
       "code": {
-        "startLine": 7,
-        "length": 17,
-        "offset": 23,
-        "surroundingCode": "\n@Service\npublic class KafkaErrorService {\n    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaErrorService.class);\n    private final KafkaErrorRepository kafkaErrorRepository;"
+        "startLine": 16,
+        "length": 24,
+        "offset": 26,
+        "surroundingCode": "\n@Controller\npublic class GameManagementController {\n\n    private final GameServiceRESTAdapter gameServiceRESTAdapter;"
       }
     }
   ],
@@ -28,36 +28,5 @@
     "module": "backend",
     "inspectionName": "ClassCanBeRecord"
   },
-  "hash": "6049524405682688179"
-},{
-  "tool": "Code Inspection",
-  "category": "Java 14",
-  "type": "Statement can be replaced with enhanced 'switch'",
-  "tags": [
-    "JAVA"
-  ],
-  "severity": "High",
-  "comment": "Switch statement can be replaced with enhanced 'switch'",
-  "detailsInfo": "Reports `switch` statements that can be automatically replaced with enhanced `switch` statements or expressions.\n\n**Example:**\n\n\n      double getPrice(String fruit) {\n        // Switch statement can be replaced with enhanced 'switch'\n        switch (fruit) {\n          case \"Apple\":\n            return 1.0;\n          case \"Orange\":\n            return 1.5;\n          case \"Mango\":\n            return 2.0;\n          default:\n            throw new IllegalArgumentException();\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      double getPrice(String fruit) {\n        return switch (fruit) {\n          case \"Apple\" -> 1.0;\n          case \"Orange\" -> 1.5;\n          case \"Mango\" -> 2.0;\n          default -> throw new IllegalArgumentException();\n        };\n      }\n      \nThis inspection only applies to language level 14 or higher\n\nNew in 2019.1",
-  "sources": [
-    {
-      "type": "method",
-      "path": "backend/src/main/java/thkoeln/dungeon/planet/domain/CompassDirection.java",
-      "language": "JAVA",
-      "line": 7,
-      "offset": 8,
-      "length": 6,
-      "code": {
-        "startLine": 5,
-        "length": 6,
-        "offset": 62,
-        "surroundingCode": "\n    public CompassDirection getOppositeDirection() {\n        switch (this) {\n            case north:\n                return south;"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "EnhancedSwitchMigration"
-  },
-  "hash": "3658821553698268505"
+  "hash": "5654051110751998805"
 }]}

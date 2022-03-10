@@ -38,11 +38,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 219,
+      "line": 223,
       "offset": 9,
       "length": 222,
       "code": {
-        "startLine": 217,
+        "startLine": 221,
         "length": 222,
         "offset": 57,
         "surroundingCode": "        }\n        Game game = foundGames.get(0);\n        switch (roundStatus){\n            case STARTED -> game.startRound(roundNumber);\n            case COMMAND_INPUT_ENDED -> game.getRound().commandInputEnded();"
@@ -53,7 +53,7 @@
     "module": "backend",
     "inspectionName": "EnumSwitchStatementWhichMissesCases"
   },
-  "hash": "03368baada8429b6dec3ec1e7c29d2b83fadc9a63213a48dbe0278011ffd9074"
+  "hash": "99d5335339c7d98e45df56949f4c7fb6c5b8813a4256f13d14b418cb397c0a7d"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -115,21 +115,21 @@
   "category": "Control flow issues",
   "type": "Enum 'switch' statement that misses case",
   "severity": "High",
-  "comment": "`switch (command.getCommandType()){ case movement -> mapApplicationService.handl...` statement on enum type 'thkoeln.dungeon.command.CommandType' misses cases: 'blocking', 'selling', 'battle', 'mining', ...",
+  "comment": "`switch (command.getCommandType()){ case movement -> mapApplicationService.h...` statement on enum type 'thkoeln.dungeon.command.CommandType' misses cases: 'blocking', 'selling', 'battle', 'mining', ...",
   "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
   "sources": [
     {
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/robot/RobotEventConsumer.java",
       "language": "JAVA",
-      "line": 114,
-      "offset": 17,
-      "length": 944,
+      "line": 119,
+      "offset": 21,
+      "length": 992,
       "code": {
-        "startLine": 112,
-        "length": 944,
-        "offset": 133,
-        "surroundingCode": "                Command command = triggeringCommandOptional.get();\n                //movement command triggered this\n                switch (command.getCommandType()){\n                    case movement ->  mapApplicationService.handleNewPlanetNeighbours(\n                            command.getTargetPlanet(), neighboursEvent.getNeighbours());"
+        "startLine": 117,
+        "length": 992,
+        "offset": 145,
+        "surroundingCode": "                    Command command = triggeringCommandOptional.get();\n                    //movement command triggered this\n                    switch (command.getCommandType()){\n                        case movement ->  mapApplicationService.handleNewPlanetNeighbours(\n                                command.getTargetPlanet(), neighboursEvent.getNeighbours());"
       }
     }
   ],
@@ -137,7 +137,7 @@
     "module": "backend",
     "inspectionName": "EnumSwitchStatementWhichMissesCases"
   },
-  "hash": "dbeefefdb155317268dd28f123f1debdada1eaf95cc44623bae9e61303671ec3"
+  "hash": "100d84528a4c0e49cbff349a74fcf08f09a0a76fb0dd53afd0b8d8f0524b30f6"
 },{
   "tool": "Code Inspection",
   "category": "Declaration redundancy",
@@ -178,11 +178,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/robot/RobotEventConsumer.java",
       "language": "JAVA",
-      "line": 99,
+      "line": 100,
       "offset": 32,
       "length": 3,
       "code": {
-        "startLine": 97,
+        "startLine": 98,
         "length": 3,
         "offset": 74,
         "surroundingCode": "\n    @KafkaListener(topics = \"neighbours\")\n    @RetryableTopic(attempts = \"3\", backoff = @Backoff(delay = 100))\n    public void consumeNeighbourEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,\n                                      @Payload String payload){"
@@ -193,7 +193,7 @@
     "module": "backend",
     "inspectionName": "DefaultAnnotationParam"
   },
-  "hash": "97ed8313202de991226d8999e98c445ea9c9f4166aaccb74ae270613d9abb4b1"
+  "hash": "dd5ddfbf827a46c94cf2b9bfaa22be3bac38e0419e5b90b81e6e68013a3ef55c"
 },{
   "tool": "Code Inspection",
   "category": "Declaration redundancy",
@@ -206,11 +206,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/trading/TradingEventConsumer.java",
       "language": "JAVA",
-      "line": 55,
+      "line": 53,
       "offset": 32,
       "length": 3,
       "code": {
-        "startLine": 53,
+        "startLine": 51,
         "length": 3,
         "offset": 76,
         "surroundingCode": "\n    @KafkaListener(topics = \"bank-created\")\n    @RetryableTopic(attempts = \"3\", backoff = @Backoff(delay = 500))\n    public void consumeBankCreatedEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,\n                                        @Payload String payload){"
@@ -221,7 +221,7 @@
     "module": "backend",
     "inspectionName": "DefaultAnnotationParam"
   },
-  "hash": "553b5d49cd33605c5a0cffea6bc6790b08eb0851a2b2c5b290db306e90c0bf20"
+  "hash": "a9ed1cd228ee3ce0335763ceea6099aa85975ee95fecd423cce54cfb399b56bf"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -738,11 +738,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 219,
+      "line": 223,
       "offset": 9,
       "length": 6,
       "code": {
-        "startLine": 217,
+        "startLine": 221,
         "length": 6,
         "offset": 57,
         "surroundingCode": "        }\n        Game game = foundGames.get(0);\n        switch (roundStatus){\n            case STARTED -> game.startRound(roundNumber);\n            case COMMAND_INPUT_ENDED -> game.getRound().commandInputEnded();"
@@ -753,7 +753,7 @@
     "module": "backend",
     "inspectionName": "SwitchStatementsWithoutDefault"
   },
-  "hash": "d0f1b8c863c91671f522079987aa3b6dcecf7746972ca0888072d23c94dceb50"
+  "hash": "34d8e3eb278e98d63146ad7f3d8411f3c74314c6b6da03e835671e13abd50fb5"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -822,14 +822,14 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/robot/RobotEventConsumer.java",
       "language": "JAVA",
-      "line": 114,
-      "offset": 17,
+      "line": 119,
+      "offset": 21,
       "length": 6,
       "code": {
-        "startLine": 112,
+        "startLine": 117,
         "length": 6,
-        "offset": 133,
-        "surroundingCode": "                Command command = triggeringCommandOptional.get();\n                //movement command triggered this\n                switch (command.getCommandType()){\n                    case movement ->  mapApplicationService.handleNewPlanetNeighbours(\n                            command.getTargetPlanet(), neighboursEvent.getNeighbours());"
+        "offset": 145,
+        "surroundingCode": "                    Command command = triggeringCommandOptional.get();\n                    //movement command triggered this\n                    switch (command.getCommandType()){\n                        case movement ->  mapApplicationService.handleNewPlanetNeighbours(\n                                command.getTargetPlanet(), neighboursEvent.getNeighbours());"
       }
     }
   ],
@@ -837,7 +837,7 @@
     "module": "backend",
     "inspectionName": "SwitchStatementsWithoutDefault"
   },
-  "hash": "4c804946db5550b47164c1a9f998ef70535a5abc334ce80dcdbe662eecbba28c"
+  "hash": "1cbd5fbc6a2141ccd8330746e08eecca11a585874862632a7b1debf777b60841"
 },{
   "tool": "Code Inspection",
   "category": "Inheritance issues",
