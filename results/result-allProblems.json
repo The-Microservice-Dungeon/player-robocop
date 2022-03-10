@@ -38,11 +38,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 224,
+      "line": 233,
       "offset": 9,
       "length": 222,
       "code": {
-        "startLine": 222,
+        "startLine": 231,
         "length": 222,
         "offset": 57,
         "surroundingCode": "        }\n        Game game = foundGames.get(0);\n        switch (roundStatus){\n            case STARTED -> game.startRound(roundNumber);\n            case COMMAND_INPUT_ENDED -> game.getRound().commandInputEnded();"
@@ -53,7 +53,7 @@
     "module": "backend",
     "inspectionName": "EnumSwitchStatementWhichMissesCases"
   },
-  "hash": "cdc213b2a0611be560f483a16d59e6bbeb9a540539f22aff61611a4084bfa07b"
+  "hash": "e1161cbe98f028170fc91b37d21314134a483559172538bc7af5128174c74e05"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -66,11 +66,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 136,
+      "line": 139,
       "offset": 9,
       "length": 204,
       "code": {
-        "startLine": 134,
+        "startLine": 137,
         "length": 204,
         "offset": 159,
         "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
@@ -81,7 +81,7 @@
     "module": "backend",
     "inspectionName": "EnumSwitchStatementWhichMissesCases"
   },
-  "hash": "846c0eef992085155bef551a6c42cf1a64d889fe5494f6dff796ac3a18f825bd"
+  "hash": "1ee4bfcf608b89d51c4a63cd260a1a125c012cc62841ac4162be6a1d5ad9c36a"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -94,11 +94,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
       "language": "JAVA",
-      "line": 73,
+      "line": 70,
       "offset": 13,
       "length": 1053,
       "code": {
-        "startLine": 71,
+        "startLine": 68,
         "length": 1053,
         "offset": 172,
         "surroundingCode": "            gameStatusEventRepository.save(gameStatusEvent);\n            logger.info(\"saved game event with status \" + gameStatusEvent.getStatus().toString());\n            switch (gameStatusEvent.getStatus()){\n                case CREATED ->{\n                    gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), GameStatus.CREATED);"
@@ -109,7 +109,7 @@
     "module": "backend",
     "inspectionName": "EnumSwitchStatementWhichMissesCases"
   },
-  "hash": "28dec79feaf31bb46ee61c6e42f08ef56d75ac13caa5d0f4cb795a782fbbfb04"
+  "hash": "276b1771d908b01a15d1424a5a692906035ffee20d87562eb1369b37f8d84c92"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -150,11 +150,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
       "language": "JAVA",
-      "line": 120,
+      "line": 115,
       "offset": 32,
       "length": 3,
       "code": {
-        "startLine": 118,
+        "startLine": 113,
         "length": 3,
         "offset": 78,
         "surroundingCode": "\n    @KafkaListener( topics = \"playerStatus\" )\n    @RetryableTopic(attempts = \"3\", backoff = @Backoff(delay = 500))\n    public void consumePlayerStatusEvent( @Header String eventId, @Header String timestamp, @Header String transactionId,\n                                          @Payload String payload ) {"
@@ -165,7 +165,7 @@
     "module": "backend",
     "inspectionName": "DefaultAnnotationParam"
   },
-  "hash": "acf4468b1d22e5d36f59cdb27d754b9db8e1dbf54985e01ceeae5feb6e4e7a7a"
+  "hash": "fafff38afee795f382373a6a583063a086ed6a3194fe32295b9910f4117b5797"
 },{
   "tool": "Code Inspection",
   "category": "Declaration redundancy",
@@ -318,11 +318,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 158,
+      "line": 161,
       "offset": 19,
       "length": 15,
       "code": {
-        "startLine": 156,
+        "startLine": 159,
         "length": 15,
         "offset": 100,
         "surroundingCode": "                Thread.sleep(300);\n            } catch (InterruptedException e) {\n                e.printStackTrace();\n            }\n            logger.info(\"Synchronizing game state via REST...\");"
@@ -333,7 +333,7 @@
     "module": "backend",
     "inspectionName": "ThrowablePrintStackTrace"
   },
-  "hash": "ed754af7a3379ebc966fababca42d757d5c43fedaf5b6c8224fc134e7482b80f"
+  "hash": "f7b25f24bb8cf59c16544b083200a1dbb0883d143a5c6a07d925a9d75198ffd1"
 },{
   "tool": "Code Inspection",
   "category": "Inheritance issues",
@@ -514,11 +514,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
       "language": "JAVA",
-      "line": 144,
+      "line": 139,
       "offset": 64,
       "length": 17,
       "code": {
-        "startLine": 142,
+        "startLine": 137,
         "length": 17,
         "offset": 88,
         "surroundingCode": "        }\n        else {\n            logger.warn( \"Caught invalid PlayerStatusEvent \" + playerStatusEvent );\n        }\n    }"
@@ -529,7 +529,7 @@
     "module": "backend",
     "inspectionName": "ObjectToString"
   },
-  "hash": "19232bb601972ddb0329fd9e6039bbba4419a1883926d210c0ad430c40705bc8"
+  "hash": "938448f1e5a4eafbc827be97469205c8872ea6a1014986efac481344cb973315"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -647,34 +647,6 @@
   "category": "Probable bugs",
   "type": "Constant conditions & exceptions",
   "severity": "High",
-  "comment": "Method invocation `getBearerToken` may produce `NullPointerException`",
-  "detailsInfo": "Reports code constructs that always produce the same result, may throw exceptions, or violates nullability contracts.\n\nExamples:\n\n    if (array.length < index) {\n      System.out.println(array[index]);\n    } // Array index is always out of bounds\n\n    if (str == null) System.out.println(\"str is null\");\n    System.out.println(str.trim());\n    // the last statement may throw an NPE\n\n    @NotNull\n    Integer square(@Nullable Integer input) {\n        // the method contract is violated\n        return input == null ? null : input * input;\n    }\n\n\nThe inspection behavior may be controlled by a number of annotations, such as\n[nullability](https://www.jetbrains.com/help/idea/nullable-and-notnull-annotations.html) annotations,\n[@Contract](https://www.jetbrains.com/help/idea/contract-annotations.html) annotation,\n`@Range` annotation and so on.\n\nConfigure the inspection:\n\n* Use the **Suggest @Nullable annotation for methods/fields/parameters where nullable values are used** option to warn when a nullable value is passed as an argument to a method with a non-annotated parameter, stored into non-annotated field, or returned from a non-annotated method. In this case, the inspection will suggest propagating the `@Nullable` annotation. You can also configure nullability annotations using the **Configure Annotations** button.\n* Use the **Treat non-annotated members and parameters as @Nullable** option to assume that non-annotated members can be null, so they must not be used in non-null context.\n* Use the **Report not-null required parameter with null-literal argument usages** option to report method parameters that cannot be null (e.g. immediately dereferenced in the method body), but there are call sites where a `null` literal is passed.\n* Use the **Report nullable methods that always return a non-null value** option to report methods that are annotated as `@Nullable`, but always return non-null value. In this case, it's suggested that you change the annotation to `@NotNull`.\n* Use the **Don't report assertions with condition statically proven to be always true** option to avoid reporting assertions that were statically proven to be always true. This also includes conditions like `if (alwaysFalseCondition) throw new IllegalArgumentException();`.\n* Use the **Ignore assert statements** option to control how the inspection treats `assert` statements. By default, the option is disabled, which means that the assertions are assumed to be executed (-ea mode). If the option is enabled, the assertions will be completely ignored (-da mode).\n* Use the **Warn when reading a value guaranteed to be constant** option to add warnings on reading variables that contain some constant values, for example: `true`, `false`, or `null`.\n* Use the **Report problems that happen only on some code paths** option to control whether to report problems that may happen only on some code path. If this option is disabled, warnings like *exception is possible* will not be reported. The inspection will report only warnings like *exception will definitely occur*. This mode may greatly reduce the number of false-positives, especially if the code is not consistently annotated with nullability and contract annotations. That is why it can be useful for finding the most important problems in legacy code bases.",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/restadapter/GameServiceRESTAdapter.java",
-      "language": "JAVA",
-      "line": 175,
-      "offset": 98,
-      "length": 14,
-      "code": {
-        "startLine": 173,
-        "length": 14,
-        "offset": 189,
-        "surroundingCode": "            throw new RESTConnectionFailureException(\"/players\", e.getMessage());\n        }\n        logger.info(\"Registered player via REST, got bearer token: \" + returnedPlayerRegistryDto.getBearerToken());\n        return returnedPlayerRegistryDto;\n    }"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "ConstantConditions"
-  },
-  "hash": "e7eae70f7ba23b7361ff89361933d62c686a89d2cdd63d9babbc568335a76158"
-},{
-  "tool": "Code Inspection",
-  "category": "Probable bugs",
-  "type": "Constant conditions & exceptions",
-  "severity": "High",
   "comment": "Method invocation `getTransactionId` may produce `NullPointerException`",
   "detailsInfo": "Reports code constructs that always produce the same result, may throw exceptions, or violates nullability contracts.\n\nExamples:\n\n    if (array.length < index) {\n      System.out.println(array[index]);\n    } // Array index is always out of bounds\n\n    if (str == null) System.out.println(\"str is null\");\n    System.out.println(str.trim());\n    // the last statement may throw an NPE\n\n    @NotNull\n    Integer square(@Nullable Integer input) {\n        // the method contract is violated\n        return input == null ? null : input * input;\n    }\n\n\nThe inspection behavior may be controlled by a number of annotations, such as\n[nullability](https://www.jetbrains.com/help/idea/nullable-and-notnull-annotations.html) annotations,\n[@Contract](https://www.jetbrains.com/help/idea/contract-annotations.html) annotation,\n`@Range` annotation and so on.\n\nConfigure the inspection:\n\n* Use the **Suggest @Nullable annotation for methods/fields/parameters where nullable values are used** option to warn when a nullable value is passed as an argument to a method with a non-annotated parameter, stored into non-annotated field, or returned from a non-annotated method. In this case, the inspection will suggest propagating the `@Nullable` annotation. You can also configure nullability annotations using the **Configure Annotations** button.\n* Use the **Treat non-annotated members and parameters as @Nullable** option to assume that non-annotated members can be null, so they must not be used in non-null context.\n* Use the **Report not-null required parameter with null-literal argument usages** option to report method parameters that cannot be null (e.g. immediately dereferenced in the method body), but there are call sites where a `null` literal is passed.\n* Use the **Report nullable methods that always return a non-null value** option to report methods that are annotated as `@Nullable`, but always return non-null value. In this case, it's suggested that you change the annotation to `@NotNull`.\n* Use the **Don't report assertions with condition statically proven to be always true** option to avoid reporting assertions that were statically proven to be always true. This also includes conditions like `if (alwaysFalseCondition) throw new IllegalArgumentException();`.\n* Use the **Ignore assert statements** option to control how the inspection treats `assert` statements. By default, the option is disabled, which means that the assertions are assumed to be executed (-ea mode). If the option is enabled, the assertions will be completely ignored (-da mode).\n* Use the **Warn when reading a value guaranteed to be constant** option to add warnings on reading variables that contain some constant values, for example: `true`, `false`, or `null`.\n* Use the **Report problems that happen only on some code paths** option to control whether to report problems that may happen only on some code path. If this option is disabled, warnings like *exception is possible* will not be reported. The inspection will report only warnings like *exception will definitely occur*. This mode may greatly reduce the number of false-positives, especially if the code is not consistently annotated with nullability and contract annotations. That is why it can be useful for finding the most important problems in legacy code bases.",
   "sources": [
@@ -698,6 +670,34 @@
     "inspectionName": "ConstantConditions"
   },
   "hash": "5f7ad89ff0ef311a94e9ee1565533ee7f5226158be6f8020f4dcec1c403c7a5e"
+},{
+  "tool": "Code Inspection",
+  "category": "Probable bugs",
+  "type": "Constant conditions & exceptions",
+  "severity": "High",
+  "comment": "Method invocation `getBearerToken` may produce `NullPointerException`",
+  "detailsInfo": "Reports code constructs that always produce the same result, may throw exceptions, or violates nullability contracts.\n\nExamples:\n\n    if (array.length < index) {\n      System.out.println(array[index]);\n    } // Array index is always out of bounds\n\n    if (str == null) System.out.println(\"str is null\");\n    System.out.println(str.trim());\n    // the last statement may throw an NPE\n\n    @NotNull\n    Integer square(@Nullable Integer input) {\n        // the method contract is violated\n        return input == null ? null : input * input;\n    }\n\n\nThe inspection behavior may be controlled by a number of annotations, such as\n[nullability](https://www.jetbrains.com/help/idea/nullable-and-notnull-annotations.html) annotations,\n[@Contract](https://www.jetbrains.com/help/idea/contract-annotations.html) annotation,\n`@Range` annotation and so on.\n\nConfigure the inspection:\n\n* Use the **Suggest @Nullable annotation for methods/fields/parameters where nullable values are used** option to warn when a nullable value is passed as an argument to a method with a non-annotated parameter, stored into non-annotated field, or returned from a non-annotated method. In this case, the inspection will suggest propagating the `@Nullable` annotation. You can also configure nullability annotations using the **Configure Annotations** button.\n* Use the **Treat non-annotated members and parameters as @Nullable** option to assume that non-annotated members can be null, so they must not be used in non-null context.\n* Use the **Report not-null required parameter with null-literal argument usages** option to report method parameters that cannot be null (e.g. immediately dereferenced in the method body), but there are call sites where a `null` literal is passed.\n* Use the **Report nullable methods that always return a non-null value** option to report methods that are annotated as `@Nullable`, but always return non-null value. In this case, it's suggested that you change the annotation to `@NotNull`.\n* Use the **Don't report assertions with condition statically proven to be always true** option to avoid reporting assertions that were statically proven to be always true. This also includes conditions like `if (alwaysFalseCondition) throw new IllegalArgumentException();`.\n* Use the **Ignore assert statements** option to control how the inspection treats `assert` statements. By default, the option is disabled, which means that the assertions are assumed to be executed (-ea mode). If the option is enabled, the assertions will be completely ignored (-da mode).\n* Use the **Warn when reading a value guaranteed to be constant** option to add warnings on reading variables that contain some constant values, for example: `true`, `false`, or `null`.\n* Use the **Report problems that happen only on some code paths** option to control whether to report problems that may happen only on some code path. If this option is disabled, warnings like *exception is possible* will not be reported. The inspection will report only warnings like *exception will definitely occur*. This mode may greatly reduce the number of false-positives, especially if the code is not consistently annotated with nullability and contract annotations. That is why it can be useful for finding the most important problems in legacy code bases.",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/restadapter/GameServiceRESTAdapter.java",
+      "language": "JAVA",
+      "line": 175,
+      "offset": 98,
+      "length": 14,
+      "code": {
+        "startLine": 173,
+        "length": 14,
+        "offset": 189,
+        "surroundingCode": "            throw new RESTConnectionFailureException(\"/players\", e.getMessage());\n        }\n        logger.info(\"Registered player via REST, got bearer token: \" + returnedPlayerRegistryDto.getBearerToken());\n        return returnedPlayerRegistryDto;\n    }"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "ConstantConditions"
+  },
+  "hash": "e7eae70f7ba23b7361ff89361933d62c686a89d2cdd63d9babbc568335a76158"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -738,11 +738,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 224,
+      "line": 233,
       "offset": 9,
       "length": 6,
       "code": {
-        "startLine": 222,
+        "startLine": 231,
         "length": 6,
         "offset": 57,
         "surroundingCode": "        }\n        Game game = foundGames.get(0);\n        switch (roundStatus){\n            case STARTED -> game.startRound(roundNumber);\n            case COMMAND_INPUT_ENDED -> game.getRound().commandInputEnded();"
@@ -753,7 +753,7 @@
     "module": "backend",
     "inspectionName": "SwitchStatementsWithoutDefault"
   },
-  "hash": "78c23732ea869a8906b77c68052e1351e6fc7ace8125d09f3509bdecd5a93899"
+  "hash": "df6822666ee9c4a3a2b15cb9bb842d717f25d5dd4939e9d4bbb89276b0ba58cc"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -766,11 +766,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 136,
+      "line": 139,
       "offset": 9,
       "length": 6,
       "code": {
-        "startLine": 134,
+        "startLine": 137,
         "length": 6,
         "offset": 159,
         "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
@@ -781,7 +781,7 @@
     "module": "backend",
     "inspectionName": "SwitchStatementsWithoutDefault"
   },
-  "hash": "ded2be7fb4dc632cb1dff31c2a8c115852af042132a088753a3300b4fb1ab0d0"
+  "hash": "644d79413f3302ca2894fbe239c1dfacca1f80700eb35acae41b60ead1bde337"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -794,11 +794,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
       "language": "JAVA",
-      "line": 73,
+      "line": 70,
       "offset": 13,
       "length": 6,
       "code": {
-        "startLine": 71,
+        "startLine": 68,
         "length": 6,
         "offset": 172,
         "surroundingCode": "            gameStatusEventRepository.save(gameStatusEvent);\n            logger.info(\"saved game event with status \" + gameStatusEvent.getStatus().toString());\n            switch (gameStatusEvent.getStatus()){\n                case CREATED ->{\n                    gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), GameStatus.CREATED);"
@@ -809,7 +809,7 @@
     "module": "backend",
     "inspectionName": "SwitchStatementsWithoutDefault"
   },
-  "hash": "03de4eef0743483a2bc7152954f64b2ce5b2a5afd9abc87a281dce83aeeaee7a"
+  "hash": "0cf11fce84ec0c822726c22f49d37de6e2ab607ecdbdd23bf2f547bdce39520a"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -934,34 +934,6 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/planet/application/PlanetApplicationService.java",
       "language": "JAVA",
-      "line": 76,
-      "offset": 51,
-      "length": 3,
-      "code": {
-        "startLine": 74,
-        "length": 3,
-        "offset": 89,
-        "surroundingCode": "\n    public Planet getById (UUID id) {\n        return this.planetRepository.findById(id).get();\n    }\n"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "OptionalGetWithoutIsPresent"
-  },
-  "hash": "54a0c9c2505b2e01ab88702a15fe91964e2f4034217be1b50902f80a4866ccf1"
-},{
-  "tool": "Code Inspection",
-  "category": "Probable bugs",
-  "type": "Optional.get() is called without isPresent() check",
-  "severity": "High",
-  "comment": "`Optional.get()` without 'isPresent()' check",
-  "detailsInfo": "Reports calls to `get()` on an `Optional` without checking that it has a value.\n\nCalling `Optional.get()` on an empty `Optional` instance will throw an exception.\n\n**Example:**\n\n\n      void x(List<Integer> list) {\n        final Optional<Integer> optional =\n          list.stream().filter(x -> x > 10).findFirst();\n        final Integer result = optional.get(); // problem here\n      }\n",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/planet/application/PlanetApplicationService.java",
-      "language": "JAVA",
       "line": 72,
       "offset": 69,
       "length": 3,
@@ -978,4 +950,32 @@
     "inspectionName": "OptionalGetWithoutIsPresent"
   },
   "hash": "86f1114b232f1f9a93fbd3fd83a75fd77513d44c0f5821b62cf3ac0e0b2e360f"
+},{
+  "tool": "Code Inspection",
+  "category": "Probable bugs",
+  "type": "Optional.get() is called without isPresent() check",
+  "severity": "High",
+  "comment": "`Optional.get()` without 'isPresent()' check",
+  "detailsInfo": "Reports calls to `get()` on an `Optional` without checking that it has a value.\n\nCalling `Optional.get()` on an empty `Optional` instance will throw an exception.\n\n**Example:**\n\n\n      void x(List<Integer> list) {\n        final Optional<Integer> optional =\n          list.stream().filter(x -> x > 10).findFirst();\n        final Integer result = optional.get(); // problem here\n      }\n",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/planet/application/PlanetApplicationService.java",
+      "language": "JAVA",
+      "line": 76,
+      "offset": 51,
+      "length": 3,
+      "code": {
+        "startLine": 74,
+        "length": 3,
+        "offset": 89,
+        "surroundingCode": "\n    public Planet getById (UUID id) {\n        return this.planetRepository.findById(id).get();\n    }\n"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "OptionalGetWithoutIsPresent"
+  },
+  "hash": "54a0c9c2505b2e01ab88702a15fe91964e2f4034217be1b50902f80a4866ccf1"
 }]}

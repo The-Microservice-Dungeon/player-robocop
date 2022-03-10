@@ -1,0 +1,94 @@
+{"version":"3","listProblem":[{
+  "tool": "Code Inspection",
+  "category": "Code maturity",
+  "type": "Use of System.out or System.err",
+  "tags": [
+    "JAVA"
+  ],
+  "severity": "High",
+  "comment": "Uses of <code>System.out</code> should probably be replaced with more robust logging",
+  "detailsInfo": "Reports usages of `System.out` or `System.err`.\n\nSuch statements are often used for temporary debugging and should be either removed from the production code, or replaced by a more robust\nlogging facility.",
+  "sources": [
+    {
+      "type": "method",
+      "path": "backend/src/main/java/thkoeln/dungeon/map/MapJSONWrapper.java",
+      "language": "JAVA",
+      "line": 33,
+      "offset": 12,
+      "length": 10,
+      "code": {
+        "startLine": 31,
+        "length": 10,
+        "offset": 154,
+        "surroundingCode": "            this.robots[index] = robot != null ? 10 : -1;\n        } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {\n            System.out.println(exception.getMessage());\n        }\n    }"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "SystemOutErr"
+  },
+  "hash": "7881604186779566837"
+},{
+  "tool": "Code Inspection",
+  "category": "Code maturity",
+  "type": "Use of System.out or System.err",
+  "tags": [
+    "JAVA"
+  ],
+  "severity": "High",
+  "comment": "Uses of <code>System.out</code> should probably be replaced with more robust logging",
+  "detailsInfo": "Reports usages of `System.out` or `System.err`.\n\nSuch statements are often used for temporary debugging and should be either removed from the production code, or replaced by a more robust\nlogging facility.",
+  "sources": [
+    {
+      "type": "method",
+      "path": "backend/src/main/java/thkoeln/dungeon/map/MapJSONWrapper.java",
+      "language": "JAVA",
+      "line": 78,
+      "offset": 12,
+      "length": 10,
+      "code": {
+        "startLine": 76,
+        "length": 10,
+        "offset": 139,
+        "surroundingCode": "            this.gravity[index] = gravity;\n        } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {\n            System.out.println(exception.getMessage());\n        }\n"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "SystemOutErr"
+  },
+  "hash": "-6563741044409719776"
+},{
+  "tool": "Code Inspection",
+  "category": "Code maturity",
+  "type": "Use of System.out or System.err",
+  "tags": [
+    "JAVA"
+  ],
+  "severity": "High",
+  "comment": "Uses of <code>System.out</code> should probably be replaced with more robust logging",
+  "detailsInfo": "Reports usages of `System.out` or `System.err`.\n\nSuch statements are often used for temporary debugging and should be either removed from the production code, or replaced by a more robust\nlogging facility.",
+  "sources": [
+    {
+      "type": "method",
+      "path": "backend/src/main/java/thkoeln/dungeon/map/MapJSONWrapper.java",
+      "language": "JAVA",
+      "line": 57,
+      "offset": 12,
+      "length": 10,
+      "code": {
+        "startLine": 55,
+        "length": 10,
+        "offset": 134,
+        "surroundingCode": "            this.types[index] = type;\n        } catch (ArrayIndexOutOfBoundsException | NullPointerException exception) {\n            System.out.println(exception.getMessage());\n        }\n"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "SystemOutErr"
+  },
+  "hash": "1358482245588304377"
+}]}
