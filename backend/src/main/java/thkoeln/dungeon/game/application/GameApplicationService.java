@@ -190,6 +190,7 @@ public class GameApplicationService {
     }
 
     public void deleteData () {
+        logger.info("Deleting map, planet and robot data.");
         mapService.deleteMap();
         planetApplicationService.deletePlanets();
         robotApplicationService.deleteRobots();
