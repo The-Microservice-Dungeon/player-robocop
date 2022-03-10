@@ -72,17 +72,23 @@ export default {
       this.stompClient = Stomp.over(socket, options)
       this.stompClient.connect(
           {},
-          (frame) => {
+          frame => {
             if (frame.command === 'CONNECTED') {
               this.connected = true
               this.stompClient.subscribe('game_events', tick => this.handleEvent(tick))
               this.stompClient.subscribe('player_events', tick => this.handleEvent(tick))
               this.stompClient.subscribe('map_events', tick => this.handleEvent(tick))
+              this.stompClient.subscribe('errors', tick => this.handleErrorEvent(tick))
             }
           },
           error => {
-            console.error(error)
             this.connected = false
+
+            if (error.type === 'close') {
+              console.info('Websocket connection closed')
+            } else {
+              console.error(error)
+            }
           }
       )
     },
@@ -91,6 +97,11 @@ export default {
       console.log('Event Received: ' + info)
       Vue.$toast.open('Received ' + info + ' Event!')
       EventBus.$emit(info)
+    },
+    handleErrorEvent (tick) {
+      const messageParts = tick.body.split('|')
+      console.log(messageParts[0] + ' error payload: ' + messageParts[1])
+      Vue.$toast.error('Received ' + messageParts[0] + ' Error!')
     },
   },
 }
