@@ -161,6 +161,7 @@ public class GameApplicationService {
             synchronizeGameState();
         }
         else {
+            // TODO: Merge games instead of just dying here
             throw new IllegalStateException("Found "+ foundGames.size() + " matching games with same gameId.");
         }
     }
@@ -175,6 +176,7 @@ public class GameApplicationService {
         logger.info("Processing external event that the game with id " + gameId + " has started");
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.size()!=1){
+            // TODO: Merge games instead of just dying here
             logger.warn("Found "+ foundGames.size() + " matching games with gameId. Expected 1"+ gameId);
             return;
         }
@@ -200,6 +202,7 @@ public class GameApplicationService {
         logger.info("Processing external event that the game with id " + gameId + " has ended");
         List<Game> foundGames = gameRepository.findByGameId(gameId);
         if (foundGames.size()!=1){
+            // TODO: Merge games instead of just dying here
             logger.warn("Found "+ foundGames.size() + " matching games with gameId: "+ gameId+". Expected 1");
             return;
         }
@@ -212,6 +215,7 @@ public class GameApplicationService {
         logger.info("Processing 'roundStatus' event with eventId "+ eventId);
         List<Game> foundGames = gameRepository.findAllByGameStatusEquals(GameStatus.STARTED);
         if (foundGames.size() != 1){
+            // TODO: Merge games instead of just dying here
             logger.warn("Found "+ foundGames.size() + " matching games with game status STARTED. Expected 1 ");
             return;
         }
