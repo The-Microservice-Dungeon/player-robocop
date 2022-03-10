@@ -131,12 +131,20 @@ public class Planet {
     }
 
 
+    /**
+     * Returns all Neighbours of the current Planet in CLOCKWISE order starting from north if present.
+     * I.e.: NORTH, WEST, SOUTH, EAST
+     * If one or more Neighbours are missing, they are just skipped and the resulting list does not
+     * contain fields for each direction.
+     *
+     * @return List<Planet>
+     */
     public List<Planet> allNeighbours() {
         List<Planet> allNeighbours = new ArrayList<>();
         if (getNorthNeighbour() != null) allNeighbours.add(getNorthNeighbour());
-        if (getWestNeighbour() != null) allNeighbours.add(getWestNeighbour());
         if (getEastNeighbour() != null) allNeighbours.add(getEastNeighbour());
         if (getSouthNeighbour() != null) allNeighbours.add(getSouthNeighbour());
+        if (getWestNeighbour() != null) allNeighbours.add(getWestNeighbour());
         return allNeighbours;
     }
 
