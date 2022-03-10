@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.game.domain.game.*;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
@@ -27,18 +28,20 @@ public class GameApplicationService {
     private final PlanetApplicationService planetApplicationService;
     private final RobotApplicationService robotApplicationService;
     private final PlayerApplicationService playerApplicationService;
+    private final SimpMessagingTemplate websocket;
 
     @Autowired
     public GameApplicationService(GameRepository gameRepository,
                                   GameServiceRESTAdapter gameServiceRESTAdapter,
                                   PlayerApplicationService playerApplicationService,
-                                  MapApplicationService mapService, PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService, PlayerApplicationService playerApplicationService1) {
+                                  MapApplicationService mapService, PlanetApplicationService planetApplicationService, RobotApplicationService robotApplicationService, PlayerApplicationService playerApplicationService1, SimpMessagingTemplate websocket) {
         this.gameRepository = gameRepository;
         this.gameServiceRESTAdapter = gameServiceRESTAdapter;
         this.mapService = mapService;
         this.planetApplicationService = planetApplicationService;
         this.robotApplicationService = robotApplicationService;
         this.playerApplicationService = playerApplicationService1;
+        this.websocket = websocket;
     }
 
     public Game retrieveListedGameWithStatus(GameStatus gameStatus) throws GameStatusException, NoGameAvailableException{
@@ -164,6 +167,8 @@ public class GameApplicationService {
             // TODO: Merge games instead of just dying here
             throw new IllegalStateException("Found "+ foundGames.size() + " matching games with same gameId.");
         }
+
+        this.websocket.convertAndSend("game_events", "game_created");
     }
 
     /**
@@ -187,6 +192,8 @@ public class GameApplicationService {
         mapService.createMapFromGame(game);
         game.start();
         gameRepository.save(game);
+
+        this.websocket.convertAndSend("game_events", "game_status_change");
     }
 
     public void deleteData () {
@@ -210,6 +217,8 @@ public class GameApplicationService {
         Game game = foundGames.get(0);
         game.end();
         gameRepository.save(game);
+
+        this.websocket.convertAndSend("game_events", "game_status_change");
     }
 
     public void roundStatusExternallyChanged(UUID eventId, Integer roundNumber, RoundStatus roundStatus){
@@ -227,6 +236,8 @@ public class GameApplicationService {
             case ENDED -> game.getRound().roundEnded();
         }
         gameRepository.save(game);
+
+        this.websocket.convertAndSend("game_events", "round_status_change");
     }
 
     private Integer getCurrentPlayers () {
