@@ -103,11 +103,30 @@ public class UIController {
 
         ArrayList<JSONObject> robotObjects = new ArrayList<>();
 
-        // TODO: Return Stats and Inventory
         for (Robot robot : robots) {
+
+            // TODO: Fill with actual inventory values
+            JSONObject robotInventory = new JSONObject()
+                    .put("coal", 0)
+                    .put("iron", 0)
+                    .put("ruby", 0)
+                    .put("platin", 0);
+
+            // TODO: Fill with actual stats
+            JSONObject robotStats = new JSONObject()
+                    .put("STORAGE", new JSONObject().put("level", 1).put("value", 20))
+                    .put("HEALTH", new JSONObject().put("level", 1).put("value", 10))
+                    .put("DAMAGE", new JSONObject().put("level", 1).put("value", 1))
+                    .put("MINING_SPEED", new JSONObject().put("level", 1).put("value", 2))
+                    .put("MINING", new JSONObject().put("level", 1).put("value", "COAL"))
+                    .put("MAX_ENERGY", new JSONObject().put("level", 1).put("value", 20))
+                    .put("ENERGY_REGEN", new JSONObject().put("level", 1).put("value", 4));
+
             JSONObject robotJson = new JSONObject()
                     .put("health", robot.getHealth())
-                    .put("energy", robot.getEnergy());
+                    .put("energy", robot.getEnergy())
+                    .put("inventory", robotInventory)
+                    .put("stats", robotStats);
             robotObjects.add(robotJson);
         }
 
