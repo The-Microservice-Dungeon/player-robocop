@@ -13,7 +13,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -111,14 +110,14 @@ public class Map {
 
     public PositionVO findPosition(Planet planet) {
         for (PositionVO position : this.positions) {
-            if (position.getReferencingPlanetId() == planet.getPlanetId()) return position;
+            if (planet.getPlanetId().equals(position.getReferencingPlanetId())) return position;
         }
         return null;
     }
 
     public PositionVO findPosition(Robot robot) {
         for (PositionVO position : this.positions) {
-            if (position.getReferencingRobotId() == robot.getRobotId()) return position;
+            if (robot.getRobotId().equals(position.getReferencingRobotId())) return position;
         }
         return null;
     }
