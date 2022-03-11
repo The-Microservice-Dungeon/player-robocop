@@ -70,7 +70,7 @@ public class Planet {
 
     public Planet (PlanetMovementDto movementDto) {
         this.setPlanetType(movementDto.getPlanetType());
-        this.setMovementDifficulty(movementDto.getMovementDifficulty());
+        this.setMovementDifficulty(movementDto.getMovementDifficulty() -1);
         this.setResourceType(movementDto.getResourceType());
     }
 
