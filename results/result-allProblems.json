@@ -31,34 +31,6 @@
   "category": "Control flow issues",
   "type": "Enum 'switch' statement that misses case",
   "severity": "High",
-  "comment": "`switch (gameStatus) { case CREATED -> gameExternallyCreated(gameId); case ST...` statement on enum type 'thkoeln.dungeon.game.domain.game.GameStatus' misses case 'ORPHANED'",
-  "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
-      "language": "JAVA",
-      "line": 139,
-      "offset": 9,
-      "length": 204,
-      "code": {
-        "startLine": 137,
-        "length": 204,
-        "offset": 159,
-        "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "EnumSwitchStatementWhichMissesCases"
-  },
-  "hash": "1ee4bfcf608b89d51c4a63cd260a1a125c012cc62841ac4162be6a1d5ad9c36a"
-},{
-  "tool": "Code Inspection",
-  "category": "Control flow issues",
-  "type": "Enum 'switch' statement that misses case",
-  "severity": "High",
   "comment": "`switch (roundStatus){ case STARTED -> game.startRound(roundNumber); case COM...` statement on enum type 'thkoeln.dungeon.game.domain.round.RoundStatus' misses case 'BEFORE_FIRST_ROUND'",
   "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
   "sources": [
@@ -87,6 +59,34 @@
   "category": "Control flow issues",
   "type": "Enum 'switch' statement that misses case",
   "severity": "High",
+  "comment": "`switch (gameStatus) { case CREATED -> gameExternallyCreated(gameId); case ST...` statement on enum type 'thkoeln.dungeon.game.domain.game.GameStatus' misses case 'ORPHANED'",
+  "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
+      "language": "JAVA",
+      "line": 139,
+      "offset": 9,
+      "length": 204,
+      "code": {
+        "startLine": 137,
+        "length": 204,
+        "offset": 159,
+        "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "EnumSwitchStatementWhichMissesCases"
+  },
+  "hash": "1ee4bfcf608b89d51c4a63cd260a1a125c012cc62841ac4162be6a1d5ad9c36a"
+},{
+  "tool": "Code Inspection",
+  "category": "Control flow issues",
+  "type": "Enum 'switch' statement that misses case",
+  "severity": "High",
   "comment": "`switch (gameStatusEvent.getStatus()){ case CREATED ->{ gameAppli...` statement on enum type 'thkoeln.dungeon.game.domain.game.GameStatus' misses case 'ORPHANED'",
   "detailsInfo": "Reports `switch` statements over enumerated types that are not exhaustive.\n\n**Example:**\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n\n          }\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      enum AlphaBetaGamma {\n        A, B, C;\n\n        void x(AlphaBetaGamma e) {\n          switch (e) {\n            case A -> {}\n            case B -> {}\n            case C -> {}\n          }\n        }\n      }\n\n\nUse the **Ignore switch statements with a default branch** option to ignore `switch`\nstatements that have a `default` branch.",
   "sources": [
@@ -94,11 +94,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
       "language": "JAVA",
-      "line": 70,
+      "line": 71,
       "offset": 13,
       "length": 1053,
       "code": {
-        "startLine": 68,
+        "startLine": 69,
         "length": 1053,
         "offset": 172,
         "surroundingCode": "            gameStatusEventRepository.save(gameStatusEvent);\n            logger.info(\"saved game event with status \" + gameStatusEvent.getStatus().toString());\n            switch (gameStatusEvent.getStatus()){\n                case CREATED ->{\n                    gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), GameStatus.CREATED);"
@@ -109,7 +109,7 @@
     "module": "backend",
     "inspectionName": "EnumSwitchStatementWhichMissesCases"
   },
-  "hash": "276b1771d908b01a15d1424a5a692906035ffee20d87562eb1369b37f8d84c92"
+  "hash": "3cc9d703f308fce3a4f4873795d2df81b95e17fd7c3f193bc1a738f19c699fbc"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -122,11 +122,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/robot/RobotEventConsumer.java",
       "language": "JAVA",
-      "line": 119,
+      "line": 124,
       "offset": 21,
       "length": 992,
       "code": {
-        "startLine": 117,
+        "startLine": 122,
         "length": 992,
         "offset": 145,
         "surroundingCode": "                    Command command = triggeringCommandOptional.get();\n                    //movement command triggered this\n                    switch (command.getCommandType()){\n                        case movement ->  mapApplicationService.handleNewPlanetNeighbours(\n                                command.getTargetPlanet(), neighboursEvent.getNeighbours());"
@@ -137,7 +137,7 @@
     "module": "backend",
     "inspectionName": "EnumSwitchStatementWhichMissesCases"
   },
-  "hash": "100d84528a4c0e49cbff349a74fcf08f09a0a76fb0dd53afd0b8d8f0524b30f6"
+  "hash": "6cf99f5a6e9230c581f026e66a634eca90c96aff54ffb3f5c12547ad4baed98b"
 },{
   "tool": "Code Inspection",
   "category": "Declaration redundancy",
@@ -150,11 +150,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
       "language": "JAVA",
-      "line": 115,
+      "line": 119,
       "offset": 32,
       "length": 3,
       "code": {
-        "startLine": 113,
+        "startLine": 117,
         "length": 3,
         "offset": 78,
         "surroundingCode": "\n    @KafkaListener( topics = \"playerStatus\" )\n    @RetryableTopic(attempts = \"3\", backoff = @Backoff(delay = 500))\n    public void consumePlayerStatusEvent( @Header String eventId, @Header String timestamp, @Header String transactionId,\n                                          @Payload String payload ) {"
@@ -165,7 +165,7 @@
     "module": "backend",
     "inspectionName": "DefaultAnnotationParam"
   },
-  "hash": "fafff38afee795f382373a6a583063a086ed6a3194fe32295b9910f4117b5797"
+  "hash": "2651a19060a18818674875d197816a6621dc2c0fd835e554560da0b462a51bf6"
 },{
   "tool": "Code Inspection",
   "category": "Declaration redundancy",
@@ -178,11 +178,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/robot/RobotEventConsumer.java",
       "language": "JAVA",
-      "line": 100,
+      "line": 105,
       "offset": 32,
       "length": 3,
       "code": {
-        "startLine": 98,
+        "startLine": 103,
         "length": 3,
         "offset": 74,
         "surroundingCode": "\n    @KafkaListener(topics = \"neighbours\")\n    @RetryableTopic(attempts = \"3\", backoff = @Backoff(delay = 100))\n    public void consumeNeighbourEvent(@Header String eventId, @Header String timestamp, @Header String transactionId,\n                                      @Payload String payload){"
@@ -193,7 +193,7 @@
     "module": "backend",
     "inspectionName": "DefaultAnnotationParam"
   },
-  "hash": "dd5ddfbf827a46c94cf2b9bfaa22be3bac38e0419e5b90b81e6e68013a3ef55c"
+  "hash": "7152ff3d1352109a2209069c41c4e31d8987a8b26c5b0cbb6902f492f9250e04"
 },{
   "tool": "Code Inspection",
   "category": "Declaration redundancy",
@@ -234,11 +234,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/planet/domain/Planet.java",
       "language": "JAVA",
-      "line": 113,
+      "line": 119,
       "offset": 98,
       "length": 17,
       "code": {
-        "startLine": 111,
+        "startLine": 117,
         "length": 17,
         "offset": 210,
         "surroundingCode": "            }\r\n        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {\r\n            throw new PlanetException(\"Something went wrong that should not have happened ...\" + e.getStackTrace());\r\n        }\r\n        logger.info(\"Established neighbouring relationship between planet '\" + this + \"' and '\" + otherPlanet + \"'.\");\r"
@@ -249,7 +249,7 @@
     "module": "backend",
     "inspectionName": "ImplicitArrayToString"
   },
-  "hash": "915658b552c89c104de54ad1bc9021eeee6adfac5eb3f6e1e2477d91cd132fe0"
+  "hash": "7dfac3824f809869b54b1dfd3d6304d926ce1c50f957c23b390081f3385b006f"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -392,62 +392,6 @@
   "hash": "28b748d88271b600ff3586c7c0baad334ff4bb847bdd796e0d11f8d1aa6f5c61"
 },{
   "tool": "Code Inspection",
-  "category": "Probable bugs",
-  "type": "Call to default 'toString()'",
-  "severity": "High",
-  "comment": "Call to default 'toString()' on `robot`",
-  "detailsInfo": "Reports calls to `toString()` that use the default implementation from `java.lang.Object`.\n\nThe default implementation is rarely intended but may be used by accident.\n\n\nCalls to `toString()` on objects with `java.lang.Object`,\ninterface or abstract class type are ignored by this inspection.\n\n**Example:**\n\n\n      class Bar {\n          void foo1(Bar bar) {\n              String s = bar.toString(); // warning\n              /* ... */\n          }\n\n          void foo2(Object obj) {\n              String s = obj.toString(); // no warning here\n              /* ... */\n          }\n      }\n",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
-      "language": "JAVA",
-      "line": 132,
-      "offset": 36,
-      "length": 5,
-      "code": {
-        "startLine": 130,
-        "length": 5,
-        "offset": 144,
-        "surroundingCode": "        PositionVO robotPosition = this.currentMap.findPosition(robot);\n        if (robotPosition == null) {\n            logger.warn(\"Robot \" + robot + \" has no position on the current map! Can't get planet\");\n            return null;\n        }"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "ObjectToString"
-  },
-  "hash": "22df4e98f1c90ae71e6a3e1225d7e71924dac581986dd32345f3606e168c732e"
-},{
-  "tool": "Code Inspection",
-  "category": "Probable bugs",
-  "type": "Call to default 'toString()'",
-  "severity": "High",
-  "comment": "Call to default 'toString()' on `playerStatusEvent`",
-  "detailsInfo": "Reports calls to `toString()` that use the default implementation from `java.lang.Object`.\n\nThe default implementation is rarely intended but may be used by accident.\n\n\nCalls to `toString()` on objects with `java.lang.Object`,\ninterface or abstract class type are ignored by this inspection.\n\n**Example:**\n\n\n      class Bar {\n          void foo1(Bar bar) {\n              String s = bar.toString(); // warning\n              /* ... */\n          }\n\n          void foo2(Object obj) {\n              String s = obj.toString(); // no warning here\n              /* ... */\n          }\n      }\n",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
-      "language": "JAVA",
-      "line": 139,
-      "offset": 64,
-      "length": 17,
-      "code": {
-        "startLine": 137,
-        "length": 17,
-        "offset": 88,
-        "surroundingCode": "        }\n        else {\n            logger.warn( \"Caught invalid PlayerStatusEvent \" + playerStatusEvent );\n        }\n    }"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "ObjectToString"
-  },
-  "hash": "938448f1e5a4eafbc827be97469205c8872ea6a1014986efac481344cb973315"
-},{
-  "tool": "Code Inspection",
   "category": "Setup",
   "type": "Incorrect @Configuration class setup in Spring facet",
   "severity": "High",
@@ -561,6 +505,34 @@
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
+  "type": "Call to default 'toString()'",
+  "severity": "High",
+  "comment": "Call to default 'toString()' on `playerStatusEvent`",
+  "detailsInfo": "Reports calls to `toString()` that use the default implementation from `java.lang.Object`.\n\nThe default implementation is rarely intended but may be used by accident.\n\n\nCalls to `toString()` on objects with `java.lang.Object`,\ninterface or abstract class type are ignored by this inspection.\n\n**Example:**\n\n\n      class Bar {\n          void foo1(Bar bar) {\n              String s = bar.toString(); // warning\n              /* ... */\n          }\n\n          void foo2(Object obj) {\n              String s = obj.toString(); // no warning here\n              /* ... */\n          }\n      }\n",
+  "sources": [
+    {
+      "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
+      "language": "JAVA",
+      "line": 143,
+      "offset": 64,
+      "length": 17,
+      "code": {
+        "startLine": 141,
+        "length": 17,
+        "offset": 88,
+        "surroundingCode": "        }\n        else {\n            logger.warn( \"Caught invalid PlayerStatusEvent \" + playerStatusEvent );\n        }\n    }"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "ObjectToString"
+  },
+  "hash": "bfdbcba045c87efc574583b4856b550396dafaa13bc1fd282c23000a5b967f33"
+},{
+  "tool": "Code Inspection",
+  "category": "Probable bugs",
   "type": "Constant conditions & exceptions",
   "severity": "High",
   "comment": "Method invocation `getX` may produce `NullPointerException`",
@@ -570,11 +542,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
       "language": "JAVA",
-      "line": 202,
+      "line": 209,
       "offset": 68,
       "length": 4,
       "code": {
-        "startLine": 200,
+        "startLine": 207,
         "length": 4,
         "offset": 117,
         "surroundingCode": "\n        if (planet.getEastNeighbour() != null) {\n            PositionVO pos = this.currentMap.findPosition(position.getX() - 1, position.getY());\n            PositionVO neighbourPosition = new PositionVO(planet.getEastNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());\n            this.currentMap.replacePosition(pos, neighbourPosition);"
@@ -585,7 +557,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "2e3866e79d89d3edc32d04efcd74c9fbec50e47cdb0c73398541a73ee4e0958a"
+  "hash": "03ef6d2b9118995ed80fcc4406cfaca2d2960472d23119f19cd3176f8be8a7f9"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -598,11 +570,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
       "language": "JAVA",
-      "line": 210,
+      "line": 217,
       "offset": 68,
       "length": 4,
       "code": {
-        "startLine": 208,
+        "startLine": 215,
         "length": 4,
         "offset": 126,
         "surroundingCode": "        }\n        if (planet.getWestNeighbour() != null) {\n            PositionVO pos = this.currentMap.findPosition(position.getX() + 1, position.getY());\n            PositionVO neighbourPosition = new PositionVO(planet.getWestNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());\n            this.currentMap.replacePosition(pos, neighbourPosition);"
@@ -613,7 +585,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "12db36d65717d6c5c3d4d304ff6ca047cabce40732c8d6ebc6e3d8d15833789a"
+  "hash": "d2dab2be4b037569714ef5110efb6907e2302c4cd9dddc1059809dc50fdbca69"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -626,11 +598,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
       "language": "JAVA",
-      "line": 218,
+      "line": 225,
       "offset": 68,
       "length": 4,
       "code": {
-        "startLine": 216,
+        "startLine": 223,
         "length": 4,
         "offset": 127,
         "surroundingCode": "        }\n        if (planet.getNorthNeighbour() != null) {\n            PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() - 1);\n            PositionVO neighbourPosition = new PositionVO(planet.getNorthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());\n            this.currentMap.replacePosition(pos, neighbourPosition);"
@@ -641,7 +613,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "a94d09630c1d7a513a98353d7f00d24c47d21174fb3f17c9630a2f8a1b8c1517"
+  "hash": "f7c2c088ac65f02438f8f603f3e2ddc390728c187dd6937896981d011a04260c"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -654,11 +626,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/map/MapApplicationService.java",
       "language": "JAVA",
-      "line": 226,
+      "line": 233,
       "offset": 68,
       "length": 4,
       "code": {
-        "startLine": 224,
+        "startLine": 231,
         "length": 4,
         "offset": 127,
         "surroundingCode": "        }\n        if (planet.getSouthNeighbour() != null) {\n            PositionVO pos = this.currentMap.findPosition(position.getX(), position.getY() + 1);\n            PositionVO neighbourPosition = new PositionVO(planet.getSouthNeighbour().getPlanetId(), pos.getReferencingRobotId(), pos.getPosIndex(), pos.getX(), pos.getY());\n            this.currentMap.replacePosition(pos, neighbourPosition);"
@@ -669,7 +641,7 @@
     "module": "backend",
     "inspectionName": "ConstantConditions"
   },
-  "hash": "e8046d3a604d76c49b82bc729838c39366e8b29e55c42081b90b6c1ecb7822ec"
+  "hash": "d9364b0798a2b400eb6f60991b760652e5660b27ebc24bb26246ada8b857e0b6"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -766,34 +738,6 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
       "language": "JAVA",
-      "line": 139,
-      "offset": 9,
-      "length": 6,
-      "code": {
-        "startLine": 137,
-        "length": 6,
-        "offset": 159,
-        "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "SwitchStatementsWithoutDefault"
-  },
-  "hash": "644d79413f3302ca2894fbe239c1dfacca1f80700eb35acae41b60ead1bde337"
-},{
-  "tool": "Code Inspection",
-  "category": "Control flow issues",
-  "type": "'switch' statement without 'default' branch",
-  "severity": "High",
-  "comment": "`switch` statement without 'default' branch",
-  "detailsInfo": "Reports `switch` statements that do not contain `default` labels.\n\nAdding the `default` label guarantees that all possible scenarios are covered, and it becomes\neasier to make assumptions about the current state of the program.\n\n\nNote that by default, the inspection does not report `switch` statements if all cases for enums or `sealed` classes are covered.\nUse the **Ignore exhaustive switch statements** option if you want to change this behavior.",
-  "sources": [
-    {
-      "type": "file",
-      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
-      "language": "JAVA",
       "line": 233,
       "offset": 9,
       "length": 6,
@@ -820,13 +764,41 @@
   "sources": [
     {
       "type": "file",
+      "path": "backend/src/main/java/thkoeln/dungeon/game/application/GameApplicationService.java",
+      "language": "JAVA",
+      "line": 139,
+      "offset": 9,
+      "length": 6,
+      "code": {
+        "startLine": 137,
+        "length": 6,
+        "offset": 159,
+        "surroundingCode": "    public void gameStatusExternallyChanged(UUID gameId, GameStatus gameStatus) {\n        List<Game> foundGames = gameRepository.findByGameId(gameId);\n        switch (gameStatus) {\n            case CREATED -> gameExternallyCreated(gameId);\n            case STARTED -> gameExternallyStarted(gameId);"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "backend",
+    "inspectionName": "SwitchStatementsWithoutDefault"
+  },
+  "hash": "644d79413f3302ca2894fbe239c1dfacca1f80700eb35acae41b60ead1bde337"
+},{
+  "tool": "Code Inspection",
+  "category": "Control flow issues",
+  "type": "'switch' statement without 'default' branch",
+  "severity": "High",
+  "comment": "`switch` statement without 'default' branch",
+  "detailsInfo": "Reports `switch` statements that do not contain `default` labels.\n\nAdding the `default` label guarantees that all possible scenarios are covered, and it becomes\neasier to make assumptions about the current state of the program.\n\n\nNote that by default, the inspection does not report `switch` statements if all cases for enums or `sealed` classes are covered.\nUse the **Ignore exhaustive switch statements** option if you want to change this behavior.",
+  "sources": [
+    {
+      "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/game/GameEventConsumer.java",
       "language": "JAVA",
-      "line": 70,
+      "line": 71,
       "offset": 13,
       "length": 6,
       "code": {
-        "startLine": 68,
+        "startLine": 69,
         "length": 6,
         "offset": 172,
         "surroundingCode": "            gameStatusEventRepository.save(gameStatusEvent);\n            logger.info(\"saved game event with status \" + gameStatusEvent.getStatus().toString());\n            switch (gameStatusEvent.getStatus()){\n                case CREATED ->{\n                    gameApplicationService.gameStatusExternallyChanged(gameStatusEvent.getGameId(), GameStatus.CREATED);"
@@ -837,7 +809,7 @@
     "module": "backend",
     "inspectionName": "SwitchStatementsWithoutDefault"
   },
-  "hash": "0cf11fce84ec0c822726c22f49d37de6e2ab607ecdbdd23bf2f547bdce39520a"
+  "hash": "40e25fdf0e0bfdc18872051a898712321ea879dd3edb6e6f30f468fc28f0fce4"
 },{
   "tool": "Code Inspection",
   "category": "Control flow issues",
@@ -850,11 +822,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/robot/RobotEventConsumer.java",
       "language": "JAVA",
-      "line": 119,
+      "line": 124,
       "offset": 21,
       "length": 6,
       "code": {
-        "startLine": 117,
+        "startLine": 122,
         "length": 6,
         "offset": 145,
         "surroundingCode": "                    Command command = triggeringCommandOptional.get();\n                    //movement command triggered this\n                    switch (command.getCommandType()){\n                        case movement ->  mapApplicationService.handleNewPlanetNeighbours(\n                                command.getTargetPlanet(), neighboursEvent.getNeighbours());"
@@ -865,7 +837,7 @@
     "module": "backend",
     "inspectionName": "SwitchStatementsWithoutDefault"
   },
-  "hash": "1cbd5fbc6a2141ccd8330746e08eecca11a585874862632a7b1debf777b60841"
+  "hash": "85864c5e1912ae65c12dc442c4fce0a5fce2ac318823383fc08dd79a501d7bb3"
 },{
   "tool": "Code Inspection",
   "category": "Inheritance issues",
@@ -934,11 +906,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/robot/application/RobotApplicationService.java",
       "language": "JAVA",
-      "line": 36,
+      "line": 51,
       "offset": 50,
       "length": 3,
       "code": {
-        "startLine": 34,
+        "startLine": 49,
         "length": 3,
         "offset": 87,
         "surroundingCode": "\n    public Robot getById (UUID id) {\n        return this.robotRepository.findById(id).get();\n    }\n"
@@ -949,7 +921,7 @@
     "module": "backend",
     "inspectionName": "OptionalGetWithoutIsPresent"
   },
-  "hash": "7b3cbf0f764f6fa6bcc5a1dc4a53398a35c83726783629b03da49c0392f840f5"
+  "hash": "7365e3dc37cf72b9509f7a370ef3737ac5eefa0681aeeb550d5f1f6bfe894462"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -962,11 +934,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/planet/application/PlanetApplicationService.java",
       "language": "JAVA",
-      "line": 76,
+      "line": 83,
       "offset": 51,
       "length": 3,
       "code": {
-        "startLine": 74,
+        "startLine": 81,
         "length": 3,
         "offset": 89,
         "surroundingCode": "\n    public Planet getById (UUID id) {\n        return this.planetRepository.findById(id).get();\n    }\n"
@@ -977,7 +949,7 @@
     "module": "backend",
     "inspectionName": "OptionalGetWithoutIsPresent"
   },
-  "hash": "54a0c9c2505b2e01ab88702a15fe91964e2f4034217be1b50902f80a4866ccf1"
+  "hash": "762b713244c4c4bae8c5c7ab863f432e25e7ee343c2ff8b0e0d8a9acd6d7bd9d"
 },{
   "tool": "Code Inspection",
   "category": "Probable bugs",
@@ -990,11 +962,11 @@
       "type": "file",
       "path": "backend/src/main/java/thkoeln/dungeon/planet/application/PlanetApplicationService.java",
       "language": "JAVA",
-      "line": 72,
+      "line": 79,
       "offset": 69,
       "length": 3,
       "code": {
-        "startLine": 70,
+        "startLine": 77,
         "length": 3,
         "offset": 119,
         "surroundingCode": "\n    public Planet refreshPlanet (Planet planet) {\n        return this.planetRepository.findById(planet.getPlanetId()).get();\n    }\n"
@@ -1005,5 +977,5 @@
     "module": "backend",
     "inspectionName": "OptionalGetWithoutIsPresent"
   },
-  "hash": "86f1114b232f1f9a93fbd3fd83a75fd77513d44c0f5821b62cf3ac0e0b2e360f"
+  "hash": "b13ebded160d1325f153baf583043ba2e5f0957e2115996a1fb1ab345228014f"
 }]}
