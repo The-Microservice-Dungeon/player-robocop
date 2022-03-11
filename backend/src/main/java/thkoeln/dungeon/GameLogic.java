@@ -46,14 +46,12 @@ public class GameLogic {
         Player player = playerApplicationService.retrieveCurrentPlayer();
         Float money = player.getMoney();
         try {
-            //this would be cool, but would break everything probably
-            /*
+            /* this would be cool, but would break everything probably
             if (money > 100f) {
                 int maxRobotBuy = money.intValue() / 100;
                 commandDispatcherService.buyRobot(maxRobotBuy);
                 return;
-            }
-            */
+            } */
             if (game.getRound().getRoundNumber() == 1) {
                 commandDispatcherService.buyRobot(1);
                 return;
@@ -63,12 +61,16 @@ public class GameLogic {
             for (Robot robot : robots) {
                 int energy = robot.getEnergy();
                 Planet planet = mapApplicationService.getPlanetForRobot(robot);
+
+                /* Don't mine, just walk
                 if (planet.getResourceType() == ResourceType.COAL && energy >= 1) {
                     commandDispatcherService.mine(robot);
                     break;
-                }
+                } */
+
                 List<Planet> neighbours = mapApplicationService.getNeighboursForPlanet(planet);
                 Planet moveTarget = neighbours.get(0);
+
                 //select first unvisited if any
                 for (Planet neighbour : neighbours) {
                     if (!planet.getVisited()) {
