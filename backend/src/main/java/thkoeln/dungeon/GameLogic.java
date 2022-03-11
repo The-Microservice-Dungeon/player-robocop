@@ -76,7 +76,7 @@ public class GameLogic {
                         break;
                     }
                 }
-                if (energy >= moveTarget.getMovementDifficulty()) {
+                if (energy >= planet.getMovementDifficulty()) {
                     commandDispatcherService.moveRobotToPlanet(robot, moveTarget);
                     break;
                 }

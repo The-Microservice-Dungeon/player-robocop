@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @Service
 public class RobotEventConsumer {
-    private final RobotRepository robotRepository;
+    private final RobotApplicationService robotApplicationService;
     private final CommandRepository commandRepository;
     private final PlanetRepository planetRepository;
     private final MovementEventRepository movementEventRepository;
@@ -40,8 +40,8 @@ public class RobotEventConsumer {
 
 
     @Autowired
-    public RobotEventConsumer(SpawnEventRepository spawnEventRepository, MapApplicationService mapApplicationService, PlanetApplicationService planetApplicationService, RobotRepository robotRepository, CommandRepository commandRepository, PlanetRepository planetRepository, MovementEventRepository movementEventRepository, NeighboursEventRepository neighboursEventRepository, TradingEventRepository tradingEventRepository, RobotApplicationService robotApplicationService) {
-        this.robotRepository = robotRepository;
+    public RobotEventConsumer(RobotApplicationService robotApplicationService, SpawnEventRepository spawnEventRepository, MapApplicationService mapApplicationService, PlanetApplicationService planetApplicationService, RobotRepository robotRepository, CommandRepository commandRepository, PlanetRepository planetRepository, MovementEventRepository movementEventRepository, NeighboursEventRepository neighboursEventRepository, TradingEventRepository tradingEventRepository) {
+        this.robotApplicationService = robotApplicationService;
         this.commandRepository = commandRepository;
         this.planetRepository = planetRepository;
         this.movementEventRepository = movementEventRepository;
@@ -88,6 +88,7 @@ public class RobotEventConsumer {
                 if (targetPlanetOptional.isPresent()) {
                     logger.info("Robot with ID " + originRobot.getRobotId() + " moved to planet with ID " + targetPlanetId);
                     planetApplicationService.fillPlanetInformation(targetPlanetOptional.get(),movementEvent.getPlanet());
+                    robotApplicationService.updateRobotEnergy(originRobot.getRobotId(),movementEvent.getRemainingEnergy());
                     mapApplicationService.updateRobotPosition(originRobot, targetPlanetOptional.get());
                 }
             }

@@ -3,11 +3,13 @@ package thkoeln.dungeon.robot.application;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import thkoeln.dungeon.eventconsumer.trading.TradingData;
 import thkoeln.dungeon.map.PositionVO;
 import thkoeln.dungeon.robot.domain.Robot;
 import thkoeln.dungeon.robot.domain.RobotRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,11 +23,24 @@ public class RobotApplicationService {
         this.robotRepository = robotRepository;
     }
 
-    // TODO: Call on robot spawned event
-    public Robot createNewRobot (UUID id) {
-        Robot newRobot = new Robot(id);
+    public Robot createNewRobot (TradingData tradingData) {
+        Robot newRobot = new Robot(tradingData.getRobotId());
+        newRobot.setEnergy(tradingData.getEnergy());
+        newRobot.setHealth(tradingData.getHealth());
+        newRobot.setMaxEnergy(tradingData.getMaxEnergy());
+        newRobot.setMaxHealth(tradingData.getMaxHealth());
         this.robotRepository.save(newRobot);
         return newRobot;
+    }
+
+    public void updateRobotEnergy(UUID robotId, Integer newEnergy){
+        Optional<Robot> robotOptional = robotRepository.findById(robotId);
+        if (robotOptional.isPresent()){
+            Robot robot = robotOptional.get();
+            robot.setEnergy(newEnergy);
+            robotRepository.save(robot);
+        }
+        //else whoops
     }
 
     public void deleteRobots () {

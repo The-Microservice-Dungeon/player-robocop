@@ -56,8 +56,8 @@ public class Command {
     public CommandDto toDto(){
         CommandBody commandBody = new CommandBody();
         commandBody.setCommandType(this.getCommandType());
-        if (getRobot()!=null) {
-            commandBody.setRobotId(getRobot().getRobotId());
+        if (getTargetPlanet()!=null) {
+            commandBody.setPlanetId(getTargetPlanet().getPlanetId());
         }
         if (getTargetPlanet()!=null){
             commandBody.setTargetId(getTargetPlanet().getPlanetId());
