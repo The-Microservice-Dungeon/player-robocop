@@ -83,9 +83,13 @@ public class RobotEventConsumer {
                 logger.info("Saving movement event with transaction id "+transactionId);
                 movementEventRepository.save(movementEvent);
                 Robot originRobot = found.get().getRobot();
-                UUID targetPlanet = movementEvent.getPlanet().getPlanetId();
-                logger.info("Robot with ID "+originRobot.getRobotId()+" moved to planet with ID "+targetPlanet);
-                //Move robot on map / domain
+                UUID targetPlanetId = movementEvent.getPlanet().getPlanetId();
+                Optional<Planet> targetPlanetOptional = planetRepository.findById(targetPlanetId);
+                if (targetPlanetOptional.isPresent()) {
+                    logger.info("Robot with ID " + originRobot.getRobotId() + " moved to planet with ID " + targetPlanetId);
+                    planetApplicationService.fillPlanetInformation(targetPlanetOptional.get(),movementEvent.getPlanet());
+                    mapApplicationService.updateRobotPosition(originRobot, targetPlanetOptional.get());
+                }
             }
             else {
                 logger.info("Movement event isn't relevant. Skipping.");

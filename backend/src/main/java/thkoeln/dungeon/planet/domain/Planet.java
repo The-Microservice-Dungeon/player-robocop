@@ -51,6 +51,9 @@ public class Planet {
     @Setter(AccessLevel.PROTECTED)
     private Planet westNeighbour;
 
+    @Setter
+    private Boolean visited = false;
+
     @Transient
     private Logger logger = LoggerFactory.getLogger(Planet.class);
 
