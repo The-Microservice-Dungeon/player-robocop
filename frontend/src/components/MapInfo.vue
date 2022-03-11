@@ -210,6 +210,9 @@ export default {
         .then(() => {
           this.setMapDimensions()
 
+          let failure = false
+
+          this.firstLoad = false
           this.renderMap = true
           this.$nextTick()
             .then(() => {
@@ -218,16 +221,18 @@ export default {
               this.drawMapWithCamera()
             })
             .catch(e => {
-              throw e
+              console.warn(e)
+              failure = true
             })
-        })
-        .catch(e => {
-          console.warn(e)
-          if (this.retryFirstRender) {
-            console.log('Retrying first render once...')
-            this.retryFirstRender = false
-            this.initializeMapOnLoad()
-          }
+            .finally(() => {
+              if (failure) {
+                if (this.retryFirstRender) {
+                  console.log('Retrying first render once...')
+                  this.retryFirstRender = false
+                  this.initializeMapOnLoad()
+                }
+              }
+            })
         })
     },
     render () {
