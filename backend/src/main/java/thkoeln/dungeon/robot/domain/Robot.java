@@ -39,5 +39,16 @@ public class Robot {
     protected Robot(){
         this.robotId = UUID.randomUUID();
     }
+
+    @Override
+    public String toString() {
+        return "Robot{" +
+                "robotId=" + robotId +
+                ", energy=" + energy +
+                ", health=" + health +
+                ", dummy=" + dummy +
+                ", position=" + position +
+                '}';
+    }
 }
 
