@@ -17,6 +17,7 @@ import thkoeln.dungeon.game.application.GameApplicationService;
 import thkoeln.dungeon.game.application.GameStatusException;
 import thkoeln.dungeon.game.application.NoGameAvailableException;
 import thkoeln.dungeon.game.domain.game.GameStatus;
+import thkoeln.dungeon.game.domain.round.RoundStatus;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.player.application.PlayerRegistryException;
 
@@ -99,7 +100,7 @@ public class GameEventConsumer {
             roundStatusEventRepository.save(roundStatusEvent);
             logger.info("saved round event with status "+roundStatusEvent.getRoundStatus().toString());
             gameApplicationService.roundStatusExternallyChanged(roundStatusEvent.getEventId(), roundStatusEvent.getRoundNumber(), roundStatusEvent.getRoundStatus());
-            gameLogic.playRound();
+            if (roundStatusEvent.getRoundStatus()== RoundStatus.STARTED) gameLogic.playRound();
         } catch (KafkaException e) {
             this.kafkaErrorService.newKafkaError("roundStatus", payloadStr, e.getMessage());
         }
