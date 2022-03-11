@@ -1,63 +1,32 @@
 {"version":"3","listProblem":[{
   "tool": "Code Inspection",
-  "category": "Java 15",
-  "type": "Class can be a record",
-  "tags": [
-    "JAVA"
-  ],
-  "severity": "Moderate",
-  "comment": "Class can be a record",
-  "detailsInfo": "Suggests replacing classes with records.\n\nThe inspection can be useful if you need to focus on modeling immutable data rather than extensible behavior.\nAutomatic implementation of data-driven methods, such as equals and accessors, helps to get rid of boilerplate.\n\n\nNote that not every class can be a record. Here are some of the restrictions:\n\n* A class must contain no inheritors and must be a top-level class.\n* All the non-static fields in class must be final.\n* Class must contain no instance initializers, generic constructors, nor native methods.\n\nTo get a full list of the restrictions, refer to the\n[Oracle documentation](https://docs.oracle.com/javase/specs/jls/se15/preview/specs/records-jls.html).\n\nExample:\n\n\n      class Point {\n        private final double x;\n        private final double y;\n\n        Point(double x, double y) {\n          this.x = x;\n          this.y = y;\n        }\n\n        double getX() {\n          return x;\n        }\n\n        double getY() {\n          return y;\n        }\n      }\n\nThis record will be converted to:\n\n\n      record Point(int x, int y) {\n      }\n\nThis inspection only reports if the language level of the project or module is 15 preview or higher.\n\nNew in 2020.3",
-  "sources": [
-    {
-      "type": "class",
-      "path": "backend/src/main/java/thkoeln/dungeon/robot/application/RobotApplicationService.java",
-      "language": "JAVA",
-      "line": 14,
-      "offset": 13,
-      "length": 23,
-      "code": {
-        "startLine": 12,
-        "length": 23,
-        "offset": 23,
-        "surroundingCode": "\n@Service\npublic class RobotApplicationService {\n    private final RobotRepository robotRepository;\n"
-      }
-    }
-  ],
-  "attributes": {
-    "module": "backend",
-    "inspectionName": "ClassCanBeRecord"
-  },
-  "hash": "-2750317132486277189"
-},{
-  "tool": "Code Inspection",
-  "category": "Java 14",
-  "type": "Statement can be replaced with enhanced 'switch'",
+  "category": "Java 9",
+  "type": "Null check can be replaced with method call",
   "tags": [
     "JAVA"
   ],
   "severity": "High",
-  "comment": "Switch statement can be replaced with enhanced 'switch'",
-  "detailsInfo": "Reports `switch` statements that can be automatically replaced with enhanced `switch` statements or expressions.\n\n**Example:**\n\n\n      double getPrice(String fruit) {\n        // Switch statement can be replaced with enhanced 'switch'\n        switch (fruit) {\n          case \"Apple\":\n            return 1.0;\n          case \"Orange\":\n            return 1.5;\n          case \"Mango\":\n            return 2.0;\n          default:\n            throw new IllegalArgumentException();\n        }\n      }\n\nAfter the quick-fix is applied:\n\n\n      double getPrice(String fruit) {\n        return switch (fruit) {\n          case \"Apple\" -> 1.0;\n          case \"Orange\" -> 1.5;\n          case \"Mango\" -> 2.0;\n          default -> throw new IllegalArgumentException();\n        };\n      }\n      \nThis inspection only applies to language level 14 or higher\n\nNew in 2019.1",
+  "comment": "Replace condition with Objects.requireNonNullElse",
+  "detailsInfo": "Reports null checks that can be replaced with an `Objects`/`Stream` static method.\n\n**Example:**\n\n\n    if (message == null) {\n      application.messageStorage().save(new EmptyMessage());\n    } else {\n      application.messageStorage().save(message);\n    }\n\nAfter the quick-fix is applied:\n\n\n      application.messageStorage()\n        .save(Objects.requireNonNullElseGet(message, () -> new EmptyMessage()));\n\n\nUse the **Don't warn if length of replacement bigger than original** option to ignore the cases when the replacement is longer than the\noriginal code.\n\nNew in 2017.3",
   "sources": [
     {
       "type": "method",
-      "path": "backend/src/main/java/thkoeln/dungeon/planet/domain/CompassDirection.java",
+      "path": "backend/src/main/java/thkoeln/dungeon/map/MapJSONWrapper.java",
       "language": "JAVA",
-      "line": 7,
-      "offset": 8,
-      "length": 6,
+      "line": 67,
+      "offset": 16,
+      "length": 2,
       "code": {
-        "startLine": 5,
-        "length": 6,
-        "offset": 62,
-        "surroundingCode": "\n    public CompassDirection getOppositeDirection() {\n        switch (this) {\n            case north:\n                return south;"
+        "startLine": 65,
+        "length": 2,
+        "offset": 127,
+        "surroundingCode": "            if (planet != null) {\n                Integer movementDifficulty = planet.getMovementDifficulty();\n                if (movementDifficulty == null) {\n                    gravity = 9;\n                } else {"
       }
     }
   ],
   "attributes": {
     "module": "backend",
-    "inspectionName": "EnhancedSwitchMigration"
+    "inspectionName": "ReplaceNullCheck"
   },
-  "hash": "3658821553698268505"
+  "hash": "-1797330541803089225"
 }]}
