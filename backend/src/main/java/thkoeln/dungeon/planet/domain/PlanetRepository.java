@@ -8,6 +8,4 @@ import java.util.UUID;
 
 public interface PlanetRepository extends CrudRepository<Planet, UUID> {
     List<Planet> findAll();
-
-    Optional<Planet> findByName(String name);
 }

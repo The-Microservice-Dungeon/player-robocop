@@ -24,9 +24,6 @@ public class Planet {
     private UUID planetId = UUID.randomUUID();
 
     @Setter
-    private String name;
-
-    @Setter
     private Integer movementDifficulty = null;
 
     @Setter
