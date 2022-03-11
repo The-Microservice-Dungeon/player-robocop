@@ -260,9 +260,13 @@ export default {
     },
     initCanvas () {
       const canvas = this.$refs['mapCanvas']
-      this.ctx = canvas.getContext('2d')
-      this.ctx.canvas.width = this.mapWidth
-      this.ctx.canvas.height = this.mapHeight
+      try {
+        this.ctx = canvas.getContext('2d')
+        this.ctx.canvas.width = this.mapWidth
+        this.ctx.canvas.height = this.mapHeight
+      } catch (e) {
+        throw new Error('Could not init map. Canvas not found.')
+      }
     },
     initCamera () {
       const xyOffset = Math.floor(this.calculateMaxScroll() / 2 + this.tileResolution / 2)
