@@ -212,20 +212,23 @@ export default {
 
           this.renderMap = true
           this.$nextTick()
-           .then(() => {
-             this.initCanvas()
-             this.initCamera()
-             this.drawMapWithCamera()
-           })
+            .then(() => {
+              this.initCanvas()
+              this.initCamera()
+              this.drawMapWithCamera()
+            })
+            .catch(e => {
+              throw e
+            })
         })
-      .catch(e => {
-        console.warn(e)
-        if (this.retryFirstRender) {
-          console.log('Retrying first render once...')
-          this.retryFirstRender = false
-          this.initializeMapOnLoad()
-        }
-      })
+        .catch(e => {
+          console.warn(e)
+          if (this.retryFirstRender) {
+            console.log('Retrying first render once...')
+            this.retryFirstRender = false
+            this.initializeMapOnLoad()
+          }
+        })
     },
     render () {
       this.setMapDimensions()
