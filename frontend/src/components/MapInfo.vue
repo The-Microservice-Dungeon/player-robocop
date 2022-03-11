@@ -157,6 +157,17 @@ export default {
     EventBus.$on('robot_moved', () => {
       this.fetchMapData()
     })
+
+    window.drawDummyMap = () => {
+      this.renderMap = true
+      this.mapSize = 20
+      this.$nextTick(() => {
+        this.initializeMapOnLoad()
+        .then(() => {
+          this.buildDummyMap()
+        })
+      })
+    }
   },
   methods: {
     fetchMapData () {
@@ -175,7 +186,6 @@ export default {
 
             if (this.firstLoad || !this.ctx || !this.ctx.canvas) {
               console.log('First Map Load')
-              this.firstLoad = false
               this.initializeMapOnLoad()
             } else {
               console.log('Got new map Data. Rerendering...')
@@ -206,7 +216,7 @@ export default {
       return loadingPromise
     },
     initializeMapOnLoad () {
-      this.loadTiles()
+      return this.loadTiles()
         .then(() => {
           this.setMapDimensions()
 
@@ -306,8 +316,6 @@ export default {
       this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
     },
     drawMapWithCamera () {
-      console.log('Drawing Map')
-
       this.clearCanvas()
 
       let startCol = Math.floor(this.camera.x / this.tileResolution)
@@ -392,8 +400,9 @@ export default {
       this.camera.y = Math.floor((this.cols * this.tileResolution * e.detail.y) - this.mapWidth / 2)
       this.render()
     },
-    buildMap () {
+    buildDummyMap () {
       const totalLength = this.cols * this.rows
+      console.log('Building dummy map with ' + this.cols + ' cols and ' + this.rows + ' rows')
       // random Gravity Map
       this.layers[0] = Array.from({ length: totalLength }, (x, i) => {
         // borders
@@ -418,6 +427,7 @@ export default {
         }
         return -1
       })
+      console.log('Final Layer Array')
       console.log(this.layers)
     },
   },
