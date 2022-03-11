@@ -42,12 +42,11 @@ public class GameLogic {
 
     public void playRound() {
 
-        Timer timer = new Timer(500, arg0 -> {
-            Game game = gameApplicationService.retrieveCurrentGame();
-            Player player = playerApplicationService.retrieveCurrentPlayer();
-            Float money = player.getMoney();
-            try {
-                //this would be cool, but would break everything probably
+        Game game = gameApplicationService.retrieveCurrentGame();
+        Player player = playerApplicationService.retrieveCurrentPlayer();
+        Float money = player.getMoney();
+        try {
+            //this would be cool, but would break everything probably
             /*
             if (money > 100f) {
                 int maxRobotBuy = money.intValue() / 100;
@@ -55,39 +54,37 @@ public class GameLogic {
                 return;
             }
             */
-                if (game.getRound().getRoundNumber() == 1) {
-                    commandDispatcherService.buyRobot(1);
-                    return;
-                }
-                List<Robot> robots = robotApplicationService.getAllRobots();
-                for (Robot robot : robots) {
-                    int energy = robot.getEnergy();
-                    Planet planet = mapApplicationService.getPlanetForRobot(robot);
-                    if (planet.getResourceType() == ResourceType.COAL && energy >= 1) {
-                        commandDispatcherService.mine(robot);
-                        break;
-                    }
-                    List<Planet> neighbours = mapApplicationService.getNeighboursForPlanet(planet);
-                    Planet moveTarget = neighbours.get(0);
-                    //select first unvisited if any
-                    for (Planet neighbour : neighbours) {
-                        if (!planet.getVisited()) {
-                            moveTarget = neighbour;
-                            break;
-                        }
-                    }
-                    if (energy >= moveTarget.getMovementDifficulty()) {
-                        commandDispatcherService.moveRobotToPlanet(robot, moveTarget);
-                        break;
-                    }
-                    commandDispatcherService.regenerateEnergy(robot);
-                }
-            } catch (GameStatusException | NoGameAvailableException e) {
-                logger.error(e.getMessage());
-                logger.error("Stacktrace: \n" + Arrays.toString(e.getStackTrace()));
+            if (game.getRound().getRoundNumber() == 1) {
+                commandDispatcherService.buyRobot(1);
+                return;
             }
-        });
-        timer.setRepeats(false);
-        timer.start();
+            List<Robot> robots = robotApplicationService.getAllRobots();
+            logger.info("Found "+ robots.size()+" robots in application service");
+            for (Robot robot : robots) {
+                int energy = robot.getEnergy();
+                Planet planet = mapApplicationService.getPlanetForRobot(robot);
+                if (planet.getResourceType() == ResourceType.COAL && energy >= 1) {
+                    commandDispatcherService.mine(robot);
+                    break;
+                }
+                List<Planet> neighbours = mapApplicationService.getNeighboursForPlanet(planet);
+                Planet moveTarget = neighbours.get(0);
+                //select first unvisited if any
+                for (Planet neighbour : neighbours) {
+                    if (!planet.getVisited()) {
+                        moveTarget = neighbour;
+                        break;
+                    }
+                }
+                if (energy >= moveTarget.getMovementDifficulty()) {
+                    commandDispatcherService.moveRobotToPlanet(robot, moveTarget);
+                    break;
+                }
+                commandDispatcherService.regenerateEnergy(robot);
+            }
+        } catch (GameStatusException | NoGameAvailableException e) {
+            logger.error(e.getMessage());
+            logger.error("Stacktrace: \n" + Arrays.toString(e.getStackTrace()));
+        }
     }
 }
