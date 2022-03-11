@@ -1,32 +1,32 @@
 {"version":"3","listProblem":[{
   "tool": "Code Inspection",
-  "category": "Java 9",
-  "type": "Null check can be replaced with method call",
+  "category": "Code maturity",
+  "type": "Commented out code",
   "tags": [
     "JAVA"
   ],
-  "severity": "High",
-  "comment": "Replace condition with Objects.requireNonNullElse",
-  "detailsInfo": "Reports null checks that can be replaced with an `Objects`/`Stream` static method.\n\n**Example:**\n\n\n    if (message == null) {\n      application.messageStorage().save(new EmptyMessage());\n    } else {\n      application.messageStorage().save(message);\n    }\n\nAfter the quick-fix is applied:\n\n\n      application.messageStorage()\n        .save(Objects.requireNonNullElseGet(message, () -> new EmptyMessage()));\n\n\nUse the **Don't warn if length of replacement bigger than original** option to ignore the cases when the replacement is longer than the\noriginal code.\n\nNew in 2017.3",
+  "severity": "Moderate",
+  "comment": "Commented out code (14 lines)",
+  "detailsInfo": "Reports comments that contain Java code.\n\nUsually, code that is commented out gets outdated very quickly and becomes misleading.\nAs most projects use some kind of version control system,\nit is better to delete commented out code completely and use the VCS history instead.\n\nNew in 2020.3",
   "sources": [
     {
       "type": "method",
-      "path": "backend/src/main/java/thkoeln/dungeon/map/MapJSONWrapper.java",
+      "path": "backend/src/main/java/thkoeln/dungeon/eventconsumer/robot/RobotEventConsumer.java",
       "language": "JAVA",
-      "line": 67,
-      "offset": 16,
+      "line": 65,
+      "offset": 12,
       "length": 2,
       "code": {
-        "startLine": 65,
+        "startLine": 63,
         "length": 2,
-        "offset": 127,
-        "surroundingCode": "            if (planet != null) {\n                Integer movementDifficulty = planet.getMovementDifficulty();\n                if (movementDifficulty == null) {\n                    gravity = 9;\n                } else {"
+        "offset": 124,
+        "surroundingCode": "                    .fillWithPayload(payload)\n                    .fillHeader(eventId,timestamp,transactionId);\n            /*\n            List<Robot> affectedRobots = robotRepository.findAllByRobotIdIn(movementEvent.getRobots());\n            if (affectedRobots.isEmpty()) {\n                throw new GameException(\"This movement event does not match any of our robots!\");"
       }
     }
   ],
   "attributes": {
     "module": "backend",
-    "inspectionName": "ReplaceNullCheck"
+    "inspectionName": "CommentedOutCode"
   },
-  "hash": "-1797330541803089225"
+  "hash": "5501742222626234349"
 }]}
