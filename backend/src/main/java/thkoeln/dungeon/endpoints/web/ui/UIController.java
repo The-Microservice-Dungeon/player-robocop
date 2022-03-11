@@ -51,10 +51,10 @@ public class UIController {
     }
 
     @GetMapping("/game")
-    Map<String, Object> currentGameInfo(HttpServletResponse response) {
+    Map<String, Object> currentGameInfo() {
         Game game = this.gameApplicationService.retrieveCurrentGame();
         if (game == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No current game found.");
         }
 
         Round round = game.getRound();
@@ -79,7 +79,7 @@ public class UIController {
         Player player = this.playerApplicationService.getCurrentPlayer();
 
         if (player == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No current player found.");
         }
 
         JSONObject playerJson = new JSONObject()
@@ -98,7 +98,7 @@ public class UIController {
         List<Robot> robots = this.robotApplicationService.getAllRobots();
 
         if (robots.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No robots found.");
         }
 
         ArrayList<JSONObject> robotObjects = new ArrayList<>();
@@ -122,7 +122,7 @@ public class UIController {
         try {
             layerMap = mapService.getLayerMap();
         } catch (NullPointerException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no current game so no map.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No current map found.");
         }
 
         return new JSONObject(layerMap)
