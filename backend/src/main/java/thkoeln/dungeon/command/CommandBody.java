@@ -15,7 +15,7 @@ import java.util.UUID;
 public class CommandBody {
     @NotNull
     private CommandType commandType;
-    private UUID robotId;
+    private UUID planetId;
     private UUID targetId;
     private ItemType itemName;
     private Integer itemQuantity;

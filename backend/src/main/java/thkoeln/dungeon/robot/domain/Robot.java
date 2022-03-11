@@ -19,8 +19,10 @@ public class Robot {
     @Id
     private final UUID robotId;
 
+    private int maxEnergy;
     private int energy;
     private int health;
+    private int maxHealth;
 
     private boolean dummy = false;
 
@@ -38,6 +40,17 @@ public class Robot {
     }
     protected Robot(){
         this.robotId = UUID.randomUUID();
+    }
+
+    @Override
+    public String toString() {
+        return "Robot{" +
+                "robotId=" + robotId +
+                ", energy=" + energy +
+                ", health=" + health +
+                ", dummy=" + dummy +
+                ", position=" + position +
+                '}';
     }
 }
 

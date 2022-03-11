@@ -8,11 +8,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
+import thkoeln.dungeon.GameLogic;
 import thkoeln.dungeon.command.CommandDispatcherService;
 import thkoeln.dungeon.eventconsumer.core.KafkaErrorService;
 import thkoeln.dungeon.game.application.GameApplicationService;
@@ -22,7 +20,8 @@ import thkoeln.dungeon.game.domain.game.GameStatus;
 import thkoeln.dungeon.game.domain.round.RoundStatus;
 import thkoeln.dungeon.player.application.PlayerApplicationService;
 import thkoeln.dungeon.player.application.PlayerRegistryException;
-import thkoeln.dungeon.player.domain.PlayerRepository;
+
+import javax.swing.*;
 
 @Service
 public class GameEventConsumer {
@@ -34,6 +33,7 @@ public class GameEventConsumer {
     private final PlayerApplicationService playerApplicationService;
     private final CommandDispatcherService commandDispatcherService;
     private final PlayerStatusEventRepository playerStatusEventRepository;
+    private final GameLogic gameLogic;
 
     @Autowired
     public GameEventConsumer(GameApplicationService gameApplicationService,
@@ -42,7 +42,7 @@ public class GameEventConsumer {
                              RoundStatusEventRepository roundStatusEventRepository,
                              CommandDispatcherService commandDispatcherService,
                              PlayerApplicationService playerApplicationService,
-                             PlayerStatusEventRepository playerStatusEventRepository) {
+                             PlayerStatusEventRepository playerStatusEventRepository, GameLogic gameLogic) {
         this.gameApplicationService = gameApplicationService;
         this.gameStatusEventRepository = gameStatusEventRepository;
         this.kafkaErrorService = kafkaErrorService;
@@ -50,6 +50,7 @@ public class GameEventConsumer {
         this.commandDispatcherService = commandDispatcherService;
         this.playerApplicationService = playerApplicationService;
         this.playerStatusEventRepository = playerStatusEventRepository;
+        this.gameLogic = gameLogic;
     }
 
 
@@ -101,13 +102,16 @@ public class GameEventConsumer {
             roundStatusEventRepository.save(roundStatusEvent);
             logger.info("saved round event with status "+roundStatusEvent.getRoundStatus().toString());
             gameApplicationService.roundStatusExternallyChanged(roundStatusEvent.getEventId(), roundStatusEvent.getRoundNumber(), roundStatusEvent.getRoundStatus());
-            if (roundStatusEvent.getRoundNumber() == 1 && roundStatusEvent.getRoundStatus()== RoundStatus.STARTED){
-                commandDispatcherService.buyRobot();
+            if (roundStatusEvent.getRoundStatus()== RoundStatus.STARTED) {
+                Timer timer = new Timer(300, arg0 -> {
+                    logger.info("Playing round " + roundStatusEvent.getRoundNumber() + " now");
+                    gameLogic.playRound();
+                });
+                timer.setRepeats(false);
+                timer.start();
             }
         } catch (KafkaException e) {
             this.kafkaErrorService.newKafkaError("roundStatus", payloadStr, e.getMessage());
-        } catch (NoGameAvailableException | GameStatusException e) {
-            logger.error("Error while retrieving game: "+e.getMessage());
         }
     }
 

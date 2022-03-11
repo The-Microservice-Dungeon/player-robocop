@@ -36,10 +36,10 @@ public class CommandDispatcherService {
             Player player = playerApplicationService.retrieveCurrentPlayer();
             playerApplicationService.registerOnePlayerForGame(player,game);
         }
-        public void buyRobot() throws GameStatusException, NoGameAvailableException {
+        public void buyRobot(Integer quantity) throws GameStatusException, NoGameAvailableException {
             Game game = gameApplicationService.retrieveListedGameWithStatus(GameStatus.STARTED);
             Player player = playerApplicationService.retrieveCurrentPlayer();
-            Command robotCommand = CommandBuilder.buildBuyRobotCommand(game, player,1);
+            Command robotCommand = CommandBuilder.buildBuyRobotCommand(game, player,quantity);
             UUID transactionId = commandExecutionService.executeCommand(robotCommand);
             if (transactionId==null || transactionId.toString().isBlank()){
                 logger.error("TransactionId is null or blank");
@@ -51,6 +51,26 @@ public class CommandDispatcherService {
             Player player = playerApplicationService.retrieveCurrentPlayer();
             Command moveCommand = CommandBuilder.buildMovementCommand(game, player, robot, targetPlanet);
             UUID transactionId = commandExecutionService.executeCommand(moveCommand);
+            if (transactionId==null || transactionId.toString().isBlank()){
+                logger.error("TransactionId is null or blank");
+            }
+        }
+
+        public void regenerateEnergy(Robot robot) throws GameStatusException, NoGameAvailableException {
+            Game game = gameApplicationService.retrieveListedGameWithStatus(GameStatus.STARTED);
+            Player player = playerApplicationService.retrieveCurrentPlayer();
+            Command regenCommand = CommandBuilder.buildRegenerationCommand(game,player,robot);
+            UUID transactionId = commandExecutionService.executeCommand(regenCommand);
+            if (transactionId==null || transactionId.toString().isBlank()){
+                logger.error("TransactionId is null or blank");
+            }
+        }
+
+        public void mine(Robot robot) throws GameStatusException, NoGameAvailableException {
+            Game game = gameApplicationService.retrieveListedGameWithStatus(GameStatus.STARTED);
+            Player player = playerApplicationService.retrieveCurrentPlayer();
+            Command miningCommand = CommandBuilder.buildMiningCommand(game,player,robot);
+            UUID transactionId = commandExecutionService.executeCommand(miningCommand);
             if (transactionId==null || transactionId.toString().isBlank()){
                 logger.error("TransactionId is null or blank");
             }

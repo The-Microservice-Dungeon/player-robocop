@@ -39,6 +39,6 @@ public class PositionVO {
 
     @Override
     public String toString () {
-        return "Index: " + this.posIndex + " X: " + this.x + " Y: " + this.y;
+        return "Index: " + this.posIndex + " X: " + this.x + " Y: " + this.y + " Ref Planet: " + this.referencingPlanetId + " Ref Robot: " + this.referencingRobotId;
     }
 }

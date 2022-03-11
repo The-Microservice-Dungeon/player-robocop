@@ -3,6 +3,7 @@ package thkoeln.dungeon.eventconsumer.robot;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.springframework.lang.Nullable;
 import thkoeln.dungeon.planet.domain.PlanetType;
 import thkoeln.dungeon.planet.domain.ResourceType;
 
@@ -28,6 +29,7 @@ public class PlanetMovementDto {
     @JsonProperty("planetType")
     private PlanetType planetType;
     @JsonProperty("resourceType")
+    @Nullable
     private ResourceType resourceType;
 
     @JsonProperty("planetId")
@@ -67,7 +69,11 @@ public class PlanetMovementDto {
 
     @JsonProperty("resourceType")
     public void setResourceType(String resourceType) {
-        this.resourceType = ResourceType.valueOf(resourceType);
+        if (resourceType==null){
+            this.resourceType = null;
+            return;
+        }
+        this.resourceType = ResourceType.valueOf(resourceType.toUpperCase());
     }
 
 }

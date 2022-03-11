@@ -109,7 +109,7 @@ public class TradingEventConsumer {
 
             // If this was a robot spawn event we handle it accordingly
             if (tradingEvent.getData()!=null && tradingEvent.getData().getPlanet()!=null){
-                Robot robot = this.robotApplicationService.createNewRobot(tradingEvent.getData().getRobotId());
+                Robot robot = this.robotApplicationService.createNewRobot(tradingEvent.getData());
                 this.mapApplicationService.handleNewRobotSpawn(robot, tradingEvent.getData().getPlanet());
                 this.playerApplicationService.addRobotToPlayer(robot);
             }

@@ -50,6 +50,7 @@ public class MapApplicationService {
             logger.error("Failed to create map: " + e.getMessage());
             return;
         }
+        logger.info("Created new map.");
         mapRepository.save(currentMap);
         this.websocket.convertAndSend("map_events", "new_map_created");
     }
@@ -68,12 +69,17 @@ public class MapApplicationService {
         PositionVO center = this.currentMap.getCenterPosition();
 
         logger.info("Placing first Robot and Planet on " + center);
-
-        planet = this.planetApplicationService.setPlanetPosition(planet, center);
-        robot = this.robotApplicationService.setRobotPosition(robot, center);
-
         addFirstPlanet(planet);
         addFirstBot(robot);
+
+        // Save updated Position with planet and robot references
+        PositionVO newPos = this.currentMap.getCenterPosition();
+        planetApplicationService.setPlanetPosition(planet, newPos);
+        robotApplicationService.setRobotPosition(robot, newPos);
+
+        logger.info("Planet of Robot : "+currentMap.findPosition(robot).getReferencingPlanetId());
+        logger.info("Robot of Planet: "+currentMap.findPosition(planet).getReferencingRobotId());
+        logger.info("Center Pos: " +  currentMap.getCenterPosition());
 
         mapRepository.save(currentMap);
 
@@ -97,13 +103,13 @@ public class MapApplicationService {
         PositionVO centerPosWithPlanet = new PositionVO(planet.getPlanetId(), centerPos.getReferencingRobotId(), centerPos.getPosIndex(), centerPos.getX(), centerPos.getY());
         this.currentMap.replacePosition(centerPos, centerPosWithPlanet);
         planetApplicationService.setPlanetPosition(planet, centerPosWithPlanet);
-        exploreNeighbours(planet);
     }
 
     private void addFirstBot(Robot bot) {
         PositionVO centerPos = this.currentMap.getCenterPosition();
         PositionVO centerPosWithRobot = new PositionVO(centerPos.getReferencingPlanetId(), bot.getRobotId(), centerPos.getPosIndex(), centerPos.getX(), centerPos.getY());
         this.currentMap.replacePosition(centerPos, centerPosWithRobot);
+        this.robotApplicationService.setRobotPosition(bot, centerPosWithRobot);
     }
 
     public void handleNewPlanetNeighbours (Planet planet, List<NeighbourData> neighbours) {
@@ -111,6 +117,7 @@ public class MapApplicationService {
         planet = this.planetApplicationService.refreshPlanet(planet);
 
         if (planet.hasNeighbours()) {
+            logger.info("New Neighbours, exploring");
             exploreNeighbours(planet);
         }
     }

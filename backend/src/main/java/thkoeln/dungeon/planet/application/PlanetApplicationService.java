@@ -1,6 +1,8 @@
 package thkoeln.dungeon.planet.application;
 
 import lombok.extern.flogger.Flogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thkoeln.dungeon.eventconsumer.robot.NeighbourData;
@@ -9,6 +11,8 @@ import thkoeln.dungeon.map.PositionVO;
 import thkoeln.dungeon.planet.domain.Planet;
 import thkoeln.dungeon.planet.domain.PlanetException;
 import thkoeln.dungeon.planet.domain.PlanetRepository;
+
+import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,6 +20,7 @@ import java.util.UUID;
 @Service
 public class PlanetApplicationService {
     private final PlanetRepository planetRepository;
+    Logger logger = LoggerFactory.getLogger(PlanetApplicationService.class);
 
     @Autowired
     public PlanetApplicationService(
@@ -26,6 +31,7 @@ public class PlanetApplicationService {
     // TODO: Call on robot spawned event
     public Planet createStartPlanet (UUID id) {
         Planet newPlanet = new Planet(id, true);
+        newPlanet.setVisited(true);
         this.planetRepository.save(newPlanet);
         return newPlanet;
     }
@@ -38,6 +44,7 @@ public class PlanetApplicationService {
         targetPlanet.setPlanetType(planetInformation.getPlanetType());
         targetPlanet.setMovementDifficulty(planetInformation.getMovementDifficulty());
         targetPlanet.setResourceType(planetInformation.getResourceType());
+        targetPlanet.setVisited(true);
         this.planetRepository.save(targetPlanet);
     }
 

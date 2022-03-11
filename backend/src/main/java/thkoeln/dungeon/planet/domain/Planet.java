@@ -38,18 +38,24 @@ public class Planet {
     @Setter
     private ResourceType resourceType;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne
     @Setter(AccessLevel.PROTECTED)
     private Planet northNeighbour;
-    @OneToOne(cascade = CascadeType.MERGE)
+
+    @OneToOne
     @Setter(AccessLevel.PROTECTED)
     private Planet eastNeighbour;
-    @OneToOne(cascade = CascadeType.MERGE)
+
+    @OneToOne
     @Setter(AccessLevel.PROTECTED)
     private Planet southNeighbour;
-    @OneToOne(cascade = CascadeType.MERGE)
+
+    @OneToOne
     @Setter(AccessLevel.PROTECTED)
     private Planet westNeighbour;
+
+    @Setter
+    private Boolean visited = false;
 
     @Transient
     private Logger logger = LoggerFactory.getLogger(Planet.class);
