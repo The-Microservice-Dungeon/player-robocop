@@ -70,7 +70,7 @@ public class Planet {
 
     public Planet (PlanetMovementDto movementDto) {
         this.setPlanetType(movementDto.getPlanetType());
-        this.setMovementDifficulty(movementDto.getMovementDifficulty() -1);
+        this.setMovementDifficulty(movementDto.getMovementDifficulty());
         this.setResourceType(movementDto.getResourceType());
     }
 
@@ -89,8 +89,7 @@ public class Planet {
         if (isSpaceStation) {
             this.setPlanetType(PlanetType.SPACESTATION);
         }
-        //this.setPosition(new  PositionVO());
-        this.setMovementDifficulty(0);
+        this.setMovementDifficulty(1);
     }
 
     protected Planet(){

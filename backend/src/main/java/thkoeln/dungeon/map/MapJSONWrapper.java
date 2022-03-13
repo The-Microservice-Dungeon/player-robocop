@@ -67,7 +67,7 @@ public class MapJSONWrapper {
                 if (movementDifficulty == null) {
                     gravity = 9;
                 } else {
-                    gravity = movementDifficulty;
+                    gravity = movementDifficulty - 1;
                 }
 
                 //System.out.println("Movement Difficulty: " + planet.getMovementDifficulty() + " mapped to: " + gravity);
